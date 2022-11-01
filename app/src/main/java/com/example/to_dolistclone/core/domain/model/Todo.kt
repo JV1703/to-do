@@ -12,7 +12,7 @@ data class Todo(
     val createdOn: Long?,
     val completedOn: Long?,
     val tasks: Boolean = false,
-    val note: Boolean = false,
+    val notes: Boolean = false,
     val attachments: Boolean = false,
     val todoCategoryRefName: String
 )
@@ -27,7 +27,7 @@ fun Todo.toTodoEntity(): TodoEntity = TodoEntity(
     createdOn = createdOn,
     completedOn = completedOn,
     tasks = tasks,
-    note = note,
+    notes = notes,
     attachments = attachments,
     todoCategoryRefName = todoCategoryRefName
 )

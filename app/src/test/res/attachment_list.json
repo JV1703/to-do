@@ -1,0 +1,12 @@
+[
+  {
+    "attachmentId": "9aa046b6-7f7c-4ef8-bee3-905408d992f1",
+    "uri": "C:Local/app/file/xxxx",
+    "todoRefId": "b856e4cc-cb57-414d-b2b0-6c33c9a8cd7d"
+  },
+  {
+    "attachmentId": "b8784165-ceed-4035-b8e4-358a421d57e3",
+    "uri": "C:Local/app/file/yyyy",
+    "todoRefId": "b856e4cc-cb57-414d-b2b0-6c33c9a8cd7d"
+  }
+]

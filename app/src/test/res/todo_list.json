@@ -9,7 +9,7 @@
      "createdOn": "1666670400",
      "completedOn": "null",
      "tasks": "false",
-     "note": "false",
+     "notes": "false",
      "attachments": "false",
      "todoCategoryRefName": "Personal"
   },
@@ -23,7 +23,7 @@
     "createdOn": "1666746000",
     "completedOn": "1666755000",
     "tasks": "true",
-    "note": "true",
+    "notes": "true",
     "attachments": "true",
     "todoCategoryRefName": "Work"
   },
@@ -37,7 +37,7 @@
     "createdOn": "1666747800",
     "completedOn": "null",
     "tasks": "false",
-    "note": "false",
+    "notes": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
   },
@@ -51,7 +51,7 @@
     "createdOn": "1666746000",
     "completedOn": "null",
     "tasks": "true",
-    "note": "true",
+    "notes": "true",
     "attachments": "false",
     "todoCategoryRefName": "Work"
   },
@@ -65,7 +65,7 @@
     "createdOn": "1666746000",
     "completedOn": "null",
     "tasks": "false",
-    "note": "false",
+    "notes": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
   },
@@ -79,7 +79,7 @@
     "createdOn": "1666666800",
     "completedOn": "null",
     "tasks": "true",
-    "note": "false",
+    "notes": "false",
     "attachments": "false",
     "todoCategoryRefName": "Work"
   },
@@ -93,7 +93,7 @@
     "createdOn": "1666666800",
     "completedOn": "1666774800",
     "tasks": "false",
-    "note": "false",
+    "notes": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
   },
@@ -107,7 +107,7 @@
     "createdOn": "1666746000",
     "completedOn": "null",
     "tasks": "false",
-    "note": "false",
+    "notes": "false",
     "attachments": "false",
     "todoCategoryRefName": "Work"
   },
@@ -121,7 +121,7 @@
     "createdOn": "1666746000",
     "completedOn": "null",
     "tasks": "false",
-    "note": "false",
+    "notes": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
   },
@@ -135,7 +135,7 @@
     "createdOn": "1666746000",
     "completedOn": "null",
     "tasks": "false",
-    "note": "false",
+    "notes": "false",
     "attachments": "false",
     "todoCategoryRefName": "Work"
   }
