@@ -3,7 +3,7 @@ package com.example.to_dolistclone.core.domain.model
 import com.example.to_dolistclone.core.data.local.model.TaskEntity
 
 data class Task(
-    val taskId: Int,
+    val taskId: String,
     val task: String,
     val isComplete: Boolean = false,
     val todoRefId: String

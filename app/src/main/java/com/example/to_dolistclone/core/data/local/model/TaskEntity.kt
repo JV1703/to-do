@@ -6,7 +6,8 @@ import com.example.to_dolistclone.core.domain.model.Task
 
 @Entity(tableName = "task")
 class TaskEntity(
-    @PrimaryKey(autoGenerate = false) val taskId: Int,
+    @PrimaryKey(autoGenerate = false)
+    val taskId: String,
     val task: String,
     val isComplete: Boolean = false,
     val todoRefId: String

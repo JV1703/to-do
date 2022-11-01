@@ -8,7 +8,7 @@
      "isComplete": "false",
      "createdOn": "1666670400",
      "completedOn": "null",
-     "subTasks": "false",
+     "tasks": "false",
      "note": "false",
      "attachments": "false",
      "todoCategoryRefName": "Personal"
@@ -22,7 +22,7 @@
     "isComplete": "true",
     "createdOn": "1666746000",
     "completedOn": "1666755000",
-    "subTasks": "true",
+    "tasks": "true",
     "note": "true",
     "attachments": "true",
     "todoCategoryRefName": "Work"
@@ -36,7 +36,7 @@
     "isComplete": "false",
     "createdOn": "1666747800",
     "completedOn": "null",
-    "subTasks": "false",
+    "tasks": "false",
     "note": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
@@ -50,7 +50,7 @@
     "isComplete": "false",
     "createdOn": "1666746000",
     "completedOn": "null",
-    "subTasks": "true",
+    "tasks": "true",
     "note": "true",
     "attachments": "false",
     "todoCategoryRefName": "Work"
@@ -64,7 +64,7 @@
     "isComplete": "false",
     "createdOn": "1666746000",
     "completedOn": "null",
-    "subTasks": "false",
+    "tasks": "false",
     "note": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
@@ -75,10 +75,10 @@
     "deadline": "1672448400",
     "reminder": "true",
     "repeat": "null",
-    "isComplete": "true",
+    "isComplete": "false",
     "createdOn": "1666666800",
     "completedOn": "null",
-    "subTasks": "true",
+    "tasks": "true",
     "note": "false",
     "attachments": "false",
     "todoCategoryRefName": "Work"
@@ -92,7 +92,7 @@
     "isComplete": "true",
     "createdOn": "1666666800",
     "completedOn": "1666774800",
-    "subTasks": "false",
+    "tasks": "false",
     "note": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
@@ -106,7 +106,7 @@
     "isComplete": "false",
     "createdOn": "1666746000",
     "completedOn": "null",
-    "subTasks": "false",
+    "tasks": "false",
     "note": "false",
     "attachments": "false",
     "todoCategoryRefName": "Work"
@@ -120,7 +120,7 @@
     "isComplete": "false",
     "createdOn": "1666746000",
     "completedOn": "null",
-    "subTasks": "false",
+    "tasks": "false",
     "note": "false",
     "attachments": "false",
     "todoCategoryRefName": "Personal"
@@ -134,7 +134,7 @@
     "isComplete": "false",
     "createdOn": "1666746000",
     "completedOn": "null",
-    "subTasks": "false",
+    "tasks": "false",
     "note": "false",
     "attachments": "false",
     "todoCategoryRefName": "Work"
