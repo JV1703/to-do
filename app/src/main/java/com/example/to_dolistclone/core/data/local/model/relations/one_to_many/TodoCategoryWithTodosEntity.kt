@@ -10,8 +10,8 @@ import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCat
 data class TodoCategoryWithTodosEntity(
     @Embedded val todoCategory: TodoCategoryEntity,
     @Relation(
-        parentColumn = "todoCategoryId",
-        entityColumn = "todoCategoryRefId"
+        parentColumn = "todoCategoryName",
+        entityColumn = "todoCategoryRefName"
     )
     val todos: List<TodoEntity>
 )

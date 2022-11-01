@@ -1,60 +1,84 @@
 package com.example.to_dolistclone.feature.tasks.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Resources
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.fragment.app.FragmentManager
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import com.example.to_dolistclone.R
 import com.example.to_dolistclone.databinding.ActivityTasksBinding
+import com.example.to_dolistclone.feature.calendar.CalendarFragment
+import com.example.to_dolistclone.feature.profile.ui.ProfileFragment
+import com.example.to_dolistclone.feature.tasks.adapter.HomeViewPagerAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class TasksActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTasksBinding
-    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTasksBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
-        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
-        navController = navHost.navController
-        binding.toolbar.navigationIcon = null
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.setHomeButtonEnabled(false)
-        setupBottomNavBar()
+        setupToolbar()
         setupDrawer()
-//        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-//            if (destination.id == R.id.calendarFragment) {
-//                supportActionBar?.setDisplayHomeAsUpEnabled(false)
-//            }
-//        }
 
+        val fragmentLists = listOf(TasksFragment(), CalendarFragment(), ProfileFragment())
+        binding.viewPager.adapter = HomeViewPagerAdapter(fragmentLists, this)
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, index ->
+            tab.icon = when (index) {
+                0 -> {
+                    AppCompatResources.getDrawable(this, R.drawable.ic_tasks)
+                }
+                1 -> {
+                    AppCompatResources.getDrawable(this, R.drawable.ic_calendar)
+                }
+                2 -> {
+                    AppCompatResources.getDrawable(this, R.drawable.ic_profile)
+                }
+                else -> {
+                    throw Resources.NotFoundException("Position not found")
+                }
+            }
 
+            tab.text = when (index) {
+                0 -> {
+                    "Tasks"
+                }
+                1 -> {
+                    "Calendar"
+                }
+                2 -> {
+                    "Profile"
+                }
+                else -> {
+                    throw Resources.NotFoundException("Position not found")
+                }
+            }
+        }.attach()
     }
 
-//    private fun setupBottomNavBar() {
-//        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
-//        navController = navHost.navController
-//        binding.bottomNavBar.setupWithNavController(navController)
-//    }
-
-    private fun setupBottomNavBar() {
-        binding.bottomNavBar.setupWithNavController(navController)
+    private fun setupToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
-    private fun setupDrawer(){
-        val drawer = binding.drawerLayout
-        val builder = AppBarConfiguration.Builder(navController.graph)
-        builder.setOpenableLayout(drawer)
-        val appBarConfiguration = builder.build()
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+    private fun setupDrawer() {
+        val drawerToggle = setupDrawerToggle()
+        drawerToggle.isDrawerIndicatorEnabled = true
+        drawerToggle.syncState()
+        binding.drawerLayout.addDrawerListener(drawerToggle)
     }
+
+    private fun setupDrawerToggle() =
+        ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.toolbar,
+            R.string.open,
+            R.string.close
+        )
 }
