@@ -19,7 +19,7 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "com.example.to_dolistclone.HiltTestRunner"
     }
 
@@ -30,6 +30,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -100,4 +101,9 @@ dependencies {
     // instrumentation test
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version")
 
+    // desugar
+    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:$desugar_version")
+
+    // calendar view
+    implementation ("com.kizitonwose.calendar:view:$calendar_version")
 }

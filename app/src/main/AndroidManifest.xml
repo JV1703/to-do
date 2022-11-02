@@ -14,7 +14,7 @@
         android:theme="@style/Theme.TodoListClone"
         tools:targetApi="31">
         <activity
-            android:name=".feature.tasks.ui.TasksActivity"
+            android:name=".feature.home.ui.HomeActivity"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"

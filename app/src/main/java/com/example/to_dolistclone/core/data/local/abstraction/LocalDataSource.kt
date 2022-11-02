@@ -18,7 +18,7 @@ interface LocalDataSource {
 
     suspend fun deleteNote(noteId: String): Int
 
-    suspend fun insertTasks(subTasks: List<TaskEntity>): LongArray
+    suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
 
     suspend fun deleteTask(taskId: String): Int
 

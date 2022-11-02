@@ -1,6 +1,9 @@
 package com.example.to_dolistclone.core.utils.ui
 
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.app.Activity
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -49,4 +52,24 @@ fun <T> Fragment.collectLifecycleFlow(flow: Flow<T>, collect: suspend (T) -> Uni
             flow.collect(collect)
         }
     }
+}
+
+fun ImageView.pulseAnimation(
+    scaleX: Float = 1.5F,
+    ScaleY: Float = 1.5F,
+    alpha: Float = 0F,
+    duration: Long = 1000,
+    repeatCount: Int = ObjectAnimator.INFINITE,
+    repeatMode: Int = ObjectAnimator.RESTART
+) {
+    val pulse = ObjectAnimator.ofPropertyValuesHolder(
+        this,
+        PropertyValuesHolder.ofFloat("scaleX", scaleX),
+        PropertyValuesHolder.ofFloat("scaleY", ScaleY),
+        PropertyValuesHolder.ofFloat("alpha", alpha)
+    )
+    pulse.duration = duration
+    pulse.repeatCount = repeatCount
+    pulse.repeatMode = repeatMode
+    pulse.start()
 }
