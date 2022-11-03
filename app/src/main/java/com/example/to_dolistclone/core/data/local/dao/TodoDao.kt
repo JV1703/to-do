@@ -6,6 +6,7 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.To
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithAttachmentsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithTasksEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.TodoAndNoteEntity
+import com.example.to_dolistclone.core.domain.model.TodoCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -43,6 +44,9 @@ interface TodoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long
+
+    @Query("SELECT * FROM todo_category")
+    fun getTodoCategories(): Flow<List<TodoCategoryEntity>>
 
     @Query("DELETE FROM todo_category WHERE  todoCategoryName= :todoCategoryName")
     suspend fun deleteTodoCategory(todoCategoryName: String): Int

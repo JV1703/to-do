@@ -5,6 +5,7 @@ import com.example.to_dolistclone.core.data.local.TodoDatabase
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
 import com.example.to_dolistclone.core.data.local.dao.TodoDao
 import com.example.to_dolistclone.core.data.local.implementation.LocalDataSourceImpl
+import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.core.repository.implementation.TodoRepositoryImpl
 import dagger.Module
 import dagger.Provides
@@ -30,6 +31,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTodoRepository(local: LocalDataSource) = TodoRepositoryImpl(local)
+    fun provideTodoRepository(local: LocalDataSource): TodoRepository = TodoRepositoryImpl(local)
 
 }

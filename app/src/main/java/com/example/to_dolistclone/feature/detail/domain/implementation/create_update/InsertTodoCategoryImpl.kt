@@ -8,6 +8,6 @@ import javax.inject.Inject
 class InsertTodoCategoryImpl @Inject constructor(private val todoRepository: TodoRepository) :
     InsertTodoCategory {
 
-    override suspend operator fun invoke(category: TodoCategory): Long = todoRepository.insertTodoCategory(category)
+    override suspend operator fun invoke(category: TodoCategory) = todoRepository.insertTodoCategory(category)
 
 }

@@ -10,4 +10,9 @@ class DialogsManager @Inject constructor(private val fragmentManager: FragmentMa
         modalBottomSheet.show(fragmentManager, ModalBottomSheet.TAG)
     }
 
+    fun createAddCategoryDialogFragment(){
+        val addCategoryDialogFragment = AddCategoryDialogFragment()
+        addCategoryDialogFragment.show(fragmentManager, AddCategoryDialogFragment.TAG)
+    }
+
 }

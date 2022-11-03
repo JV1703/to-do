@@ -8,6 +8,7 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.To
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithAttachmentsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithTasksEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.TodoAndNoteEntity
+import com.example.to_dolistclone.core.domain.model.TodoCategory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -44,6 +45,8 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long =
         todoDao.insertTodoCategory(todoCategory)
+
+    override fun getTodoCategories(): Flow<List<TodoCategoryEntity>> = todoDao.getTodoCategories().flowOn(dispatcherIO)
 
     override suspend fun deleteTodoCategory(todoCategoryName: String): Int =
         todoDao.deleteTodoCategory(todoCategoryName)

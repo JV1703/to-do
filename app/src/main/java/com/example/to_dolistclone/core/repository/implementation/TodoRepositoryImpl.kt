@@ -6,6 +6,7 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.to
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithTasks
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.toTodoAndNote
 import com.example.to_dolistclone.core.data.local.model.toTodo
+import com.example.to_dolistclone.core.data.local.model.toTodoCategory
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -44,6 +45,12 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
 
     override suspend fun insertTodoCategory(todoCategory: TodoCategory): Long =
         local.insertTodoCategory(todoCategory.toTodoEntity())
+
+    override fun getTodoCategories(): Flow<List<TodoCategory>> = local.getTodoCategories().map { listEntityModel ->
+        listEntityModel.map { entityModel ->
+            entityModel.toTodoCategory()
+        }
+    }
 
     override suspend fun deleteTodoCategory(todoCategoryName: String): Int =
         local.deleteTodoCategory(todoCategoryName)

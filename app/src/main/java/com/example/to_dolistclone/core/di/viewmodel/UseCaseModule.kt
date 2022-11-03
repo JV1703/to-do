@@ -3,8 +3,10 @@ package com.example.to_dolistclone.core.di.viewmodel
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.feature.detail.domain.abstraction.create_update.*
 import com.example.to_dolistclone.feature.detail.domain.abstraction.delete.*
+import com.example.to_dolistclone.feature.detail.domain.abstraction.read.GetTodoCategories
 import com.example.to_dolistclone.feature.detail.domain.implementation.create_update.*
 import com.example.to_dolistclone.feature.detail.domain.implementation.delete.*
+import com.example.to_dolistclone.feature.detail.domain.implementation.read.GetTodoCategoriesImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -69,4 +71,9 @@ object UseCaseModule {
     @ViewModelScoped
     fun provideDeleteTodoCategory(todoRepository: TodoRepository): DeleteTodoCategory =
         DeleteTodoCategoryImpl(todoRepository)
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetTodoCategories(todoRepository: TodoRepository): GetTodoCategories =
+        GetTodoCategoriesImpl(todoRepository)
 }

@@ -5,6 +5,7 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.To
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithAttachmentsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithTasksEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.TodoAndNoteEntity
+import com.example.to_dolistclone.core.domain.model.TodoCategory
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
@@ -29,6 +30,8 @@ interface LocalDataSource {
     suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray
 
     suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long
+
+    fun getTodoCategories(): Flow<List<TodoCategoryEntity>>
 
     suspend fun deleteTodoCategory(todoCategoryName: String): Int
 

@@ -7,7 +7,7 @@ import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.ViewContainer
 import java.time.LocalDate
 
-class WeekDayViewContainer(view: View, private val dateClicked: (LocalDate) -> Unit) :
+class WeekDayViewContainer(view: View, private val dateClicked: (WeekDay) -> Unit) :
     ViewContainer(view) {
 
     lateinit var day: WeekDay
@@ -16,7 +16,7 @@ class WeekDayViewContainer(view: View, private val dateClicked: (LocalDate) -> U
     init {
         view.setOnClickListener {
             if (day.position == WeekDayPosition.RangeDate) {
-                dateClicked(day.date)
+                dateClicked(day)
             }
         }
     }

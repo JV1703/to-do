@@ -12,15 +12,20 @@
         android:layout_marginTop="8dp"
         android:rotation="90"
         android:src="@drawable/id_arrow_drop_down"
+        app:layout_constraintEnd_toStartOf="@+id/period"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/period"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:textAlignment="center"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/prev_month"
-        app:layout_constraintStart_toEndOf="@id/prev_month"
+        app:layout_constraintEnd_toStartOf="@+id/next_month"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/prev_month"
         app:layout_constraintTop_toTopOf="@id/prev_month"
         tools:text="NOVEMBER 2022" />
 
@@ -31,27 +36,10 @@
         android:rotation="-90"
         android:src="@drawable/id_arrow_drop_down"
         app:layout_constraintBottom_toBottomOf="@id/period"
-        app:layout_constraintStart_toEndOf="@id/period"
-        app:layout_constraintTop_toTopOf="@id/period" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/calendar_toggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:rotation="90"
-        android:src="@drawable/ic_navigate_next"
-        app:layout_constraintBottom_toBottomOf="@id/next_month"
-        app:layout_constraintEnd_toStartOf="@id/options"
-        app:layout_constraintTop_toTopOf="@id/next_month" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_vert_option"
-        app:layout_constraintBottom_toBottomOf="@id/next_month"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/next_month" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/period"
+        app:layout_constraintTop_toTopOf="@id/period" />
 
     <include
         android:id="@+id/legendLayout"
@@ -64,15 +52,6 @@
 
     <com.kizitonwose.calendar.view.CalendarView
         android:id="@+id/month_calendar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cv_dayViewResource="@layout/calendar_day_layout"
-        app:layout_constraintEnd_toEndOf="@id/legendLayout"
-        app:layout_constraintStart_toStartOf="@id/legendLayout"
-        app:layout_constraintTop_toBottomOf="@id/legendLayout" />
-
-    <com.kizitonwose.calendar.view.WeekCalendarView
-        android:id="@+id/week_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cv_dayViewResource="@layout/calendar_day_layout"

@@ -30,6 +30,8 @@ interface TodoRepository {
 
     suspend fun insertTodoCategory(todoCategory: TodoCategory): Long
 
+    fun getTodoCategories(): Flow<List<TodoCategory>>
+
     suspend fun deleteTodoCategory(todoCategoryName: String): Int
 
     fun getTodoAndNoteWithTodoId(todoId: String): Flow<List<TodoAndNote>>
