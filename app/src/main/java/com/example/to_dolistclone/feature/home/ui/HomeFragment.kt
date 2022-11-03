@@ -2,22 +2,27 @@ package com.example.to_dolistclone.feature.home.ui
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
 import com.example.to_dolistclone.R
+import com.example.to_dolistclone.core.utils.ui.pulseAnimation
 import com.example.to_dolistclone.databinding.FragmentHomeBinding
 import com.example.to_dolistclone.feature.BaseFragment
 import com.example.to_dolistclone.feature.calendar.CalendarFragment
+import com.example.to_dolistclone.feature.common.dialog.DialogsManager
 import com.example.to_dolistclone.feature.profile.ui.ProfileFragment
 import com.example.to_dolistclone.feature.tasks.adapter.HomeViewPagerAdapter
 import com.example.to_dolistclone.feature.tasks.ui.TasksFragment
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
+
+    @Inject
+    lateinit var dialogsManager: DialogsManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +56,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun setupTabLayout() {
         val fragmentLists = listOf(TasksFragment(), CalendarFragment(), ProfileFragment())
         binding.viewPager.adapter =
-            HomeViewPagerAdapter(fragmentLists, requireContext() as HomeActivity)
+            HomeViewPagerAdapter(fragmentLists, childFragmentManager, viewLifecycleOwner.lifecycle)
         binding.viewPager.isUserInputEnabled = false
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, index ->
             tab.icon = when (index) {
@@ -86,4 +91,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }.attach()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.viewPager.adapter = null
+    }
 }

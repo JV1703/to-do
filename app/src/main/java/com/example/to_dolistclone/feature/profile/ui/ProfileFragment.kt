@@ -5,6 +5,4 @@ import com.example.to_dolistclone.feature.BaseFragment
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
 
-
-
 }

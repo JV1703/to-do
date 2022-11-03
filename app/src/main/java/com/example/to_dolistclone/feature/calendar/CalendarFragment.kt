@@ -1,13 +1,15 @@
 package com.example.to_dolistclone.feature.calendar
 
+import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+import androidx.core.animation.doOnStart
+import androidx.core.view.*
 import androidx.fragment.app.viewModels
 import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
@@ -55,6 +57,10 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
             binding.weekCalendar.weekScrollListener = { updateTitle(calendarType) }
             binding.monthCalendar.monthScrollListener = { updateTitle(calendarType) }
             updateCalendarDetails(calendarType)
+            binding.calendarToggle.setOnClickListener{
+                viewModel.toggleCalendarType()
+                toggleCalendar(calendarType)
+            }
         }
 
     }
@@ -84,25 +90,52 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
             @RequiresApi(Build.VERSION_CODES.O)
             override fun bind(container: MonthDayViewContainer, data: CalendarDay) {
                 container.day = data
-                Log.i("bindDate", "data.date: ${data.date}")
                 bindDate(
                     data.date, container.binding.dayTv, container.binding.eventInd
                 )
             }
 
-            override fun create(view: View): MonthDayViewContainer = MonthDayViewContainer(view) {
-                Log.i("bindDate", "clicked Date: $it")
-                if (selectedDate != it) {
-                    val oldDate = selectedDate
-                    selectedDate = it
-                    oldDate?.let { date ->
-                        binding.monthCalendar.notifyDateChanged(date)
+            override fun create(view: View): MonthDayViewContainer =
+                MonthDayViewContainer(view) { day ->
+                    val month = binding.monthCalendar.findFirstVisibleMonth()?.yearMonth
+                    if (day.position == DayPosition.MonthDate) {
+                        if (selectedDate != day.date) {
+                            val oldDate = selectedDate
+                            selectedDate = day.date
+                            oldDate?.let { date ->
+                                binding.monthCalendar.notifyDateChanged(date)
+                            }
+                            binding.monthCalendar.notifyDateChanged(day.date)
+                            viewModel.updateSelectedDate(day.date)
+                        }
+                    } else if (day.position == DayPosition.InDate) {
+                        month?.let {
+                            binding.monthCalendar.smoothScrollToMonth(it.minusMonths(1))
+                            if (selectedDate != day.date) {
+                                val oldDate = selectedDate
+                                selectedDate = day.date
+                                oldDate?.let { date ->
+                                    binding.monthCalendar.notifyDateChanged(date)
+                                }
+                                binding.monthCalendar.notifyDateChanged(day.date)
+                                viewModel.updateSelectedDate(day.date)
+                            }
+                        }
+                    } else if (day.position == DayPosition.OutDate) {
+                        month?.let {
+                            binding.monthCalendar.smoothScrollToMonth(it.plusMonths(1))
+                            if (selectedDate != day.date) {
+                                val oldDate = selectedDate
+                                selectedDate = day.date
+                                oldDate?.let { date ->
+                                    binding.monthCalendar.notifyDateChanged(date)
+                                }
+                                binding.monthCalendar.notifyDateChanged(day.date)
+                                viewModel.updateSelectedDate(day.date)
+                            }
+                        }
                     }
-                    Log.i("bindDate", "selectedDate: $selectedDate")
-                    binding.monthCalendar.notifyDateChanged(it)
-                    viewModel.updateSelectedDate(it)
                 }
-            }
 
         }
 
@@ -146,7 +179,6 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
             }
         }
 
-//        binding.weekCalendar.weekScrollListener = { updateTitle() }
         binding.weekCalendar.setup(
             startMonth.atStartOfMonth(),
             endMonth.atEndOfMonth(),
@@ -217,6 +249,54 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
 //                eventInd.isVisible = events[data.date].orEmpty().isNotEmpty()
                 eventInd.isVisible = false
             }
+        }
+    }
+
+    private fun toggleCalendar(calendarType: CalendarType) {
+        if (calendarType == CalendarType.WEEK) {
+            val targetDate = binding.monthCalendar.findFirstVisibleDay()?.date ?: return
+            binding.weekCalendar.scrollToWeek(targetDate)
+        } else {
+            val targetMonth = binding.weekCalendar.findLastVisibleDay()?.date?.yearMonth ?: return
+            binding.monthCalendar.scrollToMonth(targetMonth)
+        }
+
+        calendarToggleAnimation(calendarType)
+    }
+
+    private fun calendarToggleAnimation(calendarType: CalendarType) {
+        val weekHeight = binding.weekCalendar.height
+        val visibleMonthHeight = weekHeight *
+                binding.monthCalendar.findFirstVisibleMonth()?.weekDays.orEmpty().count()
+
+        val oldHeight = if (calendarType == CalendarType.WEEK) visibleMonthHeight else weekHeight
+        val newHeight = if (calendarType == CalendarType.WEEK) weekHeight else visibleMonthHeight
+
+        val animator = ValueAnimator.ofInt(oldHeight, newHeight)
+        animator.addUpdateListener { anim ->
+            binding.monthCalendar.updateLayoutParams {
+                height = anim.animatedValue as Int
+            }
+            // A bug is causing the month calendar to not redraw its children
+            // with the updated height during animation, this is a workaround.
+            binding.monthCalendar.children.forEach { child ->
+                child.requestLayout()
+            }
+        }
+
+        animator.doOnStart {
+            if (calendarType != CalendarType.WEEK) {
+                binding.weekCalendar.isInvisible = true
+                binding.monthCalendar.isVisible = true
+            } else {
+                binding.monthCalendar.updateLayoutParams {
+                    height =
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                }
+                updateTitle(calendarType)
+            }
+            animator.duration = 250
+            animator.start()
         }
     }
 }
