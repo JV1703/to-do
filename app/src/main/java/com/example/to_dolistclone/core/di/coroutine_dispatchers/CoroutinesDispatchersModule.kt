@@ -1,6 +1,5 @@
 package com.example.to_dolistclone.core.di.coroutine_dispatchers
 
-import com.example.core.di.CoroutinesQualifiers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

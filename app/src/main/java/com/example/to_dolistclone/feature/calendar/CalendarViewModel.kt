@@ -1,34 +1,28 @@
 package com.example.to_dolistclone.feature.calendar
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.to_dolistclone.feature.todo.domain.implementation.TodoUseCaseImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() : ViewModel() {
+class CalendarViewModel @Inject constructor(
+    taskTodoUseCase: TodoUseCaseImpl
+) : ViewModel() {
 
-    private val calendarType = MutableStateFlow(CalendarType.MONTH)
     private val selectedDate = MutableStateFlow<LocalDate?>(null)
+    private val mappedTodos = taskTodoUseCase.getTodosGroupByDeadline()
 
-    val uiState: StateFlow<UiState> = combine(calendarType, selectedDate) { type, date ->
-        UiState(
-            selectedDate = date
+    val calendarFragmentUiState: StateFlow<CalendarFragmentUiState> =
+        combine(selectedDate, mappedTodos) { date, mappedTodos ->
+            CalendarFragmentUiState(
+                selectedDate = date, todos = mappedTodos
+            )
+        }.stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(5000), CalendarFragmentUiState()
         )
-    }.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000), UiState()
-    )
 
-    fun updateSelectedDate(date: LocalDate) {
-        selectedDate.value = date
-        Log.i("calendar_vm","selected date: ${selectedDate.value}")
-    }
-
-}
-
-enum class CalendarType {
-    WEEK, MONTH
 }

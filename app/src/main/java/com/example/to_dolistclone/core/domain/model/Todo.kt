@@ -6,7 +6,7 @@ data class Todo(
     val todoId: String,
     val title: String,
     val deadline: Long?,
-    val reminder: Boolean = false,
+    val reminder: Long? = null,
     val repeat: String? = null,
     val isComplete: Boolean = false,
     val createdOn: Long?,

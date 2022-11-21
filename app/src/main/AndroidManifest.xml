@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -13,6 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TodoListClone"
         tools:targetApi="31">
+        <activity
+            android:name=".feature.detail.ui.DetailsActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".feature.home.ui.HomeActivity"
+            >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".feature.home.ui.HomeActivity"
             android:exported="true">
@@ -33,6 +44,8 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        
+        <receiver android:name=".core.common.AlarmReceiver"/>
     </application>
 
 </manifest>

@@ -37,13 +37,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:drawableStart="@drawable/ic_category"
-            android:drawableEnd="@drawable/id_arrow_drop_down"
             android:drawablePadding="12dp"
             android:gravity="center|start"
             android:text="Category"
-            app:layout_constraintEnd_toEndOf="@id/star_tasks"
+            app:layout_constraintEnd_toStartOf="@id/category_hide_toggle"
             app:layout_constraintStart_toStartOf="@id/star_tasks"
             app:layout_constraintTop_toBottomOf="@id/star_tasks" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/category_hide_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_arrow_drop_down"
+            app:layout_constraintBottom_toBottomOf="@id/category_tv"
+            app:layout_constraintEnd_toEndOf="@id/star_tasks"
+            app:layout_constraintStart_toEndOf="@id/category_tv"
+            app:layout_constraintTop_toTopOf="@id/category_tv" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/drawer_rv"
@@ -51,21 +60,34 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="@id/category_tv"
             app:layout_constraintStart_toStartOf="@id/category_tv"
             app:layout_constraintTop_toBottomOf="@id/category_tv" />
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/add_category"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:drawableStart="@drawable/ic_add"
             android:drawablePadding="12dp"
+            android:ellipsize="end"
             android:hint="Create New"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@id/drawer_rv"
             app:layout_constraintStart_toStartOf="@id/drawer_rv"
             app:layout_constraintTop_toBottomOf="@id/drawer_rv" />
+
+        <View
+            android:id="@+id/separator"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/black"
+            app:layout_constraintEnd_toEndOf="@id/add_category"
+            app:layout_constraintStart_toStartOf="@id/add_category"
+            app:layout_constraintTop_toBottomOf="@id/add_category" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
@@ -76,7 +98,7 @@
             android:text="Settings"
             app:layout_constraintEnd_toEndOf="@id/category_tv"
             app:layout_constraintStart_toStartOf="@id/category_tv"
-            app:layout_constraintTop_toBottomOf="@id/add_category" />
+            app:layout_constraintTop_toBottomOf="@id/separator" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

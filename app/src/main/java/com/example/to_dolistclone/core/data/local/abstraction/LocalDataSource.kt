@@ -1,23 +1,71 @@
 package com.example.to_dolistclone.core.data.local.abstraction
 
+import androidx.room.Query
 import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoCategoryWithTodosEntity
+import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoDetailsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithAttachmentsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithTasksEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.TodoAndNoteEntity
-import com.example.to_dolistclone.core.domain.model.TodoCategory
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
+
+    suspend fun saveShowPrevious(isShow: Boolean)
+
+    suspend fun saveShowToday(isShow: Boolean)
+
+    suspend fun saveShowFuture(isShow: Boolean)
+
+    suspend fun saveShowCompletedToday(isShow: Boolean)
+
+    fun getShowPrevious(): Flow<Boolean>
+
+    fun getShowToday(): Flow<Boolean>
+
+    fun getShowFuture(): Flow<Boolean>
+
+    fun getShowCompletedToday(): Flow<Boolean>
+
     suspend fun insertTodo(todo: TodoEntity): Long
 
-    fun getTodo(): Flow<TodoEntity>
+    suspend fun updateTodoTitle(todoId: String, title: String): Int
+
+    suspend fun updateTodoCategory(todoId: String, category: String): Int
+
+    fun getTodo(todoId: String): Flow<TodoEntity>
+
+    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int
+
+    suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int
+
+    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): Int
+
+    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): Int
+
+    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
+
+    suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
+
+    fun getTodoDetails(todoId: String): Flow<TodoDetailsEntity?>
+
+    fun getTodos(): Flow<List<TodoEntity>>
 
     suspend fun deleteTodo(todoId: String): Int
 
     suspend fun insertNote(note: NoteEntity): Long
 
     suspend fun deleteNote(noteId: String): Int
+
+    suspend fun insertTask(task: TaskEntity): Long
+
+    suspend fun getTaskSize(): Int
+
+    suspend fun updateTaskPosition(taskId: String, position: Int): Int
+
+    suspend fun updateTaskTitle(taskId: String, title: String): Int
+
+    suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): Int
 
     suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
 
@@ -35,13 +83,18 @@ interface LocalDataSource {
 
     suspend fun deleteTodoCategory(todoCategoryName: String): Int
 
-    fun getTodoAndNoteWithTodoId(todoId: String): Flow<List<TodoAndNoteEntity>>
+    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity>
 
-    fun getTodoWithTasks(todoId: String): Flow<List<TodoWithTasksEntity>>
+    fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity>
 
-    fun getTodoWithAttachments(todoId: String): Flow<List<TodoWithAttachmentsEntity>>
+    fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachmentsEntity>
 
     fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<List<TodoCategoryWithTodosEntity>>
 
     fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodosEntity>>
+
+    suspend fun saveSelectedNoteId(todoId: String)
+
+    fun getSelectedNoteId(): Flow<String>
+
 }

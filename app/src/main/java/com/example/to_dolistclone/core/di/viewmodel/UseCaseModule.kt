@@ -1,12 +1,14 @@
 package com.example.to_dolistclone.core.di.viewmodel
 
+
+import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
-import com.example.to_dolistclone.feature.detail.domain.abstraction.create_update.*
-import com.example.to_dolistclone.feature.detail.domain.abstraction.delete.*
-import com.example.to_dolistclone.feature.detail.domain.abstraction.read.GetTodoCategories
-import com.example.to_dolistclone.feature.detail.domain.implementation.create_update.*
-import com.example.to_dolistclone.feature.detail.domain.implementation.delete.*
-import com.example.to_dolistclone.feature.detail.domain.implementation.read.GetTodoCategoriesImpl
+import com.example.to_dolistclone.feature.detail.domain.abstraction.*
+import com.example.to_dolistclone.feature.detail.domain.implementation.*
+import com.example.to_dolistclone.feature.home.domain.abstraction.HomeTodoCategoryUseCase
+import com.example.to_dolistclone.feature.home.domain.implementation.HomeTodoCategoryUseCaseImpl
+import com.example.to_dolistclone.feature.todo.domain.abstraction.TodoUseCase
+import com.example.to_dolistclone.feature.todo.domain.implementation.TodoUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,61 +21,37 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideInsertAttachment(todoRepository: TodoRepository): InsertAttachment =
-        InsertAttachmentImpl(todoRepository)
+    fun provideAttachment(todoRepository: TodoRepository): AttachmentUseCase =
+        AttachmentUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideInsertAttachments(todoRepository: TodoRepository): InsertAttachments =
-        InsertAttachmentsImpl(todoRepository)
+    fun provideNoteUseCase(todoRepository: TodoRepository): NoteUseCase =
+        NoteUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideInsertNote(todoRepository: TodoRepository): InsertNote =
-        InsertNoteImpl(todoRepository)
+    fun provideTaskUseCase(todoRepository: TodoRepository): TaskUseCase =
+        TaskUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideInsertSubTasks(todoRepository: TodoRepository): InsertSubTasks =
-        InsertSubTasksImpl(todoRepository)
+    fun provideTodoCategoryUseCase(todoRepository: TodoRepository): TodoCategoryUseCase =
+        TodoCategoryUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideInsertTodo(todoRepository: TodoRepository): InsertTodo =
-        InsertTodoImpl(todoRepository)
+    fun provideDetailTodoUseCase(todoRepository: TodoRepository): DetailTodoUseCase =
+        DetailTodoUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideInsertTodoCategory(todoRepository: TodoRepository): InsertTodoCategory =
-        InsertTodoCategoryImpl(todoRepository)
+    fun provideTodoUseCase(todoRepository: TodoRepository, dateUtil: DateUtil): TodoUseCase =
+        TodoUseCaseImpl(todoRepository, dateUtil)
 
     @Provides
     @ViewModelScoped
-    fun provideDeleteAttachment(todoRepository: TodoRepository): DeleteAttachment =
-        DeleteAttachmentImpl(todoRepository)
+    fun provideHomeTodoCategoryUseCase(todoRepository: TodoRepository): HomeTodoCategoryUseCase =
+        HomeTodoCategoryUseCaseImpl(todoRepository)
 
-    @Provides
-    @ViewModelScoped
-    fun provideDeleteNote(todoRepository: TodoRepository): DeleteNote =
-        DeleteNoteImpl(todoRepository)
-
-    @Provides
-    @ViewModelScoped
-    fun provideDeleteTask(todoRepository: TodoRepository): DeleteTask =
-        DeleteTaskImpl(todoRepository)
-
-    @Provides
-    @ViewModelScoped
-    fun provideDeleteTodo(todoRepository: TodoRepository): DeleteTodo =
-        DeleteTodoImpl(todoRepository)
-
-    @Provides
-    @ViewModelScoped
-    fun provideDeleteTodoCategory(todoRepository: TodoRepository): DeleteTodoCategory =
-        DeleteTodoCategoryImpl(todoRepository)
-
-    @Provides
-    @ViewModelScoped
-    fun provideGetTodoCategories(todoRepository: TodoRepository): GetTodoCategories =
-        GetTodoCategoriesImpl(todoRepository)
 }

@@ -5,7 +5,6 @@ import com.example.to_dolistclone.databinding.CalendarDayLayoutBinding
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.WeekDayPosition
 import com.kizitonwose.calendar.view.ViewContainer
-import java.time.LocalDate
 
 class WeekDayViewContainer(view: View, private val dateClicked: (WeekDay) -> Unit) :
     ViewContainer(view) {

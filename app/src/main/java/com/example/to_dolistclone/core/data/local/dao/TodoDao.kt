@@ -3,10 +3,10 @@ package com.example.to_dolistclone.core.data.local.dao
 import androidx.room.*
 import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoCategoryWithTodosEntity
+import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoDetailsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithAttachmentsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithTasksEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.TodoAndNoteEntity
-import com.example.to_dolistclone.core.domain.model.TodoCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,8 +15,17 @@ interface TodoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTodo(todo: TodoEntity): Long
 
+    @Query("UPDATE todo SET title = :title WHERE todoId = :todoId")
+    suspend fun updateTodoTitle(todoId: String, title: String): Int
+
+    @Query("UPDATE todo SET todoCategoryRefName = :category WHERE todoId = :todoId")
+    suspend fun updateTodoCategory(todoId: String, category: String): Int
+
+    @Query("SELECT * FROM todo WHERE todoId = :todoId")
+    fun getTodo(todoId: String): Flow<TodoEntity>
+
     @Query("SELECT * FROM todo")
-    fun getTodo(): Flow<TodoEntity>
+    fun getTodos(): Flow<List<TodoEntity>>
 
     @Query("DELETE FROM todo WHERE todoId = :todoId")
     suspend fun deleteTodo(todoId: String): Int
@@ -24,8 +33,41 @@ interface TodoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteEntity): Long
 
+    @Query("UPDATE todo SET deadline = :deadline WHERE todoId = :todoId")
+    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int
+
+    @Query("UPDATE todo SET reminder = :reminder WHERE todoId = :todoId")
+    suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int
+
+    @Query("UPDATE todo SET isComplete = :isComplete, completedOn = :completedOn WHERE todoId = :todoId")
+    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): Int
+
+    @Query("UPDATE todo SET tasks = :tasksAvailability WHERE todoId = :todoId")
+    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): Int
+
+    @Query("UPDATE todo SET notes = :notesAvailability WHERE todoId = :todoId")
+    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
+
+    @Query("UPDATE todo SET attachments = :attachmentsAvailability WHERE todoId = :todoId")
+    suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
+
     @Query("DELETE FROM note WHERE noteId = :noteId")
     suspend fun deleteNote(noteId: String): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTask(task: TaskEntity): Long
+
+    @Query("SELECT COUNT(taskId) FROM task")
+    suspend fun getTaskSize(): Int
+
+    @Query("UPDATE task SET position = :position WHERE taskId = :taskId")
+    suspend fun updateTaskPosition(taskId: String, position: Int): Int
+
+    @Query("UPDATE task SET task = :title WHERE taskId = :taskId")
+    suspend fun updateTaskTitle(taskId: String, title: String): Int
+
+    @Query("UPDATE task SET isComplete = :isComplete WHERE taskId = :taskId")
+    suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
@@ -53,15 +95,15 @@ interface TodoDao {
 
     @Transaction
     @Query("SELECT * FROM todo WHERE todoId = :todoId")
-    fun getTodoAndNoteWithTodoId(todoId: String): Flow<List<TodoAndNoteEntity>>
+    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity>
 
     @Transaction
     @Query("SELECT * FROM todo WHERE todoId = :todoId")
-    fun getTodoWithTasks(todoId: String): Flow<List<TodoWithTasksEntity>>
+    fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity>
 
     @Transaction
     @Query("SELECT * FROM todo WHERE todoId = :todoId")
-    fun getTodoWithAttachments(todoId: String): Flow<List<TodoWithAttachmentsEntity>>
+    fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachmentsEntity>
 
     @Transaction
     @Query("SELECT * FROM todo_category WHERE todoCategoryName = :todoCategoryName")
@@ -70,5 +112,9 @@ interface TodoDao {
     @Transaction
     @Query("SELECT * FROM todo_category")
     fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodosEntity>>
+
+    @Transaction
+    @Query("SELECT * FROM todo WHERE todoId = :todoId")
+    fun getTodoDetails(todoId: String): Flow<TodoDetailsEntity?>
 
 }

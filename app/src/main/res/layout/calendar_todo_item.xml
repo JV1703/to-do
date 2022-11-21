@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    app:cardCornerRadius="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="8dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/reminder_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Wash Dishes" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/reminder_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/title_tv"
+            app:layout_constraintTop_toBottomOf="@+id/title_tv"
+            tools:text="12:00 PM" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/reminder_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_notification"
+            app:layout_constraintBottom_toBottomOf="@id/reminder_tv"
+            app:layout_constraintStart_toEndOf="@id/reminder_tv"
+            app:layout_constraintTop_toTopOf="@id/reminder_tv" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/attachment_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:rotation="45"
+            android:src="@drawable/ic_attachment"
+            app:layout_constraintBottom_toBottomOf="@id/reminder_iv"
+            app:layout_constraintStart_toEndOf="@id/reminder_iv"
+            app:layout_constraintTop_toTopOf="@id/reminder_iv" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/tasks_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:rotation="90"
+            android:src="@drawable/ic_branch"
+            app:layout_constraintBottom_toBottomOf="@id/attachment_iv"
+            app:layout_constraintStart_toEndOf="@id/attachment_iv"
+            app:layout_constraintTop_toTopOf="@id/attachment_iv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

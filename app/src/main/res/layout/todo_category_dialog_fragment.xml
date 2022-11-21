@@ -31,7 +31,6 @@
             android:background="@drawable/bottom_sheet_edit_text_bg"
             android:gravity="start"
             android:hint="Input here."
-            android:inputType="textMultiLine"
             android:maxLength="50"
             android:maxLines="2"
             android:padding="12dp"

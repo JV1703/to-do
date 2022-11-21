@@ -6,14 +6,13 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import com.example.to_dolistclone.R
-import com.example.to_dolistclone.core.utils.ui.pulseAnimation
 import com.example.to_dolistclone.databinding.FragmentHomeBinding
 import com.example.to_dolistclone.feature.BaseFragment
 import com.example.to_dolistclone.feature.calendar.CalendarFragment
 import com.example.to_dolistclone.feature.common.dialog.DialogsManager
+import com.example.to_dolistclone.feature.home.adapter.HomeViewPagerAdapter
 import com.example.to_dolistclone.feature.profile.ui.ProfileFragment
-import com.example.to_dolistclone.feature.tasks.adapter.HomeViewPagerAdapter
-import com.example.to_dolistclone.feature.tasks.ui.TasksFragment
+import com.example.to_dolistclone.feature.todo.ui.TodoFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -54,7 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         )
 
     private fun setupTabLayout() {
-        val fragmentLists = listOf(TasksFragment(), CalendarFragment(), ProfileFragment())
+        val fragmentLists = listOf(TodoFragment(), CalendarFragment(), ProfileFragment())
         binding.viewPager.adapter =
             HomeViewPagerAdapter(fragmentLists, childFragmentManager, viewLifecycleOwner.lifecycle)
         binding.viewPager.isUserInputEnabled = false

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="12dp"
+    tools:context=".feature.detail.ui.note.NoteFragment">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/title_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:hint="Title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/last_update_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        tools:text="Last update time: 2022/11/19 12:25 PM"
+        app:layout_constraintTop_toBottomOf="@id/title_et"
+        app:layout_constraintStart_toStartOf="@id/title_et"
+        app:layout_constraintEnd_toEndOf="@id/title_et"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/body_et"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:backgroundTint="@android:color/transparent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/title_et"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/title_et"
+        app:layout_constraintTop_toBottomOf="@id/last_update_tv"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Body" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

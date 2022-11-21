@@ -7,10 +7,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/insert_task"
+            android:id="@+id/title_tv"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_margin="12dp"
@@ -25,59 +25,137 @@
             android:id="@+id/task_rv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxHeight="150dp"
-            app:layout_constraintEnd_toEndOf="@id/insert_task"
-            app:layout_constraintStart_toStartOf="@id/insert_task"
-            app:layout_constraintTop_toBottomOf="@id/insert_task" />
+            android:fadeScrollbars="true"
+            android:orientation="vertical"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintEnd_toEndOf="@id/title_tv"
+            app:layout_constraintHeight_max="200dp"
+            app:layout_constraintStart_toStartOf="@id/title_tv"
+            app:layout_constraintTop_toBottomOf="@id/title_tv" />
 
-        <TextView
-            android:id="@+id/category"
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            android:id="@+id/nested_scroll_view"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            android:background="@drawable/bottom_sheet_edit_text_bg"
-            android:ellipsize="end"
-            android:maxWidth="100dp"
-            android:padding="8dp"
-            android:singleLine="true"
-            android:text="No Category"
-            android:textAlignment="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/insert_task"
-            app:layout_constraintTop_toBottomOf="@id/task_rv" />
+            app:layout_constraintEnd_toStartOf="@id/insert_todo_btn"
+            app:layout_constraintStart_toStartOf="@id/task_rv"
+            app:layout_constraintTop_toBottomOf="@id/task_rv">
 
-        <ImageView
-            android:id="@+id/calendar"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_calendar"
-            app:layout_constraintBottom_toBottomOf="@id/category"
-            app:layout_constraintStart_toEndOf="@id/category"
-            app:layout_constraintTop_toTopOf="@id/category" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/add_sub_task"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:adjustViewBounds="true"
-            android:rotation="90"
-            android:src="@drawable/ic_branch"
-            app:layout_constraintBottom_toBottomOf="@id/calendar"
-            app:layout_constraintStart_toEndOf="@id/calendar"
-            app:layout_constraintTop_toTopOf="@id/calendar" />
+                <TextView
+                    android:id="@+id/category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:background="@drawable/bottom_sheet_edit_text_bg"
+                    android:ellipsize="end"
+                    android:maxWidth="100dp"
+                    android:padding="8dp"
+                    android:singleLine="true"
+                    android:text="No Category"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="@id/category"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/category"
+                    app:layout_constraintTop_toTopOf="@id/category">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/add_sub_task"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:adjustViewBounds="true"
+                        android:rotation="90"
+                        app:chipBackgroundColor="@android:color/transparent"
+                        app:chipEndPadding="4dp"
+                        app:chipIcon="@drawable/ic_branch"
+                        app:chipStartPadding="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/category"
+                        app:layout_constraintStart_toEndOf="@id/category"
+                        app:layout_constraintTop_toTopOf="@id/category"
+                        app:textEndPadding="0dp"
+                        app:textStartPadding="0dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/deadline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:adjustViewBounds="true"
+                        app:chipBackgroundColor="@android:color/transparent"
+                        app:chipEndPadding="4dp"
+                        app:chipIcon="@drawable/ic_calendar"
+                        app:chipStartPadding="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/add_sub_task"
+                        app:layout_constraintStart_toEndOf="@id/add_sub_task"
+                        app:layout_constraintTop_toTopOf="@id/add_sub_task"
+                        app:textEndPadding="0dp"
+                        app:textStartPadding="0dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/reminder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:adjustViewBounds="true"
+                        app:chipBackgroundColor="@android:color/transparent"
+                        app:chipEndPadding="4dp"
+                        app:chipIcon="@drawable/ic_notification"
+                        app:chipStartPadding="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/deadline"
+                        app:layout_constraintStart_toEndOf="@id/deadline"
+                        app:layout_constraintTop_toTopOf="@id/deadline"
+                        app:textEndPadding="0dp"
+                        app:textStartPadding="0dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/repeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:adjustViewBounds="true"
+                        app:chipBackgroundColor="@android:color/transparent"
+                        app:chipEndPadding="4dp"
+                        app:chipIcon="@drawable/ic_repeat"
+                        app:chipStartPadding="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/reminder"
+                        app:layout_constraintStart_toEndOf="@id/reminder"
+                        app:layout_constraintTop_toTopOf="@id/reminder"
+                        app:textEndPadding="0dp"
+                        app:textStartPadding="0dp" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </HorizontalScrollView>
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/insert_todo_btn"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_send"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/insert_task"
+            app:layout_constraintEnd_toEndOf="@id/title_tv"
             app:layout_constraintTop_toBottomOf="@id/task_rv" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

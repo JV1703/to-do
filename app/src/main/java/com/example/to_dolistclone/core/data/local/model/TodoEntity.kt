@@ -10,14 +10,14 @@ data class TodoEntity(
     val todoId: String,
     val title: String,
     val deadline: Long?,
-    val reminder: Boolean = false,
-    val repeat: String? = null,
-    val isComplete: Boolean = false,
+    val reminder: Long?,
+    val repeat: String?,
+    val isComplete: Boolean,
     val createdOn: Long?,
     val completedOn: Long?,
-    val tasks: Boolean = false,
-    val notes: Boolean = false,
-    val attachments: Boolean = false,
+    val tasks: Boolean,
+    val notes: Boolean,
+    val attachments: Boolean,
     val todoCategoryRefName: String
 )
 

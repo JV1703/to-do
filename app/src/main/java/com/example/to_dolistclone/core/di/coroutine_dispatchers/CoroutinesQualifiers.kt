@@ -1,4 +1,4 @@
-package com.example.core.di
+package com.example.to_dolistclone.core.di.coroutine_dispatchers
 
 import javax.inject.Qualifier
 

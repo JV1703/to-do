@@ -1,64 +1,53 @@
 package com.example.to_dolistclone.feature.common.dialog
 
 import android.animation.ObjectAnimator
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
-import com.example.to_dolistclone.core.utils.ui.makeToast
+import androidx.fragment.app.activityViewModels
 import com.example.to_dolistclone.databinding.TodoCategoryDialogFragmentBinding
-import com.example.to_dolistclone.feature.tasks.viewmodel.TasksViewModel
+import com.example.to_dolistclone.feature.detail.viewmodel.DetailsViewModel
+import com.example.to_dolistclone.feature.todo.TodoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddCategoryDialogFragment : DialogFragment() {
+class AddCategoryDialogFragment(private val saveClickListener: (String) -> Unit) :
+    DialogFragment() {
 
     private var _binding: TodoCategoryDialogFragmentBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: TasksViewModel by viewModels()
+    private val todoViewModel: TodoViewModel by activityViewModels()
+    private val detailsViewModel: DetailsViewModel by activityViewModels()
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.WRAP_CONTENT
-        )
         dialog?.window?.setBackgroundDrawable(null)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = TodoCategoryDialogFragmentBinding.inflate(inflater, container, false)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        _binding = TodoCategoryDialogFragmentBinding.inflate(layoutInflater)
+
         binding.save.setOnClickListener {
-            if (binding.input.text.isNotEmpty()) {
-                viewModel.insertTodoCategory(binding.input.text.toString().trim())
-                viewModel.updateSelectedCategory(binding.input.text.toString().trim())
-                dialog?.dismiss()
-            } else {
-                makeToast("Please provide name for category")
-            }
+            saveClickListener(binding.input.text.toString().trim())
+            dialog?.dismiss()
         }
         binding.input.addTextChangedListener(textWatcher)
-        return binding.root
+
+        return AlertDialog.Builder(requireContext()).setView(binding.root).create()
     }
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
         }
 
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            p0?.let {
-                binding.textCounter.text = "${it.length}/50"
-                if (it.length >= 50) {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            s?.let {
+                binding.textCounter.text = "${it?.length}/50"
+                if (s.length >= 50) {
                     vibrate(binding.textCounter)
                 }
             }

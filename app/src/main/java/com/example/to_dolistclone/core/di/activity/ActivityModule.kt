@@ -3,6 +3,7 @@ package com.example.to_dolistclone.core.di.activity
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import com.example.to_dolistclone.core.common.ReminderNotificationService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,5 +19,9 @@ object ActivityModule {
     @ActivityScoped
     fun provideFragmentManager(@ActivityContext context: Context): FragmentManager =
         (context as AppCompatActivity).supportFragmentManager
+
+    @Provides
+    @ActivityScoped
+    fun provideNotificationManager(@ActivityContext context: Context): ReminderNotificationService = ReminderNotificationService(context)
 
 }

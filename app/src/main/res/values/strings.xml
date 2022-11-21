@@ -8,4 +8,23 @@
 
     <string name="open">drawer open</string>
     <string name="close">drawer close</string>
+    <string name="check_completed_tasks"><u>Check all completed tasks</u></string>
+
+    <string-array name="reminder_array">
+
+        <item>Same with due date</item>
+        <item>5 minutes before</item>
+        <item>10 minutes before</item>
+        <item>15 minutes before</item>
+        <item>30 minutes before</item>
+        <item>1 day before</item>
+
+    </string-array>
+
+    <string-array name="reminder_type_array">
+
+        <item>Notification</item>
+        <item>Alarm</item>
+
+    </string-array>
 </resources>

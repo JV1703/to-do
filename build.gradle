@@ -26,4 +26,6 @@ ext{
     mockk_version = "1.13.2"
     desugar_version = "1.2.2"
     calendar_version = "2.0.0"
+    flexbox_version = "3.0.0"
+    lifecycle_version = "2.5.1"
 }

@@ -1,7 +1,7 @@
 package com.example.to_dolistclone.feature.auth
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.to_dolistclone.R
 
 class AuthActivity : AppCompatActivity() {

@@ -11,5 +11,9 @@ data class Note(
 )
 
 fun Note.toNoteEntity() = NoteEntity(
-    noteId = noteId, title = title, body = body, created_at = created_at, updated_at = updated_at
+    noteId = noteId,
+    title = title,
+    body = body,
+    created_at = created_at,
+    updated_at = updated_at
 )

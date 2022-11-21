@@ -1,14 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feature.detail.ui.DetailsFragment">
+    tools:context=".feature.detail.ui.details.DetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Details Fragment" />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/created_on_tv"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/category_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/category_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="No Category" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/category_container"
+                app:layout_constraintTop_toBottomOf="@id/category_container" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/title_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                app:layout_constraintBottom_toBottomOf="@id/checkbox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/checkbox"
+                app:layout_constraintTop_toTopOf="@id/checkbox"
+                tools:text="Banana" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/task_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/title_tv" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/task_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@android:color/transparent"
+                android:drawableStart="@drawable/ic_add"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:hint="Add Task"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:lines="1"
+                android:singleLine="true"
+                app:layout_constraintTop_toBottomOf="@id/task_rv" />
+
+            <View
+                android:id="@+id/separator1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/task_et"
+                app:layout_constraintTop_toBottomOf="@id/task_et" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/due_date_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:text="Due Date"
+                app:layout_constraintEnd_toEndOf="@id/separator1"
+                app:layout_constraintStart_toStartOf="@id/separator1"
+                app:layout_constraintTop_toBottomOf="@id/separator1" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/due_date_tv_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_close_delete"
+                app:layout_constraintBottom_toBottomOf="@id/due_date_tv"
+                app:layout_constraintEnd_toEndOf="@id/due_date_tv"
+                app:layout_constraintTop_toTopOf="@id/due_date_tv" />
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/due_date_tv"
+                app:layout_constraintStart_toStartOf="@id/due_date_tv"
+                app:layout_constraintTop_toBottomOf="@id/due_date_tv" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/reminder_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_clock_filled"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:text="Reminder"
+                app:layout_constraintEnd_toEndOf="@id/separator2"
+                app:layout_constraintStart_toStartOf="@id/separator2"
+                app:layout_constraintTop_toBottomOf="@id/separator2" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/reminder_tv_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_close_delete"
+                app:layout_constraintBottom_toBottomOf="@id/reminder_tv"
+                app:layout_constraintEnd_toEndOf="@id/reminder_tv"
+                app:layout_constraintTop_toTopOf="@id/reminder_tv" />
+
+            <View
+                android:id="@+id/separator3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/reminder_tv"
+                app:layout_constraintStart_toStartOf="@id/reminder_tv"
+                app:layout_constraintTop_toBottomOf="@id/reminder_tv" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/repeat_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_repeat"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:text="Repeat"
+                app:layout_constraintEnd_toEndOf="@id/separator3"
+                app:layout_constraintStart_toStartOf="@id/separator3"
+                app:layout_constraintTop_toBottomOf="@id/separator3" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/repeat_tv_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_close_delete"
+                app:layout_constraintBottom_toBottomOf="@id/repeat_tv"
+                app:layout_constraintEnd_toEndOf="@id/repeat_tv"
+                app:layout_constraintTop_toTopOf="@id/repeat_tv" />
+
+            <View
+                android:id="@+id/separator4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/repeat_tv"
+                app:layout_constraintStart_toStartOf="@id/repeat_tv"
+                app:layout_constraintTop_toBottomOf="@id/repeat_tv" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/notes_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_notes"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:text="Notes"
+                app:layout_constraintEnd_toEndOf="@id/separator4"
+                app:layout_constraintStart_toStartOf="@id/separator4"
+                app:layout_constraintTop_toBottomOf="@id/separator4" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/notes_tv_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_close_delete"
+                app:layout_constraintBottom_toBottomOf="@id/notes_tv"
+                app:layout_constraintEnd_toEndOf="@id/notes_tv"
+                app:layout_constraintTop_toTopOf="@id/notes_tv" />
+
+            <View
+                android:id="@+id/separator5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="@id/notes_tv"
+                app:layout_constraintStart_toStartOf="@id/notes_tv"
+                app:layout_constraintTop_toBottomOf="@id/notes_tv" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/attachment_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_attachment"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="12dp"
+                android:text="Attachment"
+                app:layout_constraintEnd_toEndOf="@id/separator5"
+                app:layout_constraintStart_toStartOf="@id/separator5"
+                app:layout_constraintTop_toBottomOf="@id/separator5" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/attachment_tv_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:src="@drawable/ic_close_delete"
+                app:layout_constraintBottom_toBottomOf="@id/attachment_tv"
+                app:layout_constraintEnd_toEndOf="@id/attachment_tv"
+                app:layout_constraintTop_toTopOf="@id/attachment_tv" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:id="@+id/separator7"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/created_on_tv"
+        />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/created_on_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/delete_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_delete_trash"
+        app:layout_constraintBottom_toBottomOf="@id/created_on_tv"
+        app:layout_constraintEnd_toEndOf="@id/created_on_tv"
+        app:layout_constraintTop_toTopOf="@id/created_on_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
