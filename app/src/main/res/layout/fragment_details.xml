@@ -257,16 +257,15 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black"
-        app:layout_constraintBottom_toTopOf="@id/created_on_tv"
-        />
+        app:layout_constraintBottom_toTopOf="@id/created_on_tv" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/created_on_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="8dp"
-        android:layout_marginBottom="6dp"
         android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="6dp"
+        android:paddingVertical="8dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView

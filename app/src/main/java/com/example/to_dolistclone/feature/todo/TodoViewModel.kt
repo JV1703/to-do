@@ -2,13 +2,14 @@ package com.example.to_dolistclone.feature.todo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.domain.model.Todo
 import com.example.to_dolistclone.core.domain.model.TodoCategory
 import com.example.to_dolistclone.feature.detail.domain.abstraction.TaskUseCase
 import com.example.to_dolistclone.feature.detail.domain.abstraction.TodoCategoryUseCase
 import com.example.to_dolistclone.feature.home.adapter.TaskProxy
 import com.example.to_dolistclone.feature.home.adapter.toTask
-import com.example.to_dolistclone.feature.todo.domain.implementation.TodoUseCaseImpl
+import com.example.to_dolistclone.feature.todo.domain.abstraction.TodoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -34,13 +35,14 @@ data class TodoFragmentUiState(
 class TodoViewModel @Inject constructor(
     private val todoCategoryUseCase: TodoCategoryUseCase,
     private val taskUseCase: TaskUseCase,
-    private val taskTodoUseCase: TodoUseCaseImpl
+    private val todoUseCase: TodoUseCase,
+    private val dateUtil: DateUtil
 ) : ViewModel() {
 
     private val selectedCategory = MutableStateFlow<String?>(null)
 
-    private val todos = taskTodoUseCase.getMappedTodos()
-    private val showStatus = taskTodoUseCase.getShowStatus()
+    private val todos = todoUseCase.getMappedTodos()
+    private val showStatus = todoUseCase.getShowStatus()
 
 
     private val todoCategories = todoCategoryUseCase.getTodoCategories().map { todoCategories ->
@@ -77,7 +79,7 @@ class TodoViewModel @Inject constructor(
     fun insertTodo(tasksProxy: List<TaskProxy>, todo: Todo) {
         if (todo.title.isNotEmpty()) {
             viewModelScope.launch {
-                taskTodoUseCase.insertTodo(todo)
+                todoUseCase.insertTodo(todo)
                 insertTasks(tasksProxy = tasksProxy, todoRefId = todo.todoId)
             }
         }
@@ -85,7 +87,18 @@ class TodoViewModel @Inject constructor(
 
     fun insertTodo(todo: Todo) {
         viewModelScope.launch {
-            taskTodoUseCase.insertTodo(todo)
+            todoUseCase.insertTodo(todo)
+        }
+    }
+
+    fun updateTodoCompletion(todoId: String, isComplete: Boolean) {
+        viewModelScope.launch {
+            val currentDateTimeLong = dateUtil.getCurrentDateTimeLong()
+            todoUseCase.updateTodoCompletion(
+                todoId,
+                isComplete = isComplete,
+                completedOn = if (isComplete) currentDateTimeLong else null
+            )
         }
     }
 
@@ -109,25 +122,25 @@ class TodoViewModel @Inject constructor(
 
     fun saveShowPrevious(isShow: Boolean) {
         viewModelScope.launch {
-            taskTodoUseCase.saveShowPrevious(isShow)
+            todoUseCase.saveShowPrevious(isShow)
         }
     }
 
     fun saveShowToday(isShow: Boolean) {
         viewModelScope.launch {
-            taskTodoUseCase.saveShowToday(isShow)
+            todoUseCase.saveShowToday(isShow)
         }
     }
 
     fun saveShowFuture(isShow: Boolean) {
         viewModelScope.launch {
-            taskTodoUseCase.saveShowFuture(isShow)
+            todoUseCase.saveShowFuture(isShow)
         }
     }
 
     fun saveShowCompletedToday(isShow: Boolean) {
         viewModelScope.launch {
-            taskTodoUseCase.saveShowCompletedToday(isShow)
+            todoUseCase.saveShowCompletedToday(isShow)
         }
     }
 
@@ -155,6 +168,7 @@ class TodoViewModel @Inject constructor(
         tasks = tasks,
         notes = notes,
         attachments = attachments,
+        alarmRef = Random().nextInt(),
         todoCategoryRefName = todoCategoryRefName
     )
 

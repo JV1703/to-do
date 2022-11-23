@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTodo(todo: TodoEntity): Long
 
     @Query("UPDATE todo SET title = :title WHERE todoId = :todoId")
@@ -30,7 +30,7 @@ interface TodoDao {
     @Query("DELETE FROM todo WHERE todoId = :todoId")
     suspend fun deleteTodo(todoId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNote(note: NoteEntity): Long
 
     @Query("UPDATE todo SET deadline = :deadline WHERE todoId = :todoId")
@@ -54,7 +54,7 @@ interface TodoDao {
     @Query("DELETE FROM note WHERE noteId = :noteId")
     suspend fun deleteNote(noteId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTask(task: TaskEntity): Long
 
     @Query("SELECT COUNT(taskId) FROM task")
@@ -69,22 +69,22 @@ interface TodoDao {
     @Query("UPDATE task SET isComplete = :isComplete WHERE taskId = :taskId")
     suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
 
     @Query("DELETE FROM task WHERE  taskId= :taskId")
     suspend fun deleteTask(taskId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAttachment(attachment: AttachmentEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray
 
     @Query("DELETE FROM attachment WHERE  attachmentId= :attachmentId")
     suspend fun deleteAttachment(attachmentId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long
 
     @Query("SELECT * FROM todo_category")

@@ -1,67 +1,113 @@
 package com.example.to_dolistclone.core.common
 
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.widget.Toast
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.feature.detail.ui.DetailsActivity
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ActivityContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
 const val NOTIFICATION_TITLE = "notification title"
 const val NOTIFICATION_BODY = "notification body"
 const val TODO_ID = "todoId"
+const val ALARM_REF = "alarm ref"
+const val ACTION_COMPLETE_TASK = "complete task"
 
-class AlarmReceiver(private val notification: ReminderNotificationService/*, private val todoRepository: TodoRepository*/) : BroadcastReceiver() {
+@AndroidEntryPoint
+class AlarmReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var todoRepository: TodoRepository
+
+    @Inject
+    lateinit var dateUtil: DateUtil
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        val todoId = intent.getStringExtra(TODO_ID)
-        if(!todoId.isNullOrEmpty()){
-            Toast.makeText(context, todoId, Toast.LENGTH_SHORT).show()
-        }
+        val notification = ReminderNotificationService(context)
 
-        val service = ReminderNotificationService(context)
-        service.showNotification(
-            intent.getStringExtra(NOTIFICATION_TITLE) ?: "",
-            intent.getStringExtra(NOTIFICATION_BODY) ?: "",
-            intent.getStringExtra(TODO_ID) ?: ""
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+        val todoId = intent.getStringExtra(TODO_ID) ?: ""
+        val notificationId = intent.getIntExtra(ALARM_REF, -1)
+        val body = intent.getStringExtra(NOTIFICATION_TITLE) ?: ""
+        val currentTime = dateUtil.getCurrentDateTimeLong()
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notification.showNotification(
+            todoId = todoId, notificationId = notificationId, body = body
         )
+
+        if (intent.getStringExtra(ACTION_COMPLETE_TASK) == "complete task") {
+            Log.i("AlarmReceiver", "action triggered")
+            scope.launch {
+                try {
+                    val todo = todoRepository.getTodo(todoId).first()
+                    if (!todo.isComplete) {
+                        todoRepository.updateTodoCompletion(
+                            todoId, true, currentTime
+                        )
+                    }
+                } catch (e: Exception) {
+                    Log.e("AlarmReceiver", "onReceive - errorMsg: ${e.message}")
+                } finally {
+                    notificationManager.cancel(notificationId)
+                    scope.cancel()
+                }
+            }.invokeOnCompletion {
+                Log.i("AlarmReceiver", "update todoCompletion job is completed, $it")
+            }
+        }
     }
 
 }
 
 const val REMINDER_CHANNEL_ID = "todo_alarm"
-const val notificationId = 1
 
-class ReminderNotificationService(private val context: Context) {
+class ReminderNotificationService(@ActivityContext private val context: Context) {
 
-    fun showNotification(title: String, body: String, todoId: String) {
+    fun showNotification(todoId: String, notificationId: Int, body: String) {
 
         val flags =
             PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
 
-//        val receiverIntent = Intent(context, AlarmReceiver::class.java).apply {
-//            putExtra(TODO_ID, todoId)
-//        }
-//        val receiverPendingIntent = PendingIntent.getBroadcast(context, 0, receiverIntent, flags)
-
-        val intent = Intent(context, DetailsActivity::class.java)
-        val pendingIntentWithBackStack = TaskStackBuilder.create(context).run {
-            addNextIntentWithParentStack(intent)
-            getPendingIntent(0, flags)
+        val detailsActivityIntent = Intent(context, DetailsActivity::class.java).apply {
+            putExtra(TODO_ID, todoId)
         }
+
+        val detailsActivityPendingIntentWithBackStack = TaskStackBuilder.create(context).run {
+            addNextIntentWithParentStack(detailsActivityIntent)
+            getPendingIntent(notificationId, flags)
+        }
+
+        val completeTodoIntent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra(TODO_ID, todoId)
+            putExtra(ACTION_COMPLETE_TASK, "complete task")
+            putExtra(ALARM_REF, notificationId)
+        }
+
+        val completeTodoPendingIntent = PendingIntent.getBroadcast(
+            context, 1, completeTodoIntent, flags
+        )
         val builder = NotificationCompat.Builder(context, REMINDER_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification).setContentTitle(title).setContentText(body)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntentWithBackStack).setAutoCancel(true)
+            .setSmallIcon(R.drawable.ic_notification).setContentTitle("ToDo App")
+            .setContentText(body).setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(detailsActivityPendingIntentWithBackStack).setAutoCancel(true)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .addAction(0, "Completed", completeTodoPendingIntent)
 
         val notificationManagerCompat = NotificationManagerCompat.from(context)
         notificationManagerCompat.notify(notificationId, builder.build())

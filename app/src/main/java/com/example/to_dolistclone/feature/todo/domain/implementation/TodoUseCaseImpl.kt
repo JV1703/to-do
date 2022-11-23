@@ -19,6 +19,10 @@ class TodoUseCaseImpl @Inject constructor(
 
     override suspend fun insertTodo(todo: Todo): Long = todoRepository.insertTodo(todo)
 
+    override suspend fun updateTodoCompletion(
+        todoId: String, isComplete: Boolean, completedOn: Long?
+    ): Int = todoRepository.updateTodoCompletion(todoId, isComplete, completedOn)
+
     private val currentDate =
         dateUtil.getZonedDateTime(dateTime = LocalDateTime.now()).toLocalDate()
     private val todoTimeCategory = listOf("previous", "today", "future", "completedToday")

@@ -8,6 +8,10 @@ interface TodoUseCase {
 
     suspend fun insertTodo(todo: Todo): Long
 
+    suspend fun updateTodoCompletion(
+        todoId: String, isComplete: Boolean, completedOn: Long?
+    ): Int
+
     fun getTodos(): Flow<List<Todo>>
 
     fun getMappedTodos(): Flow<Map<String, List<Todo>>>

@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -44,6 +45,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     @Inject
     lateinit var categoryPopupMenu: CategoryPopupMenu
 
+    @Inject
+    lateinit var notification: ReminderNotificationService
 
 
     private val viewModel: DetailsViewModel by activityViewModels()
@@ -89,11 +92,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             viewModel.updateDeadline(null)
         }
 
-        onClearText(binding.reminderTvClear, binding.reminderTv, "Reminder") {
-            viewModel.updateReminder(null)
-            cancelAlarm()
-        }
-
         binding.notesTv.setOnClickListener {
             val action = DetailsFragmentDirections.actionDetailsFragmentToNoteFragment()
             findNavController().navigate(action)
@@ -128,10 +126,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             binding.attachmentTvClear.isGone = uiState.todoDetails?.attachments.isNullOrEmpty()
             Log.i("attachment", "${uiState.todoDetails?.attachments == null} ")
 
-            uiState.todoDetails?.todo?.isComplete?.let {
-                binding.checkbox.isChecked = it
-            }
-
             uiState.todoDetails?.todo?.deadline?.let { deadline ->
                 binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(deadline))
             }
@@ -153,15 +147,26 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             }
 
             uiState.todoDetails?.todo?.createdOn?.let {
-                binding.createdOnTv.text = "Created on ${getDateString(dateUtil.toLocalDateTime(it))}"
+                binding.createdOnTv.text =
+                    "Created on ${getDateString(dateUtil.toLocalDateTime(it))}"
             }
 
-            binding.reminderTv.setOnClickListener {
-                dialogsManager.createReminderDateTimePickerDialog { reminder ->
-                    binding.reminderTv.text = generateReminderString(dateUtil.toLong(reminder))
-                    viewModel.updateReminder(dateUtil.toLong(reminder))
-//                    setAlarm(dateUtil.toLong(reminder))
-                    binding.dueDateTvClear.isGone = false
+            uiState.todoDetails?.todo?.let { todo ->
+
+                binding.checkbox.isChecked = todo.isComplete
+
+                binding.reminderTv.setOnClickListener {
+                    dialogsManager.createReminderDateTimePickerDialog { reminder ->
+                        binding.reminderTv.text = generateReminderString(dateUtil.toLong(reminder))
+                        viewModel.updateReminder(dateUtil.toLong(reminder))
+                        setAlarm(todo.alarmRef, dateUtil.toLong(reminder), todo.title)
+                        binding.dueDateTvClear.isGone = false
+                    }
+                }
+
+                onClearText(binding.reminderTvClear, binding.reminderTv, "Reminder") {
+                    viewModel.updateReminder(null)
+                    cancelAlarm(todo.alarmRef)
                 }
             }
 
@@ -296,7 +301,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     }
 
     override fun updateTaskTitle(taskId: String?, title: String) {
-        Log.i("taskId", "$taskId")
         viewModel.updateTaskTitle(taskId!!, title)
     }
 
@@ -321,19 +325,30 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         }
     }
 
-    private fun setAlarm(reminderAt: Long, title: String, body: String){
+    private fun setAlarm(alarmRef: Int, reminderAt: Long, title: String) {
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+        val noCreateFlag = PendingIntent.FLAG_NO_CREATE or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
         alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra(TODO_ID, todoId)
+        intent.putExtra(ALARM_REF, alarmRef)
         intent.putExtra(NOTIFICATION_TITLE, title)
-        intent.putExtra(NOTIFICATION_BODY, body)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), alarmRef, intent, flags)
         alarmManager.set(AlarmManager.RTC, reminderAt, pendingIntent)
+
+        val testAlarm = (PendingIntent.getBroadcast(requireContext(), alarmRef, Intent(requireContext(), AlarmReceiver::class.java), noCreateFlag) != null)
+        if(testAlarm){
+            Log.i("alarmManager","alarm already exist")
+        }else{
+            Log.i("alarmManager","new alarm")
+        }
     }
 
-    private fun cancelAlarm(){
+    private fun cancelAlarm(alarmRef: Int) {
+        val flags =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), alarmRef, intent, flags)
         alarmManager.cancel(pendingIntent)
     }
 

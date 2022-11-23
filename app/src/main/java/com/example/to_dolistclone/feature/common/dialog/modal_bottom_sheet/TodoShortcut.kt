@@ -196,8 +196,7 @@ class TodoShortcut(date: LocalDate?/*, private val todoShortcutListener: TodoSho
                 tasks = !isTaskEmpty,
                 notes = false,
                 attachments = false,
-                todoCategoryRefName = binding.category.text.toString()
-            )
+                todoCategoryRefName = binding.category.text.toString())
 
             viewModel.insertTodo(tasksProxy, todo)
             dismiss()

@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.common.DateUtil
+import com.example.to_dolistclone.core.common.TODO_ID
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.databinding.FragmentTodoBinding
 import com.example.to_dolistclone.feature.BaseFragment
@@ -122,22 +123,22 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
 
     private fun setupAdapter() {
         previousAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.insertTodo(it)
+            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
         }, onClickNavigation = {
             navigateToDetailsActivity(it.todoId)
         })
         todayAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.insertTodo(it)
+            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
         }, onClickNavigation = {
             navigateToDetailsActivity(it.todoId)
         })
         futureAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.insertTodo(it)
+            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
         }, onClickNavigation = {
             navigateToDetailsActivity(it.todoId)
         })
         completedToday = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.insertTodo(it)
+            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
         }, onClickNavigation = {
             navigateToDetailsActivity(it.todoId)
         })
@@ -149,7 +150,7 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
 
     private fun navigateToDetailsActivity(todoId: String) {
         val intent = Intent(requireContext(), DetailsActivity::class.java)
-        intent.putExtra("todoId", todoId)
+        intent.putExtra(TODO_ID, todoId)
         startActivity(intent)
     }
 

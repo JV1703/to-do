@@ -9,11 +9,11 @@ class DateUtil {
     val zoneId: ZoneId = ZoneId.systemDefault()
 
     fun toLong(localDateTime: LocalDateTime): Long {
-        return localDateTime.atZone(zoneId).toEpochSecond()
+        return localDateTime.atZone(zoneId).toInstant().toEpochMilli()
     }
 
     fun toLong(localDate: LocalDate): Long {
-        return localDate.atStartOfDay().atZone(zoneId).toEpochSecond()
+        return localDate.atStartOfDay().atZone(zoneId).toInstant().toEpochMilli()
     }
 
     fun toLocalDate(date: Date): LocalDate {
@@ -25,7 +25,7 @@ class DateUtil {
     }
 
     fun toLocalDate(date: Long): LocalDate {
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(date), zoneId).toLocalDate()
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(date), zoneId).toLocalDate()
     }
 
     fun toLocalTime(date: Date): LocalTime {
@@ -37,7 +37,7 @@ class DateUtil {
     }
 
     fun toLocalTime(long: Long): LocalTime {
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(long), zoneId).toLocalTime()
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(long), zoneId).toLocalTime()
     }
 
     fun toLocalDateTime(date: LocalDate, time: LocalTime): LocalDateTime {
@@ -45,7 +45,7 @@ class DateUtil {
     }
 
     fun toLocalDateTime(long: Long): LocalDateTime {
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(long), zoneId)
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(long), zoneId)
     }
 
     fun toLocalDateTime(localDate: LocalDate): LocalDateTime{
@@ -77,7 +77,7 @@ class DateUtil {
     }
 
     fun getCurrentDateTimeLong(): Long {
-        return LocalDateTime.now().atZone(zoneId).toEpochSecond()
+        return LocalDateTime.now().atZone(zoneId).toInstant().toEpochMilli()
     }
 
     fun getZonedDateTime(dateTime: LocalDateTime, timeZoneId: ZoneId = zoneId): ZonedDateTime {

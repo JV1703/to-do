@@ -4,6 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.to_dolistclone.core.domain.model.Todo
 
+const val MAX_INT = 2147483647
+
 @Entity(tableName = "todo")
 data class TodoEntity(
     @PrimaryKey(autoGenerate = false)
@@ -18,6 +20,7 @@ data class TodoEntity(
     val tasks: Boolean,
     val notes: Boolean,
     val attachments: Boolean,
+    val alarmRef: Int,
     val todoCategoryRefName: String
 )
 
@@ -33,5 +36,6 @@ fun TodoEntity.toTodo() = Todo(
     tasks,
     notes,
     attachments,
+    alarmRef = alarmRef,
     todoCategoryRefName
 )
