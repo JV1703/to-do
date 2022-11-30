@@ -48,7 +48,7 @@ class DateUtil {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(long), zoneId)
     }
 
-    fun toLocalDateTime(localDate: LocalDate): LocalDateTime{
+    fun toLocalDateTime(localDate: LocalDate): LocalDateTime {
         return localDate.atStartOfDay()
     }
 
@@ -73,7 +73,7 @@ class DateUtil {
     }
 
     fun getCurrentDateTime(): LocalDateTime {
-        return LocalDateTime.now().atZone(zoneId).toLocalDateTime()
+        return LocalDateTime.now(zoneId)
     }
 
     fun getCurrentDateTimeLong(): Long {
@@ -85,7 +85,17 @@ class DateUtil {
     }
 
     fun getCurrentDate(): LocalDate {
-        return LocalDate.now()
+        return LocalDate.now(zoneId)
     }
+
+    fun generateDaysInWeek() = listOf(
+        DayOfWeek.MONDAY,
+        DayOfWeek.TUESDAY,
+        DayOfWeek.WEDNESDAY,
+        DayOfWeek.THURSDAY,
+        DayOfWeek.FRIDAY,
+        DayOfWeek.SATURDAY,
+        DayOfWeek.SUNDAY
+    )
 
 }

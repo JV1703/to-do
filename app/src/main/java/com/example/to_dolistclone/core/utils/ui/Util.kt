@@ -6,6 +6,8 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.net.Uri
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,6 +24,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.*
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -65,26 +68,6 @@ fun <T> Fragment.collectLifecycleFlow(flow: Flow<T>, collect: suspend (T) -> Uni
             flow.collect(collect)
         }
     }
-}
-
-fun ImageView.pulseAnimation(
-    scaleX: Float = 1.5F,
-    ScaleY: Float = 1.5F,
-    alpha: Float = 0F,
-    duration: Long = 1000,
-    repeatCount: Int = ObjectAnimator.INFINITE,
-    repeatMode: Int = ObjectAnimator.RESTART
-) {
-    val pulse = ObjectAnimator.ofPropertyValuesHolder(
-        this,
-        PropertyValuesHolder.ofFloat("scaleX", scaleX),
-        PropertyValuesHolder.ofFloat("scaleY", ScaleY),
-        PropertyValuesHolder.ofFloat("alpha", alpha)
-    )
-    pulse.duration = duration
-    pulse.repeatCount = repeatCount
-    pulse.repeatMode = repeatMode
-    pulse.start()
 }
 
 fun Chip.transformIntoDatePicker(
@@ -224,7 +207,7 @@ fun TextView.transformIntoTimePicker(
 
     val myCalendar = Calendar.getInstance()
     val timePickerOnDataSetListener =
-        TimePickerDialog.OnTimeSetListener { timePicker, hourOfDay, minute ->
+        TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             myCalendar.set(Calendar.MINUTE, minute)
             val date = myCalendar.time
@@ -260,7 +243,7 @@ fun TextView.transformIntoTimePicker(
 //}
 
 fun AppCompatEditText.onKeyboardEnter(clearText: Boolean, callback: (String) -> Unit) {
-    this.setOnEditorActionListener { textView, actionId, keyEvent ->
+    this.setOnEditorActionListener { textView, actionId, _ ->
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             if ((textView as AppCompatEditText).text.toString().trim().isNotEmpty()) {
                 callback(textView.text.toString().trim())
@@ -273,5 +256,4 @@ fun AppCompatEditText.onKeyboardEnter(clearText: Boolean, callback: (String) -> 
             true
         } else false
     }
-
 }

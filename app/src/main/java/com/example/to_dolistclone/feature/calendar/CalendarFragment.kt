@@ -173,7 +173,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
                 scrollToNextMonth()
                 selectDate(date.date)
             }
-            DayPosition.MonthDate -> {
+            else -> {
                 selectDate(date.date)
             }
         }

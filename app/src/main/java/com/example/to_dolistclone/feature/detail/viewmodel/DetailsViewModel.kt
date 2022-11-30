@@ -4,11 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.to_dolistclone.core.common.DateUtil
+import com.example.to_dolistclone.core.common.FileManager
 import com.example.to_dolistclone.core.domain.model.*
-import com.example.to_dolistclone.feature.detail.domain.abstraction.DetailTodoUseCase
-import com.example.to_dolistclone.feature.detail.domain.abstraction.NoteUseCase
-import com.example.to_dolistclone.feature.detail.domain.abstraction.TaskUseCase
-import com.example.to_dolistclone.feature.detail.domain.abstraction.TodoCategoryUseCase
+import com.example.to_dolistclone.feature.detail.domain.abstraction.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -29,7 +27,9 @@ class DetailsViewModel @Inject constructor(
     private val todoCategoryUseCase: TodoCategoryUseCase,
     private val taskUseCase: TaskUseCase,
     private val noteUseCase: NoteUseCase,
-    private val dateUtil: DateUtil
+    private val attachmentUseCase: AttachmentUseCase,
+    private val dateUtil: DateUtil,
+    private val fileManager: FileManager
 ) : ViewModel() {
 
     private val _todoId = MutableStateFlow("")
@@ -139,7 +139,7 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun deleteTodo(){
+    fun deleteTodo() {
         viewModelScope.launch {
             detailTodoUseCase.deleteTodo(todoId.value)
         }
@@ -163,9 +163,9 @@ class DetailsViewModel @Inject constructor(
             updated_at = currentDateTimeLong,
         )
     }
-    
-    fun deleteNote(){
-        viewModelScope.launch { 
+
+    fun deleteNote() {
+        viewModelScope.launch {
             noteUseCase.deleteNote(todoId.value)
         }
     }
@@ -187,7 +187,7 @@ class DetailsViewModel @Inject constructor(
         viewModelScope.launch {
             detailTodoUseCase.updateTodoTasksAvailability(todoId.value, tasksAvailability)
         }
-        Log.i("testing","triggered")
+        Log.i("testing", "triggered")
     }
 
     fun updateTodoNotesAvailability(
@@ -204,6 +204,37 @@ class DetailsViewModel @Inject constructor(
         viewModelScope.launch {
             detailTodoUseCase.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
         }
+    }
+
+    fun createAttachment(
+        fileName: String, filePath: String, type: String, size: Long, todoRefId: String
+    ): Attachment {
+        return Attachment(
+            attachmentId = UUID.randomUUID().toString(),
+            name = fileName,
+            uri = filePath,
+            type = type,
+            size = size,
+            todoRefId = todoRefId
+        )
+    }
+
+    fun insertAttachment(attachment: Attachment) {
+        viewModelScope.launch {
+            attachmentUseCase.insertAttachment(attachment)
+        }
+    }
+
+    fun deleteAttachment(attachment: Attachment){
+        viewModelScope.launch {
+            attachmentUseCase.deleteAttachment(attachmentId = attachment.attachmentId)
+            deleteFileFromInternalStorage(attachment.uri)
+        }
+    }
+
+    private suspend fun deleteFileFromInternalStorage(filePath: String){
+        val test = fileManager.deleteFileFromInternalStorage(filePath)
+        Log.i("deleteFile", "$test")
     }
 
 }

@@ -27,6 +27,9 @@ interface TodoDao {
     @Query("SELECT * FROM todo")
     fun getTodos(): Flow<List<TodoEntity>>
 
+    @Query("SELECT * FROM TODO WHERE completedOn BETWEEN :from AND :to ORDER BY completedOn ASC")
+    fun getTodos(from: Long, to: Long): Flow<List<TodoEntity>>
+
     @Query("DELETE FROM todo WHERE todoId = :todoId")
     suspend fun deleteTodo(todoId: String): Int
 

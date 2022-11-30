@@ -51,6 +51,8 @@ interface LocalDataSource {
 
     fun getTodos(): Flow<List<TodoEntity>>
 
+    fun getTodos(from: Long, to: Long): Flow<List<TodoEntity>>
+
     suspend fun deleteTodo(todoId: String): Int
 
     suspend fun insertNote(note: NoteEntity): Long

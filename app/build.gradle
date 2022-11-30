@@ -119,4 +119,10 @@ dependencies {
 
     // animated checkbox
     implementation 'com.github.animsh:AnimatedCheckBox:1.0.0'
+
+    // MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Coil
+    implementation("io.coil-kt:coil:2.2.2")
 }

@@ -7,6 +7,8 @@ import com.example.to_dolistclone.feature.detail.domain.abstraction.*
 import com.example.to_dolistclone.feature.detail.domain.implementation.*
 import com.example.to_dolistclone.feature.home.domain.abstraction.HomeTodoCategoryUseCase
 import com.example.to_dolistclone.feature.home.domain.implementation.HomeTodoCategoryUseCaseImpl
+import com.example.to_dolistclone.feature.profile.domain.abstraction.ProfileTodoUseCase
+import com.example.to_dolistclone.feature.profile.domain.implementation.ProfileTodoUseCaseImpl
 import com.example.to_dolistclone.feature.todo.domain.abstraction.TodoUseCase
 import com.example.to_dolistclone.feature.todo.domain.implementation.TodoUseCaseImpl
 import dagger.Module
@@ -54,4 +56,7 @@ object UseCaseModule {
     fun provideHomeTodoCategoryUseCase(todoRepository: TodoRepository): HomeTodoCategoryUseCase =
         HomeTodoCategoryUseCaseImpl(todoRepository)
 
+    @Provides
+    @ViewModelScoped
+    fun provideProfileTodoUseCase(todoRepository: TodoRepository, dateUtil: DateUtil): ProfileTodoUseCase = ProfileTodoUseCaseImpl(todoRepository, dateUtil)
 }

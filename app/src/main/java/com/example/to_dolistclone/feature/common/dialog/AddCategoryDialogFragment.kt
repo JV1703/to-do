@@ -8,10 +8,7 @@ import android.text.TextWatcher
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import com.example.to_dolistclone.databinding.TodoCategoryDialogFragmentBinding
-import com.example.to_dolistclone.feature.detail.viewmodel.DetailsViewModel
-import com.example.to_dolistclone.feature.todo.TodoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,8 +17,6 @@ class AddCategoryDialogFragment(private val saveClickListener: (String) -> Unit)
 
     private var _binding: TodoCategoryDialogFragmentBinding? = null
     private val binding get() = _binding!!
-    private val todoViewModel: TodoViewModel by activityViewModels()
-    private val detailsViewModel: DetailsViewModel by activityViewModels()
 
     override fun onStart() {
         super.onStart()

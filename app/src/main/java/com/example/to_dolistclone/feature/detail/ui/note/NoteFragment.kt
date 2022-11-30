@@ -45,14 +45,14 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>(FragmentNoteBinding::infl
             }
 
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-                val note = viewModel.createNote(
+                val newNote = viewModel.createNote(
                     title = binding.titleEt.text.toString().trim(),
                     body = binding.bodyEt.text.toString().trim(),
                     createdAt = note?.created_at
                 )
 
                 if (binding.titleEt.text?.isNotEmpty() == true || binding.bodyEt.text?.isNotEmpty() == true) {
-                    viewModel.insertNote(note)
+                    viewModel.insertNote(newNote)
                 }else{
                     viewModel.deleteNote()
                 }

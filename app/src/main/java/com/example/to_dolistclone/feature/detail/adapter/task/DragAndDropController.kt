@@ -1,4 +1,4 @@
-package com.example.to_dolistclone.feature.detail.adapter
+package com.example.to_dolistclone.feature.detail.adapter.task
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

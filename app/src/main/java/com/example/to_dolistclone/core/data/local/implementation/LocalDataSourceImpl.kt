@@ -152,9 +152,10 @@ class LocalDataSourceImpl @Inject constructor(
     override fun getTodo(todoId: String): Flow<TodoEntity> =
         todoDao.getTodo(todoId).flowOn(dispatcherIO)
 
-    override fun getTodos(): Flow<List<TodoEntity>> {
-        return todoDao.getTodos().flowOn(dispatcherIO)
-    }
+    override fun getTodos(): Flow<List<TodoEntity>> = todoDao.getTodos().flowOn(dispatcherIO)
+
+    override fun getTodos(from: Long, to: Long): Flow<List<TodoEntity>> =
+        todoDao.getTodos(from, to).flowOn(dispatcherIO)
 
     override fun getTodoDetails(todoId: String): Flow<TodoDetailsEntity?> {
         return todoDao.getTodoDetails(todoId).flowOn(dispatcherIO)

@@ -43,7 +43,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val todoId = intent.getStringExtra(TODO_ID) ?: ""
         val notificationId = intent.getIntExtra(ALARM_REF, -1)
         val body = intent.getStringExtra(NOTIFICATION_TITLE) ?: ""
-        val currentTime = dateUtil.getCurrentDateTimeLong()
+
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -57,6 +57,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 try {
                     val todo = todoRepository.getTodo(todoId).first()
                     if (!todo.isComplete) {
+                        val currentTime = dateUtil.getCurrentDateTimeLong()
                         todoRepository.updateTodoCompletion(
                             todoId, true, currentTime
                         )
@@ -84,6 +85,7 @@ class ReminderNotificationService(@ActivityContext private val context: Context)
         val flags =
             PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
 
+        // pending intent to launch app at details activity with backstack to home activity when notification body is clicked
         val detailsActivityIntent = Intent(context, DetailsActivity::class.java).apply {
             putExtra(TODO_ID, todoId)
         }
@@ -93,6 +95,7 @@ class ReminderNotificationService(@ActivityContext private val context: Context)
             getPendingIntent(notificationId, flags)
         }
 
+        // pending intent to complete todo when notification action "complete" is clicked
         val completeTodoIntent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(TODO_ID, todoId)
             putExtra(ACTION_COMPLETE_TASK, "complete task")
@@ -102,10 +105,15 @@ class ReminderNotificationService(@ActivityContext private val context: Context)
         val completeTodoPendingIntent = PendingIntent.getBroadcast(
             context, 1, completeTodoIntent, flags
         )
-        val builder = NotificationCompat.Builder(context, REMINDER_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification).setContentTitle("ToDo App")
-            .setContentText(body).setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(detailsActivityPendingIntentWithBackStack).setAutoCancel(true)
+
+        val builder = NotificationCompat
+            .Builder(context, REMINDER_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle("ToDo App")
+            .setContentText(body)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(detailsActivityPendingIntentWithBackStack)
+            .setAutoCancel(true)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .addAction(0, "Completed", completeTodoPendingIntent)
 

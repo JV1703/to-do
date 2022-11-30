@@ -4,21 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.domain.model.Todo
-import com.example.to_dolistclone.core.domain.model.TodoCategory
-import com.example.to_dolistclone.feature.detail.domain.abstraction.TaskUseCase
-import com.example.to_dolistclone.feature.detail.domain.abstraction.TodoCategoryUseCase
-import com.example.to_dolistclone.feature.home.adapter.TaskProxy
-import com.example.to_dolistclone.feature.home.adapter.toTask
 import com.example.to_dolistclone.feature.todo.domain.abstraction.TodoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
-
-data class TasksUiState(
-    val categories: Set<String> = emptySet(), val selectedCategory: String? = null
-)
 
 data class TodoFragmentUiState(
     val showPrevious: Boolean = true,
@@ -33,29 +25,11 @@ data class TodoFragmentUiState(
 
 @HiltViewModel
 class TodoViewModel @Inject constructor(
-    private val todoCategoryUseCase: TodoCategoryUseCase,
-    private val taskUseCase: TaskUseCase,
-    private val todoUseCase: TodoUseCase,
-    private val dateUtil: DateUtil
+    private val todoUseCase: TodoUseCase, private val dateUtil: DateUtil
 ) : ViewModel() {
-
-    private val selectedCategory = MutableStateFlow<String?>(null)
 
     private val todos = todoUseCase.getMappedTodos()
     private val showStatus = todoUseCase.getShowStatus()
-
-
-    private val todoCategories = todoCategoryUseCase.getTodoCategories().map { todoCategories ->
-        todoCategories.map { todoCategory ->
-            todoCategory.todoCategoryName }.toSet()
-    }
-
-    val taskUiState =
-        combine(selectedCategory, todoCategories) { selectedCategory, todoCategories ->
-            TasksUiState(
-                categories = todoCategories, selectedCategory = selectedCategory
-            )
-        }
 
     val todoFragmentUiState = combine(
         todos, showStatus
@@ -76,21 +50,6 @@ class TodoViewModel @Inject constructor(
         initialValue = TodoFragmentUiState()
     )
 
-    fun insertTodo(tasksProxy: List<TaskProxy>, todo: Todo) {
-        if (todo.title.isNotEmpty()) {
-            viewModelScope.launch {
-                todoUseCase.insertTodo(todo)
-                insertTasks(tasksProxy = tasksProxy, todoRefId = todo.todoId)
-            }
-        }
-    }
-
-    fun insertTodo(todo: Todo) {
-        viewModelScope.launch {
-            todoUseCase.insertTodo(todo)
-        }
-    }
-
     fun updateTodoCompletion(todoId: String, isComplete: Boolean) {
         viewModelScope.launch {
             val currentDateTimeLong = dateUtil.getCurrentDateTimeLong()
@@ -99,24 +58,6 @@ class TodoViewModel @Inject constructor(
                 isComplete = isComplete,
                 completedOn = if (isComplete) currentDateTimeLong else null
             )
-        }
-    }
-
-    suspend fun insertTasks(tasksProxy: List<TaskProxy>, todoRefId: String) {
-        if (tasksProxy.isNotEmpty()) {
-            taskUseCase.insertTasks(tasksProxy.map { it.toTask(todoRefId) })
-        }
-    }
-
-    fun updateSelectedCategory(selectedCategory: String) {
-        this@TodoViewModel.selectedCategory.value = selectedCategory
-    }
-
-    fun insertTodoCategory(todoCategoryName: String) {
-        viewModelScope.launch {
-            if (todoCategoryName.isNotEmpty()) {
-                todoCategoryUseCase.insertTodoCategory(TodoCategory(todoCategoryName))
-            }
         }
     }
 
@@ -143,33 +84,4 @@ class TodoViewModel @Inject constructor(
             todoUseCase.saveShowCompletedToday(isShow)
         }
     }
-
-    fun createTodo(
-        title: String,
-        deadline: Long?,
-        reminder: Long?,
-        repeat: String?,
-        isComplete: Boolean,
-        createdOn: Long?,
-        completedOn: Long?,
-        tasks: Boolean,
-        notes: Boolean,
-        attachments: Boolean,
-        todoCategoryRefName: String
-    ) = Todo(
-        todoId = UUID.randomUUID().toString(),
-        title = title,
-        deadline = deadline,
-        reminder = reminder,
-        repeat = repeat,
-        isComplete = isComplete,
-        createdOn = createdOn,
-        completedOn = completedOn,
-        tasks = tasks,
-        notes = notes,
-        attachments = attachments,
-        alarmRef = Random().nextInt(),
-        todoCategoryRefName = todoCategoryRefName
-    )
-
 }

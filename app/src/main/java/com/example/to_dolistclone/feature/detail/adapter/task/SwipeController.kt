@@ -1,4 +1,4 @@
-package com.example.to_dolistclone.feature.detail.adapter
+package com.example.to_dolistclone.feature.detail.adapter.task
 
 import android.content.Context
 import android.graphics.*
@@ -65,7 +65,7 @@ abstract class SwipeController(private val context: Context) : ItemTouchHelper.C
             return
         }
 
-        mBackground!!.color = backgroundColor
+        mBackground.color = backgroundColor
         mBackground.setBounds(
             itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom
         )
@@ -88,7 +88,7 @@ abstract class SwipeController(private val context: Context) : ItemTouchHelper.C
     }
 
     private fun clearCanvas(c: Canvas, left: Float, top: Float, right: Float, bottom: Float) {
-        c.drawRect(left, top, right, bottom, mClearPaint!!)
+        c.drawRect(left, top, right, bottom, mClearPaint)
     }
 
 }

@@ -4,10 +4,18 @@ import com.example.to_dolistclone.core.data.local.model.AttachmentEntity
 
 data class Attachment(
     val attachmentId: String,
+    val name: String,
     val uri: String,
+    val type: String,
+    val size: Long,
     val todoRefId: String
 )
 
 fun Attachment.toAttachmentEntity() = AttachmentEntity(
-    attachmentId = attachmentId, uri = uri, todoRefId = todoRefId
+    attachmentId = attachmentId,
+    name = name,
+    uri = uri,
+    type = type,
+    size = size,
+    todoRefId = todoRefId
 )

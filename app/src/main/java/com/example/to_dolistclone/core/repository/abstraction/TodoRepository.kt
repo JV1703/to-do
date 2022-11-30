@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.core.repository.abstraction
 
+import com.example.to_dolistclone.core.data.local.model.TodoEntity
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -48,6 +49,8 @@ interface TodoRepository {
     fun getTodoDetails(todoId: String): Flow<TodoDetails?>
 
     fun getTodos(): Flow<List<Todo>>
+
+    fun getTodos(from: Long, to: Long): Flow<List<Todo>>
 
     suspend fun deleteTodo(todoId: String): Int
 

@@ -1,7 +1,7 @@
 package com.example.to_dolistclone.feature.common.dialog
 
 import androidx.fragment.app.FragmentManager
-import com.example.to_dolistclone.feature.common.dialog.modal_bottom_sheet.TodoShortcut
+import com.example.to_dolistclone.feature.todo_shortcut.TodoShortcut
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject

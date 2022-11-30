@@ -32,7 +32,7 @@ class ReminderDialogFragment : DialogFragment() {
         setupReminder()
         setupReminderType()
 
-        binding.reminderSwitch.setOnCheckedChangeListener { compoundButton, b ->
+        binding.reminderSwitch.setOnCheckedChangeListener { _, b ->
             if (!b) {
                 binding.containerBody.children.forEach {
                     it.isEnabled = false

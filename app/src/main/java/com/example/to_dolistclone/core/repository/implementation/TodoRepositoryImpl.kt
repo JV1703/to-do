@@ -2,6 +2,7 @@ package com.example.to_dolistclone.core.repository.implementation
 
 import android.util.Log
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
+import com.example.to_dolistclone.core.data.local.model.TodoEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoCategoryWithTodos
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoDetails
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithAttachments
@@ -84,6 +85,12 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
         }
     }.catch { e ->
         Log.e("todoRepository", "getTodos errorMsg: ${e.message}")
+    }
+
+    override fun getTodos(from: Long, to: Long): Flow<List<Todo>> = local.getTodos().map { listEntityModel ->
+        listEntityModel.map { entityModel ->
+            entityModel.toTodo()
+        }
     }
 
     override fun getTodoDetails(todoId: String): Flow<TodoDetails?> =

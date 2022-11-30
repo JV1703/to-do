@@ -22,7 +22,7 @@ class TimePickerFragment(private val onClick: (LocalTime) -> Unit) :
     private val myCalendar: Calendar = Calendar.getInstance()
 
     private val timePickerOnDataSetListener =
-        TimePicker.OnTimeChangedListener { timePicker, hourOfDay, minute ->
+        TimePicker.OnTimeChangedListener { _, hourOfDay, minute ->
             myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             myCalendar.set(Calendar.MINUTE, minute)
             val date = myCalendar.time

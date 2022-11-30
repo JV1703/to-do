@@ -1,4 +1,4 @@
-package com.example.to_dolistclone.feature.detail.adapter
+package com.example.to_dolistclone.feature.detail.adapter.task
 
 import android.graphics.Paint
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.to_dolistclone.core.domain.model.Task
 import com.example.to_dolistclone.databinding.DetailSubTaskItemBinding
-import com.example.to_dolistclone.feature.detail.adapter.DetailTaskAdapter.DetailTaskViewHolder
+import com.example.to_dolistclone.feature.detail.adapter.task.DetailTaskAdapter.DetailTaskViewHolder
 
 
 class DetailTaskAdapter(private val itemTouchHelperContract: DragAndDropController.ItemTouchHelperContract, private val taskListener: DetailTaskAdapterListener) :
@@ -32,7 +32,7 @@ class DetailTaskAdapter(private val itemTouchHelperContract: DragAndDropControll
                 taskListener.updateTaskCompletion(getItem(absoluteAdapterPosition).taskId, isChecked)
             }
 
-            binding.task.setOnFocusChangeListener { view, hasFocus ->
+            binding.task.setOnFocusChangeListener { _, hasFocus ->
                 if(!hasFocus){
                     if(binding.task.text.toString().trim().isEmpty()){
                         taskListener.deleteTask(getItem(absoluteAdapterPosition).taskId)

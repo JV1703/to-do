@@ -225,6 +225,16 @@
                 app:layout_constraintStart_toStartOf="@id/notes_tv"
                 app:layout_constraintTop_toBottomOf="@id/notes_tv" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/attachment_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="@id/separator5"
+                app:layout_constraintStart_toStartOf="@id/separator5"
+                app:layout_constraintTop_toBottomOf="@id/separator5" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/attachment_tv"
                 android:layout_width="match_parent"
@@ -234,19 +244,9 @@
                 android:gravity="center_vertical"
                 android:paddingVertical="12dp"
                 android:text="Attachment"
-                app:layout_constraintEnd_toEndOf="@id/separator5"
-                app:layout_constraintStart_toStartOf="@id/separator5"
-                app:layout_constraintTop_toBottomOf="@id/separator5" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/attachment_tv_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:src="@drawable/ic_close_delete"
-                app:layout_constraintBottom_toBottomOf="@id/attachment_tv"
-                app:layout_constraintEnd_toEndOf="@id/attachment_tv"
-                app:layout_constraintTop_toTopOf="@id/attachment_tv" />
+                app:layout_constraintEnd_toEndOf="@id/attachment_rv"
+                app:layout_constraintStart_toStartOf="@id/attachment_rv"
+                app:layout_constraintTop_toBottomOf="@id/attachment_rv" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
