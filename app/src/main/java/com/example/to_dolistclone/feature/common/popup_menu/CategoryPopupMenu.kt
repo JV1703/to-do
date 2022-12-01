@@ -1,4 +1,4 @@
-package com.example.to_dolistclone.feature.common
+package com.example.to_dolistclone.feature.common.popup_menu
 
 import android.content.Context
 import android.os.Build
@@ -55,16 +55,16 @@ class CategoryPopupMenu @Inject constructor(@ActivityContext private val context
             ContextCompat.getDrawable(context, R.drawable.ic_add)
         if (categoryList.isNotEmpty()) {
             if (selectedCategory == null) {
-                setStringColor(menu.getItem(0), R.color.teal_200)
+                setStringSpanColor(menu.getItem(0), R.color.teal_200)
             } else {
-                setStringColor(
+                setStringSpanColor(
                     menu.getItem(categoryList.indexOf(selectedCategory) + 1), R.color.teal_200
                 )
             }
         }
     }
 
-    private fun setStringColor(menuItem: MenuItem, @ColorRes color: Int) {
+    private fun setStringSpanColor(menuItem: MenuItem, @ColorRes color: Int) {
         val title = SpannableString(menuItem.title)
         title.setSpan(
             ForegroundColorSpan(ContextCompat.getColor(context, color)), 0, title.length, 0

@@ -31,9 +31,7 @@ class DetailsViewModel @Inject constructor(
     private val dateUtil: DateUtil,
     private val fileManager: FileManager
 ) : ViewModel() {
-
-    private val _todoId = MutableStateFlow("")
-    val todoId = _todoId.asStateFlow()
+    val todoId = detailTodoUseCase.getSelectedTodoId()
 
     private val todoDetails = todoId.flatMapLatest { detailTodoUseCase.getTodoDetails(it) }
     private val todoCategories = todoCategoryUseCase.getTodoCategories().map {
@@ -43,6 +41,7 @@ class DetailsViewModel @Inject constructor(
     val uiState = combine(
         todoCategories, todoDetails
     ) { todoCategories, todoDetails ->
+        Log.i("DetailsUiState", "triggered")
         DetailsActivityUiState(
             categories = todoCategories,
             selectedCategory = todoDetails?.todo?.todoCategoryRefName,
@@ -52,10 +51,6 @@ class DetailsViewModel @Inject constructor(
         viewModelScope, SharingStarted.WhileSubscribed(5000), DetailsActivityUiState()
     )
 
-    fun saveTodoId(todoId: String) {
-        this@DetailsViewModel._todoId.value = todoId
-    }
-
     fun insertTodoCategory(todoCategoryName: String) {
         viewModelScope.launch {
             if (todoCategoryName.isNotEmpty()) {
@@ -64,9 +59,9 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun updateTodoCategory(category: String) {
+    fun updateTodoCategory(todoId: String, category: String) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoCategory(todoId.value, category)
+            detailTodoUseCase.updateTodoCategory(todoId, category)
         }
     }
 
@@ -76,19 +71,19 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun insertTask(taskId: String? = null, title: String, position: Int) {
+    fun insertTask(taskId: String? = null, title: String, position: Int, todoRefId: String) {
         viewModelScope.launch {
-            val task = createTask(taskId, title, position)
+            val task = createTask(taskId, title, position, todoRefId)
             taskUseCase.insertTask(task)
         }
     }
 
-    private fun createTask(taskId: String?, title: String, position: Int) = Task(
+    private fun createTask(taskId: String?, title: String, position: Int, todoRefId: String) = Task(
         taskId = taskId ?: UUID.randomUUID().toString(),
         task = title,
         isComplete = false,
         position = position,
-        todoRefId = todoId.value
+        todoRefId = todoRefId
     )
 
     fun deleteTask(taskId: String) {
@@ -109,15 +104,15 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun updateDeadline(deadline: Long?) {
+    fun updateDeadline(todoId: String, deadline: Long?) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoDeadline(todoId.value, deadline)
+            detailTodoUseCase.updateTodoDeadline(todoId, deadline)
         }
     }
 
-    fun updateReminder(reminder: Long?) {
+    fun updateReminder(todoId: String, reminder: Long?) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoReminder(todoId.value, reminder)
+            detailTodoUseCase.updateTodoReminder(todoId, reminder)
         }
     }
 
@@ -133,15 +128,15 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun updateTodoTitle(title: String) {
+    fun updateTodoTitle(todoId: String, title: String) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoTitle(this@DetailsViewModel.todoId.value, title)
+            detailTodoUseCase.updateTodoTitle(todoId, title)
         }
     }
 
-    fun deleteTodo() {
+    fun deleteTodo(todoId: String) {
         viewModelScope.launch {
-            detailTodoUseCase.deleteTodo(todoId.value)
+            detailTodoUseCase.deleteTodo(todoId)
         }
     }
 
@@ -152,11 +147,11 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun createNote(
-        title: String, body: String, createdAt: Long? = null
+        noteId: String, title: String, body: String, createdAt: Long? = null
     ): Note {
         val currentDateTimeLong = dateUtil.getCurrentDateTimeLong()
         return Note(
-            noteId = todoId.value,
+            noteId = noteId,
             title = title,
             body = body,
             created_at = createdAt ?: currentDateTimeLong,
@@ -164,17 +159,17 @@ class DetailsViewModel @Inject constructor(
         )
     }
 
-    fun deleteNote() {
+    fun deleteNote(noteId: String) {
         viewModelScope.launch {
-            noteUseCase.deleteNote(todoId.value)
+            noteUseCase.deleteNote(noteId)
         }
     }
 
-    fun updateTodoCompletion(isComplete: Boolean) {
+    fun updateTodoCompletion(todoId: String, isComplete: Boolean) {
         viewModelScope.launch {
             val currentDateTimeLong = dateUtil.getCurrentDateTimeLong()
             detailTodoUseCase.updateTodoCompletion(
-                todoId.value,
+                todoId,
                 isComplete = isComplete,
                 completedOn = if (isComplete) currentDateTimeLong else null
             )
@@ -182,10 +177,11 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun updateTodoTasksAvailability(
+        todoId: String,
         tasksAvailability: Boolean
     ) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoTasksAvailability(todoId.value, tasksAvailability)
+            detailTodoUseCase.updateTodoTasksAvailability(todoId, tasksAvailability)
         }
         Log.i("testing", "triggered")
     }
@@ -235,6 +231,12 @@ class DetailsViewModel @Inject constructor(
     private suspend fun deleteFileFromInternalStorage(filePath: String){
         val test = fileManager.deleteFileFromInternalStorage(filePath)
         Log.i("deleteFile", "$test")
+   }
+
+    fun saveSelectedTodoId(todoId: String){
+        viewModelScope.launch {
+            detailTodoUseCase.saveSelectedTodoId(todoId)
+        }
     }
 
 }

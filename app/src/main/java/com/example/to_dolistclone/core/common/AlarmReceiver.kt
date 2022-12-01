@@ -77,6 +77,7 @@ class AlarmReceiver : BroadcastReceiver() {
 }
 
 const val REMINDER_CHANNEL_ID = "todo_alarm"
+const val REMINDER_CHANNEL_GROUP = "com.example.to_dolistclone.REMINDER_GROUP"
 
 class ReminderNotificationService(@ActivityContext private val context: Context) {
 
@@ -106,7 +107,7 @@ class ReminderNotificationService(@ActivityContext private val context: Context)
             context, 1, completeTodoIntent, flags
         )
 
-        val builder = NotificationCompat
+        val todoNotification = NotificationCompat
             .Builder(context, REMINDER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("ToDo App")
@@ -117,8 +118,11 @@ class ReminderNotificationService(@ActivityContext private val context: Context)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .addAction(0, "Completed", completeTodoPendingIntent)
 
+
         val notificationManagerCompat = NotificationManagerCompat.from(context)
-        notificationManagerCompat.notify(notificationId, builder.build())
+        notificationManagerCompat.apply {
+            notify(notificationId, todoNotification.build())
+        }
     }
 
 }

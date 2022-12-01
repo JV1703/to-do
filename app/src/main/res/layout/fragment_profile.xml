@@ -15,19 +15,20 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/drawer_placeholer_img"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/drawer_placeholer_img" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/profile_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:text="Joevincent"
             app:layout_constraintBottom_toBottomOf="@id/profile_iv"
             app:layout_constraintStart_toEndOf="@id/profile_iv"
-            app:layout_constraintTop_toTopOf="@id/profile_iv"
-            android:text="Joevincent" />
+            app:layout_constraintTop_toTopOf="@id/profile_iv" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tasks_overview_tv"
@@ -120,7 +121,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/weekly_task_bar_graph_container"
+            android:id="@+id/weekly_task_bar_chart_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -193,9 +194,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
-            app:layout_constraintEnd_toEndOf="@id/weekly_task_bar_graph_container"
-            app:layout_constraintStart_toStartOf="@id/weekly_task_bar_graph_container"
-            app:layout_constraintTop_toBottomOf="@id/weekly_task_bar_graph_container">
+            app:layout_constraintEnd_toEndOf="@id/weekly_task_bar_chart_container"
+            app:layout_constraintStart_toStartOf="@id/weekly_task_bar_chart_container"
+            app:layout_constraintTop_toBottomOf="@id/weekly_task_bar_chart_container">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -216,6 +217,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/upcoming_tasks_tv" />
 
@@ -235,31 +237,34 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:background="@color/profile_bg">
+                android:background="@color/profile_bg"
+                android:padding="8dp">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/pie_graph_title_tv"
+                    android:id="@+id/pie_chart_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pending Tasks in Categories"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.appcompat.widget.AppCompatSpinner
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/pie_chart_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_arrow_drop_down"
+                    app:layout_constraintBottom_toBottomOf="@id/pie_chart_title_tv"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/pie_graph_title_tv"
-                    app:layout_constraintBottom_toBottomOf="@id/pie_graph_title_tv"/>
+                    app:layout_constraintTop_toTopOf="@id/pie_chart_title_tv"
+                    tools:text="In 30 days" />
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/pie_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_marginTop="12dp"
-                    app:layout_constraintTop_toBottomOf="@id/pie_graph_title_tv"
-                    app:layout_constraintStart_toStartOf="@id/pie_graph_title_tv"/>
+                    app:layout_constraintStart_toStartOf="@id/pie_chart_title_tv"
+                    app:layout_constraintTop_toBottomOf="@id/pie_chart_title_tv" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -17,7 +17,7 @@ interface DetailTodoUseCase {
     suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): Int
     suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
     suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
-    suspend fun saveSelectedNoteId(todoId: String)
-    fun getSelectedNoteId(): Flow<String>
+    suspend fun saveSelectedTodoId(todoId: String)
+    fun getSelectedTodoId(): Flow<String>
 
 }

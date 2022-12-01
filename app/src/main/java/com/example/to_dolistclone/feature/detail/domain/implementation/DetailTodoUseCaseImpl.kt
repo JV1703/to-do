@@ -48,9 +48,9 @@ class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: Todo
 
     override suspend fun deleteTodo(todoId: String): Int = todoRepository.deleteTodo(todoId)
 
-    override suspend fun saveSelectedNoteId(todoId: String) {
-        todoRepository.saveSelectedNoteId(todoId)
+    override suspend fun saveSelectedTodoId(todoId: String) {
+        todoRepository.saveSelectedTodoId(todoId)
     }
 
-    override fun getSelectedNoteId(): Flow<String> = todoRepository.getSelectedNoteId()
+    override fun getSelectedTodoId(): Flow<String> = todoRepository.getSelectedTodoId()
 }

@@ -11,10 +11,11 @@ interface ProfileTodoUseCase {
 
     fun getTodosWithinTimeFrame(from: Long, to: Long): Flow<List<Todo>>
 
-    fun getFirstDateOfWeek(date: Long): LocalDate
-    fun getLastDateOfWeek(date: Long): LocalDate
-    fun getFirstDayOfMonth(date: Long): LocalDate
-    fun getLastDayOfMonth(date: Long): LocalDate
-    fun getTodosInTimeFrame(date: Long, timeFrame: PieGraphFilter): Flow<List<Todo>>
+    fun getTodosInTimeFrame(timeFrame: PieGraphFilter): Flow<List<Todo>>
+
     fun getCompletedTodosWithinTimeFrame(from: Long, to: Long): Flow<List<Todo>>
+
+    fun getSelectedPieGraphOption(): Flow<Int>
+
+    suspend fun saveSelectedPieGraphOption(selectedOption: Int)
 }

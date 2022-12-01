@@ -7,7 +7,6 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +17,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.FileProvider
 import androidx.core.view.isGone
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +28,7 @@ import com.example.to_dolistclone.core.domain.model.Task
 import com.example.to_dolistclone.core.utils.ui.*
 import com.example.to_dolistclone.databinding.FragmentDetailsBinding
 import com.example.to_dolistclone.feature.BaseFragment
-import com.example.to_dolistclone.feature.common.CategoryPopupMenu
+import com.example.to_dolistclone.feature.common.popup_menu.CategoryPopupMenu
 import com.example.to_dolistclone.feature.common.dialog.DialogsManager
 import com.example.to_dolistclone.feature.detail.adapter.*
 import com.example.to_dolistclone.feature.detail.adapter.attachment.DetailAttachmentAdapter
@@ -64,11 +63,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     lateinit var fileManager: FileManager
 
 
-    private val viewModel: DetailsViewModel by activityViewModels()
+    private val viewModel: DetailsViewModel by viewModels()
     private lateinit var taskAdapter: DetailTaskAdapter
     private lateinit var attachmentAdapter: DetailAttachmentAdapter
     private lateinit var dragHelper: ItemTouchHelper
-    private lateinit var alarmManager: AlarmManager
+    private val alarmManager: AlarmManager by lazy { requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager }
 
     private var todoId: String? = null
 
@@ -80,34 +79,48 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         setupTaskRv()
         setupAttachmentRv()
 
-        binding.titleTv.onKeyboardEnter(false) {
-            viewModel.updateTodoTitle(title = it)
-            if (it.isEmpty()) {
+        binding.titleTv.onKeyboardEnter(false) { input ->
+            todoId?.let {
+                viewModel.updateTodoTitle(title = input, todoId = it)
+            }
+            if (input.isEmpty()) {
                 makeToast("Please set title.")
             }
         }
 
-        binding.taskEt.onKeyboardEnter(true) {
-            viewModel.insertTask(title = it, position = taskAdapter.currentList.size)
-            if (taskAdapter.currentList.size == 0) {
-                viewModel.updateTodoTasksAvailability(true)
+        binding.taskEt.onKeyboardEnter(true) { input ->
+            todoId?.let {
+                viewModel.insertTask(
+                    title = input, position = taskAdapter.currentList.size, todoRefId = it
+                )
+                if (taskAdapter.currentList.size == 0) {
+                    viewModel.updateTodoTasksAvailability(
+                        todoId = it, tasksAvailability = true
+                    )
+                }
             }
         }
 
         binding.checkbox.setOnCheckedChangeListener { _, isComplete ->
-            viewModel.updateTodoCompletion(
-                isComplete
-            )
+            todoId?.let {
+                viewModel.updateTodoCompletion(
+                    todoId = it, isComplete = isComplete
+                )
+            }
         }
 
-        binding.dueDateTv.transformIntoDatePicker(requireContext()) {
-            binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(it))
-            viewModel.updateDeadline(dateUtil.toLong(it))
+        binding.dueDateTv.transformIntoDatePicker(requireContext()) { localDate ->
+            binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(localDate))
+            todoId?.let {
+                viewModel.updateDeadline(todoId = it, deadline = dateUtil.toLong(localDate))
+            }
             binding.dueDateTvClear.isGone = false
         }
 
         onClearText(binding.dueDateTvClear, binding.dueDateTv, "Due Date") {
-            viewModel.updateDeadline(null)
+            todoId?.let {
+                viewModel.updateDeadline(todoId = it, deadline = null)
+            }
         }
 
         binding.notesTv.setOnClickListener {
@@ -117,7 +130,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
         onClearText(binding.notesTvClear, binding.notesTv, "Repeat") {
             makeToast("Reminder tapped")
-            viewModel.deleteNote()
+            todoId?.let {
+                viewModel.deleteNote(noteId = it)
+            }
         }
 
         binding.attachmentTv.setOnClickListener {
@@ -145,12 +160,16 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             binding.notesTvClear.isGone = uiState.todoDetails?.note == null
             Log.i("attachment", "${uiState.todoDetails?.attachments == null} ")
 
-            uiState.todoDetails?.todo?.deadline?.let { deadline ->
-                binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(deadline))
+            if(uiState.todoDetails?.todo?.deadline == null){
+                binding.dueDateTv.text = "Due Date"
+            }else{
+                binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(uiState.todoDetails.todo.deadline))
             }
 
-            uiState.todoDetails?.todo?.reminder?.let { reminder ->
-                binding.reminderTv.text = generateReminderString(reminder)
+            if(uiState.todoDetails?.todo?.reminder == null){
+                binding.reminderTv.text = "Reminder"
+            }else{
+                binding.reminderTv.text = generateReminderString(uiState.todoDetails.todo.reminder)
             }
 
             if (uiState.todoDetails?.note == null) {
@@ -179,20 +198,20 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 binding.reminderTv.setOnClickListener {
                     dialogsManager.createReminderDateTimePickerDialog { reminder ->
                         binding.reminderTv.text = generateReminderString(dateUtil.toLong(reminder))
-                        viewModel.updateReminder(dateUtil.toLong(reminder))
+                        viewModel.updateReminder(todoId = todo.todoId, dateUtil.toLong(reminder))
                         setAlarm(todo.alarmRef, dateUtil.toLong(reminder), todo.title)
                         binding.dueDateTvClear.isGone = false
                     }
                 }
 
                 onClearText(binding.reminderTvClear, binding.reminderTv, "Reminder") {
-                    viewModel.updateReminder(null)
+                    viewModel.updateReminder(todoId = todo.todoId, reminder = null)
                     cancelAlarm(todo.alarmRef)
                 }
 
                 binding.deleteIv.setOnClickListener {
                     requireActivity().finish()
-                    viewModel.deleteTodo()
+                    viewModel.deleteTodo(todoId = todo.todoId)
                     cancelAlarm(todo.alarmRef)
                 }
 
@@ -246,7 +265,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 val position = viewHolder.absoluteAdapterPosition
                 val task = taskAdapter.currentList[position]
                 if (taskAdapter.currentList.size == 1) {
-                    viewModel.updateTodoTasksAvailability(false)
+                    task.todoRefId?.let {
+                        viewModel.updateTodoTasksAvailability(todoId = it, false)
+                    }
                 }
                 viewModel.deleteTask(task.taskId)
                 undoDeleteTask(task)
@@ -261,7 +282,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         Snackbar.make(binding.root, "Todo is deleted", Snackbar.LENGTH_SHORT).apply {
             setAction("Undo") {
                 viewModel.restoreDeletedTaskProxy(task)
-                viewModel.updateTodoTasksAvailability(true)
+                task.todoRefId?.let {
+                    viewModel.updateTodoTasksAvailability(todoId = it, tasksAvailability = true)
+                }
             }
             setActionTextColor(Color.YELLOW)
             show()
@@ -279,7 +302,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                     dialogsManager.createAddCategoryDialogFragment { categoryName ->
                         if (categoryName.isNotEmpty()) {
                             viewModel.insertTodoCategory(categoryName)
-                            viewModel.updateTodoCategory(categoryName)
+                            todoId?.let {
+                                viewModel.updateTodoCategory(todoId = it, category = categoryName)
+                            }
                         } else {
                             makeToast("Please provide name for category")
                         }
@@ -288,7 +313,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 }
                 else -> {
                     makeToast(menuItem.title.toString())
-                    viewModel.updateTodoCategory(menuItem.title.toString())
+                    todoId?.let {
+                        viewModel.updateTodoCategory(
+                            todoId = it, category = menuItem.title.toString()
+                        )
+                    }
                     binding.categoryTv.text = menuItem.title
                     true
                 }
@@ -356,7 +385,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
         val noCreateFlag =
             PendingIntent.FLAG_NO_CREATE or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
-        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra(TODO_ID, todoId)
         intent.putExtra(ALARM_REF, alarmRef)
@@ -428,13 +456,15 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     override fun openFile(attachment: Attachment) {
         val filePath = File(requireContext().filesDir, "attachments/${attachment.type}")
         val newFile = File(filePath, attachment.name)
-        val contentUri= try {
-            FileProvider.getUriForFile(requireContext(), "com.example.to_dolistclone.fileprovider", newFile)
-        }catch (e:Exception){
+        val contentUri = try {
+            FileProvider.getUriForFile(
+                requireContext(), "com.example.to_dolistclone.fileprovider", newFile
+            )
+        } catch (e: Exception) {
             Log.e("DetailsFragment", "openFile FileProvider: ${e.message}")
             null
         }
-        
+
         contentUri?.let {
             val extension = fileManager.getExtension(it)
             val mime = fileManager.getMime(extension!!)

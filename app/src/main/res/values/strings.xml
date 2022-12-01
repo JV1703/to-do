@@ -27,4 +27,12 @@
         <item>Alarm</item>
 
     </string-array>
+
+    <string-array name="pie_graph_options_array">
+
+        <item>In 7 days</item>
+        <item>In 30 days</item>
+        <item>All</item>
+
+    </string-array>
 </resources>

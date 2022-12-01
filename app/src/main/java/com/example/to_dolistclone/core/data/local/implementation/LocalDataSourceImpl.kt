@@ -2,12 +2,10 @@ package com.example.to_dolistclone.core.data.local.implementation
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
 import com.example.to_dolistclone.core.data.local.dao.TodoDao
+import com.example.to_dolistclone.core.data.local.implementation.PreferencesKeys.SELECTED_PIE_GRAPH_OPTION
 import com.example.to_dolistclone.core.data.local.implementation.PreferencesKeys.SELECTED_TODO_ID
 import com.example.to_dolistclone.core.data.local.implementation.PreferencesKeys.SHOW_COMPLETED_TODAY
 import com.example.to_dolistclone.core.data.local.implementation.PreferencesKeys.SHOW_FUTURE
@@ -34,6 +32,7 @@ object PreferencesKeys {
     val SHOW_FUTURE = booleanPreferencesKey("show_future")
     val SHOW_COMPLETED_TODAY = booleanPreferencesKey("show_completed_today")
     val SELECTED_TODO_ID = stringPreferencesKey("selected_todo_id")
+    val SELECTED_PIE_GRAPH_OPTION = intPreferencesKey("selected_pie_graph_option")
 }
 
 class LocalDataSourceImpl @Inject constructor(
@@ -42,7 +41,19 @@ class LocalDataSourceImpl @Inject constructor(
     @CoroutinesQualifiers.IoDispatcher private val dispatcherIO: CoroutineDispatcher
 ) : LocalDataSource {
 
-    override suspend fun saveSelectedNoteId(todoId: String) {
+    override suspend fun saveSelectedPieGraphOption(selectedOption: Int) {
+        dataStore.edit { preferences ->
+            preferences[SELECTED_PIE_GRAPH_OPTION] = selectedOption
+        }
+    }
+
+    override fun getSelectedPieGraphOption(): Flow<Int> = dataStore.data.map { preferences ->
+        preferences[SELECTED_PIE_GRAPH_OPTION] ?: 0
+    }.catch { e ->
+        Log.e("LocalDataSourceImpl", "getSelectedPieGraphOption - errorMsg: ${e.message}")
+    }
+
+    override suspend fun saveSelectedTodoId(todoId: String) {
         dataStore.edit { preferences ->
             preferences[SELECTED_TODO_ID] = todoId
         }
@@ -72,7 +83,7 @@ class LocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getSelectedNoteId(): Flow<String> = dataStore.data.map { preferences ->
+    override fun getSelectedTodoId(): Flow<String> = dataStore.data.map { preferences ->
         preferences[SELECTED_TODO_ID] ?: ""
     }.catch { e ->
         Log.e("LocalDataSourceImpl", "getShowToday errorMsg: ${e.message}")

@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +49,7 @@ class StartUpReceiver : BroadcastReceiver() {
                         val pendingIntent =
                             PendingIntent.getBroadcast(context, it.alarmRef, i, flags)
                         alarmManager.set(AlarmManager.RTC, it.reminder!!, pendingIntent)
+                        Log.i("startup", "title: ${it.title}, reminderOn: ${dateUtil.toString(it.reminder, "EEE, MM dd", java.util.Locale.getDefault())}")
                     }
             }
         }

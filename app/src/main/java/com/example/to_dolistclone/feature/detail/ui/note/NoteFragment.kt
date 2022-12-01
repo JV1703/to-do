@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
 import androidx.core.view.isGone
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.core.utils.ui.makeToast
@@ -21,10 +21,15 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>(FragmentNoteBinding::infl
     @Inject
     lateinit var dateUtil: DateUtil
 
-    private val viewModel: DetailsViewModel by activityViewModels()
+    private val viewModel: DetailsViewModel by viewModels()
+    private lateinit var todoId: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        collectLatestLifecycleFlow(viewModel.todoId) {
+            todoId = it
+        }
 
         collectLatestLifecycleFlow(viewModel.uiState) { uiState ->
 
@@ -46,6 +51,7 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>(FragmentNoteBinding::infl
 
             requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
                 val newNote = viewModel.createNote(
+                    noteId = todoId,
                     title = binding.titleEt.text.toString().trim(),
                     body = binding.bodyEt.text.toString().trim(),
                     createdAt = note?.created_at
@@ -53,8 +59,8 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>(FragmentNoteBinding::infl
 
                 if (binding.titleEt.text?.isNotEmpty() == true || binding.bodyEt.text?.isNotEmpty() == true) {
                     viewModel.insertNote(newNote)
-                }else{
-                    viewModel.deleteNote()
+                } else {
+                    viewModel.deleteNote(noteId = todoId)
                 }
 
                 makeToast("haha")

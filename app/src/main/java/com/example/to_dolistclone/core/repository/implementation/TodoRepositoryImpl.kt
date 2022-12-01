@@ -2,7 +2,6 @@ package com.example.to_dolistclone.core.repository.implementation
 
 import android.util.Log
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
-import com.example.to_dolistclone.core.data.local.model.TodoEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoCategoryWithTodos
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoDetails
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithAttachments
@@ -173,10 +172,16 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
             }
         }
 
-    override suspend fun saveSelectedNoteId(todoId: String) {
-        local.saveSelectedNoteId(todoId)
+    override suspend fun saveSelectedTodoId(todoId: String) {
+        local.saveSelectedTodoId(todoId)
     }
 
-    override fun getSelectedNoteId(): Flow<String> =
-        local.getSelectedNoteId()
+    override fun getSelectedTodoId(): Flow<String> =
+        local.getSelectedTodoId()
+
+    override fun getSelectedPieGraphOption(): Flow<Int> = local.getSelectedPieGraphOption()
+
+    override suspend fun saveSelectedPieGraphOption(selectedOption: Int) {
+        local.saveSelectedPieGraphOption(selectedOption)
+    }
 }

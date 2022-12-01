@@ -1,7 +1,10 @@
 package com.example.to_dolistclone.core.common
 
+import com.kizitonwose.calendar.core.WeekDay
 import java.time.*
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
 import java.util.*
 
 class DateUtil {
@@ -88,14 +91,118 @@ class DateUtil {
         return LocalDate.now(zoneId)
     }
 
-    fun generateDaysInWeek() = listOf(
-        DayOfWeek.MONDAY,
-        DayOfWeek.TUESDAY,
-        DayOfWeek.WEDNESDAY,
-        DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY
-    )
+    fun getFirstDayOfWeek(): DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+
+    fun getFirstDateOfWeek(date: Long): LocalDate {
+        val currentDate = toLocalDate(date)
+        val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        return currentDate.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+    }
+
+    fun getFirstDateOfWeek(date: LocalDate): LocalDate{
+        val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        return date.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+    }
+
+    fun getLastDateOfWeek(date: Long): LocalDate {
+        val currentDate = toLocalDate(date)
+        val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        val lastDayOfWeek = DayOfWeek.of(((firstDayOfWeek.value + 5) % DayOfWeek.values().size) + 1)
+        return currentDate.with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
+    }
+
+    fun getFirstDateOfMonth(date: Long): LocalDate {
+        val selectedDate = toLocalDate(date)
+        return selectedDate.withDayOfMonth(1)
+    }
+
+    fun getLastDateOfMonth(date: Long): LocalDate {
+        val selectedDate = getFirstDateOfMonth(date)
+        val isLeapYear = selectedDate.isLeapYear
+        val lengthOfMonth = selectedDate.month.length(isLeapYear)
+        return selectedDate.withDayOfMonth(lengthOfMonth)
+    }
+
+    fun generateDaysInWeek(startDay: DayOfWeek): List<DayOfWeek> {
+        return when (startDay) {
+            DayOfWeek.SUNDAY -> {
+                listOf(
+                    DayOfWeek.SUNDAY,
+                    DayOfWeek.MONDAY,
+                    DayOfWeek.TUESDAY,
+                    DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY,
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY
+                )
+            }
+            DayOfWeek.MONDAY -> {
+                listOf(
+                    DayOfWeek.MONDAY,
+                    DayOfWeek.TUESDAY,
+                    DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY,
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY
+                )
+            }
+            DayOfWeek.TUESDAY -> {
+                listOf(
+                    DayOfWeek.TUESDAY,
+                    DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY,
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY,
+                    DayOfWeek.MONDAY
+                )
+            }
+            DayOfWeek.WEDNESDAY -> {
+                listOf(
+                    DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY,
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY,
+                    DayOfWeek.MONDAY,
+                    DayOfWeek.TUESDAY
+                )
+            }
+            DayOfWeek.THURSDAY -> {
+                listOf(
+                    DayOfWeek.THURSDAY,
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY,
+                    DayOfWeek.MONDAY,
+                    DayOfWeek.TUESDAY,
+                    DayOfWeek.WEDNESDAY
+                )
+            }
+            DayOfWeek.FRIDAY -> {
+                listOf(
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY,
+                    DayOfWeek.MONDAY,
+                    DayOfWeek.TUESDAY,
+                    DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY
+                )
+            }
+            DayOfWeek.SATURDAY -> {
+                listOf(
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY,
+                    DayOfWeek.MONDAY,
+                    DayOfWeek.TUESDAY,
+                    DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY,
+                    DayOfWeek.FRIDAY
+                )
+            }
+        }
+    }
 
 }

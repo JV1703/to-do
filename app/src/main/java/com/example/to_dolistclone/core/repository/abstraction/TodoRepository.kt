@@ -1,6 +1,5 @@
 package com.example.to_dolistclone.core.repository.abstraction
 
-import com.example.to_dolistclone.core.data.local.model.TodoEntity
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -94,7 +93,11 @@ interface TodoRepository {
 
     fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodos>>
 
-    suspend fun saveSelectedNoteId(todoId: String)
+    suspend fun saveSelectedTodoId(todoId: String)
 
-    fun getSelectedNoteId(): Flow<String>
+    fun getSelectedTodoId(): Flow<String>
+
+    fun getSelectedPieGraphOption(): Flow<Int>
+
+    suspend fun saveSelectedPieGraphOption(selectedOption: Int)
 }

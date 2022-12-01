@@ -1,6 +1,5 @@
 package com.example.to_dolistclone.core.data.local.abstraction
 
-import androidx.room.Query
 import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoCategoryWithTodosEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoDetailsEntity
@@ -95,8 +94,11 @@ interface LocalDataSource {
 
     fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodosEntity>>
 
-    suspend fun saveSelectedNoteId(todoId: String)
+    suspend fun saveSelectedTodoId(todoId: String)
 
-    fun getSelectedNoteId(): Flow<String>
+    fun getSelectedTodoId(): Flow<String>
 
+    fun getSelectedPieGraphOption(): Flow<Int>
+
+    suspend fun saveSelectedPieGraphOption(selectedOption: Int)
 }

@@ -9,15 +9,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
+import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.common.*
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.core.utils.ui.makeToast
+import com.example.to_dolistclone.core.utils.ui.setStringSpanColor
 import com.example.to_dolistclone.core.utils.ui.transformIntoDatePicker
 import com.example.to_dolistclone.databinding.ModalBottomSheetContentBinding
-import com.example.to_dolistclone.feature.common.CategoryPopupMenu
 import com.example.to_dolistclone.feature.common.dialog.DialogsManager
+import com.example.to_dolistclone.feature.common.popup_menu.CategoryPopupMenu
 import com.example.to_dolistclone.feature.home.adapter.TaskAdapter
 import com.example.to_dolistclone.feature.home.adapter.TaskProxy
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -178,7 +181,7 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
                 else -> {
                     makeToast(menuItem.title.toString())
                     viewModel.updateSelectedCategory(menuItem.title.toString())
-                    binding.category.text = menuItem.title
+                    binding.category.text = setStringSpanColor(requireContext(), menuItem.title.toString(), android.R.color.tab_indicator_text)
                     true
                 }
             }

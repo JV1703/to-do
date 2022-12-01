@@ -1,19 +1,18 @@
 package com.example.to_dolistclone.core.utils.ui
 
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
-import android.net.Uri
-import android.util.Log
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.inputmethod.EditorInfo
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -24,11 +23,11 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.io.*
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.util.*
+import kotlin.random.Random
 
 fun Activity.makeToast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
@@ -256,4 +255,20 @@ fun AppCompatEditText.onKeyboardEnter(clearText: Boolean, callback: (String) -> 
             true
         } else false
     }
+}
+
+fun setStringSpanColor(context: Context, text: String, @ColorRes color: Int): String {
+    val title = SpannableString(text)
+    title.setSpan(
+        ForegroundColorSpan(ContextCompat.getColor(context, color)), 0, title.length, 0
+    )
+    return title.toString()
+}
+
+fun generateAlarmRef(exclude: List<Long>): Long {
+    var output = Random.nextLong()
+    while (exclude.contains(output)) {
+        output = Random.nextLong()
+    }
+    return output
 }
