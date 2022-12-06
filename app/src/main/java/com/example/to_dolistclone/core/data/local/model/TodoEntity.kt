@@ -20,7 +20,7 @@ data class TodoEntity(
     val tasks: Boolean,
     val notes: Boolean,
     val attachments: Boolean,
-    val alarmRef: Int,
+    val alarmRef: Int?,
     val todoCategoryRefName: String
 )
 

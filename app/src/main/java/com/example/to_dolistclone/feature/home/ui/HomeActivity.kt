@@ -43,7 +43,7 @@ class HomeActivity : AppCompatActivity() {
         setupDrawer()
 
         binding.drawer.addCategory.setOnClickListener {
-            dialogsManager.createAddCategoryDialogFragment{ categoryName ->
+            dialogsManager.showAddCategoryDialogFragment{ categoryName ->
                 if(categoryName.isNotEmpty()){
                     viewModel.insertTodoCategory(categoryName)
                 }else{

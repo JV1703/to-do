@@ -1,12 +1,18 @@
 [
   {
     "attachmentId": "9aa046b6-7f7c-4ef8-bee3-905408d992f1",
+    "name": "Picture1.jpg",
     "uri": "C:Local/app/file/xxxx",
+    "type": "jpg",
+    "size": "1200",
     "todoRefId": "b856e4cc-cb57-414d-b2b0-6c33c9a8cd7d"
   },
   {
     "attachmentId": "b8784165-ceed-4035-b8e4-358a421d57e3",
+    "name": "Picture2.jpg",
     "uri": "C:Local/app/file/yyyy",
+    "type": "jpg",
+    "size": "1400",
     "todoRefId": "b856e4cc-cb57-414d-b2b0-6c33c9a8cd7d"
   }
 ]

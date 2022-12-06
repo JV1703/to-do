@@ -1,22 +1,20 @@
 package com.example.to_dolistclone.feature.detail.domain.implementation
 
 import android.util.Log
-import com.example.to_dolistclone.core.domain.model.Todo
 import com.example.to_dolistclone.core.domain.model.TodoDetails
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
+import com.example.to_dolistclone.feature.common.domain.todo.BaseTodoUseCaseImpl
 import com.example.to_dolistclone.feature.detail.domain.abstraction.DetailTodoUseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) :
+class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) : BaseTodoUseCaseImpl(todoRepository),
     DetailTodoUseCase {
 
     override fun getTodoDetails(todoId: String): Flow<TodoDetails?> {
         Log.i("getTodoDetails", "triggered")
         return todoRepository.getTodoDetails(todoId)
     }
-
-    override suspend fun insertTodo(todo: Todo): Long = todoRepository.insertTodo(todo)
 
     override suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int =
         todoRepository.updateTodoDeadline(todoId, deadline)
@@ -46,11 +44,8 @@ class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: Todo
         todoId: String, attachmentsAvailability: Boolean
     ): Int = todoRepository.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
 
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int = todoRepository.updateTodoAlarmRef(todoId, alarmRef)
+
     override suspend fun deleteTodo(todoId: String): Int = todoRepository.deleteTodo(todoId)
 
-    override suspend fun saveSelectedTodoId(todoId: String) {
-        todoRepository.saveSelectedTodoId(todoId)
-    }
-
-    override fun getSelectedTodoId(): Flow<String> = todoRepository.getSelectedTodoId()
 }

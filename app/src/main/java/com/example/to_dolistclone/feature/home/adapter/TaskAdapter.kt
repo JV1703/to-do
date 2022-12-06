@@ -35,18 +35,24 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
         }
 
         fun setupListener() {
-            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
+
+            binding.checkbox.setOnClickListener {
+                val task = tasksProxy[absoluteAdapterPosition]
+
+                task.isComplete = !task.isComplete
+
+                if(task.isComplete){
                     binding.task.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                } else {
+                }else{
                     binding.task.paintFlags = 0
                 }
-                tasksProxy[absoluteAdapterPosition].isComplete = isChecked
+
             }
             binding.task.addTextChangedListener(this)
             binding.delete.setOnClickListener {
                 deleteTask(absoluteAdapterPosition)
             }
+
         }
 
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

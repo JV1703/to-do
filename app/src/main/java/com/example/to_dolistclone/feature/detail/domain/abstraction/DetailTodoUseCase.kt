@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 interface DetailTodoUseCase {
 
     fun getTodoDetails(todoId: String): Flow<TodoDetails?>
-    suspend fun insertTodo(todo: Todo): Long
     suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int
     suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int
     suspend fun updateTodoTitle(todoId: String, title: String): Int
@@ -17,6 +16,7 @@ interface DetailTodoUseCase {
     suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): Int
     suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
     suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
     suspend fun saveSelectedTodoId(todoId: String)
     fun getSelectedTodoId(): Flow<String>
 

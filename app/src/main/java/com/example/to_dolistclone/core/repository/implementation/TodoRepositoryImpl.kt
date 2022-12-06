@@ -2,13 +2,12 @@ package com.example.to_dolistclone.core.repository.implementation
 
 import android.util.Log
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
+import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoCategoryWithTodos
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoDetails
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithAttachments
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithTasks
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.toTodoAndNote
-import com.example.to_dolistclone.core.data.local.model.toTodo
-import com.example.to_dolistclone.core.data.local.model.toTodoCategory
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -70,11 +69,14 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
 
     override suspend fun updateTodoNotesAvailability(
         todoId: String, notesAvailability: Boolean
-    ): Int = updateTodoNotesAvailability(todoId, notesAvailability)
+    ): Int = local.updateTodoNotesAvailability(todoId, notesAvailability)
 
     override suspend fun updateTodoAttachmentsAvailability(
         todoId: String, attachmentsAvailability: Boolean
-    ): Int = updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
+    ): Int = local.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
+
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int =
+        local.updateTodoAlarmRef(todoId, alarmRef)
 
     override fun getTodo(todoId: String): Flow<Todo> = local.getTodo(todoId).map { it.toTodo() }
 
@@ -86,12 +88,6 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
         Log.e("todoRepository", "getTodos errorMsg: ${e.message}")
     }
 
-    override fun getTodos(from: Long, to: Long): Flow<List<Todo>> = local.getTodos().map { listEntityModel ->
-        listEntityModel.map { entityModel ->
-            entityModel.toTodo()
-        }
-    }
-
     override fun getTodoDetails(todoId: String): Flow<TodoDetails?> =
         local.getTodoDetails(todoId).map { it?.let { it.toTodoDetails() } }.catch { e ->
             Log.e("todoRepository", "getTodoDetails errorMsg: ${e.message}")
@@ -101,11 +97,12 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
 
     override suspend fun insertNote(note: Note): Long = local.insertNote(note.toNoteEntity())
 
+    override fun getNotes(): Flow<List<Note>> = local.getNotes()
+        .map { listEntityModel -> listEntityModel.map { entityModel -> entityModel.toNote() } }
+
     override suspend fun deleteNote(noteId: String): Int = local.deleteNote(noteId)
 
     override suspend fun insertTask(task: Task): Long = local.insertTask(task.toTaskEntity())
-
-    override suspend fun getTaskSize(): Int = local.getTaskSize()
 
     override suspend fun updateTaskPosition(taskId: String, position: Int): Int =
         local.updateTaskPosition(taskId, position)
@@ -119,6 +116,12 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
     override suspend fun insertTasks(tasks: List<Task>): LongArray =
         local.insertTasks(tasks.map { it.toTaskEntity() })
 
+    override fun getTasks(): Flow<List<Task>> = local.getTasks().map { listEntityModel ->
+        listEntityModel.map { entityModel ->
+            entityModel.toTask()
+        }
+    }
+
     override suspend fun deleteTask(taskId: String): Int = local.deleteTask(taskId)
 
     override suspend fun insertAttachment(attachment: Attachment): Long =
@@ -126,6 +129,13 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
 
     override suspend fun insertAttachments(attachments: List<Attachment>): LongArray =
         local.insertAttachments(attachments.map { it.toAttachmentEntity() })
+
+    override fun getAttachments(): Flow<List<Attachment>> =
+        local.getAttachments().map { listEntityModel ->
+            listEntityModel.map { entityModel ->
+                entityModel.toAttachment()
+            }
+        }
 
     override suspend fun deleteAttachment(attachmentId: String): Int =
         local.deleteAttachment(attachmentId)
@@ -143,26 +153,24 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
     override suspend fun deleteTodoCategory(todoCategoryName: String): Int =
         local.deleteTodoCategory(todoCategoryName)
 
-    override fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNote> =
+    override fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNote?> =
         local.getTodoAndNoteWithTodoId(todoId).map { entityModel ->
-            entityModel.toTodoAndNote()
+            entityModel?.toTodoAndNote()
         }
 
-    override fun getTodoWithTasks(todoId: String): Flow<TodoWithTasks> =
+    override fun getTodoWithTasks(todoId: String): Flow<TodoWithTasks?> =
         local.getTodoWithTasks(todoId).map { entityModel ->
-            entityModel.toTodoWithTasks()
+            entityModel?.toTodoWithTasks()
         }
 
-    override fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachments> =
+    override fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachments?> =
         local.getTodoWithAttachments(todoId).map { entityModel ->
-            entityModel.toTodoWithAttachments()
+            entityModel?.toTodoWithAttachments()
         }
 
-    override fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<List<TodoCategoryWithTodos>> =
-        local.getTodoCategoryWithTodos(todoCategoryName).map { listEntityModel ->
-            listEntityModel.map { entityModel ->
-                entityModel.toTodoCategoryWithTodos()
-            }
+    override fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<TodoCategoryWithTodos?> =
+        local.getTodoCategoryWithTodos(todoCategoryName).map { entityModel ->
+            entityModel?.toTodoCategoryWithTodos()
         }
 
     override fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodos>> =
@@ -176,8 +184,7 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
         local.saveSelectedTodoId(todoId)
     }
 
-    override fun getSelectedTodoId(): Flow<String> =
-        local.getSelectedTodoId()
+    override fun getSelectedTodoId(): Flow<String> = local.getSelectedTodoId()
 
     override fun getSelectedPieGraphOption(): Flow<Int> = local.getSelectedPieGraphOption()
 

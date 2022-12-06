@@ -23,7 +23,6 @@ import com.github.mikephil.charting.formatter.DefaultValueFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
 import java.util.*
 import javax.inject.Inject
 
@@ -38,16 +37,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     private val viewModel: ProfileViewModel by viewModels()
 
-    private var today: LocalDate? = null
-
     private lateinit var rvAdapter: UpcomingWeeklyTodoAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupRv()
-
-        today = dateUtil.getCurrentDate()
 
         binding.pieChartFilter.setOnClickListener {
             setupPieChartPopupMenu()
@@ -73,10 +68,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             binding.completedAmountTv.text = uiState.todos.count { it.isComplete }.toString()
             binding.pendingAmountTv.text = uiState.todos.count { !it.isComplete }.toString()
 
-            setupBarChart(uiState.barChartData)
-            setupPieChart(uiState.pieChartData)
-            Log.i("ProfileFragment", "pie chart data size - ${uiState.pieChartData}")
-            rvAdapter.submitList(uiState.recyclerViewData)
+            setupBarChart(viewModel.generateBarChartData(uiState.todos, uiState.selectedDate))
+            setupPieChart(viewModel.generatePieChartData(uiState.todos, uiState.pieGraphFilter, dateUtil.getCurrentDate().plusDays(1)))
+
+            rvAdapter.submitList(
+                viewModel.generateIncompleteTodosForTheNext7Days(
+                    uiState.todos, dateUtil.getCurrentDateTimeLong()
+                )
+            )
 
             binding.dateRangeTv.text = getDateRangeText(uiState.selectedDate)
 
@@ -156,7 +155,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             setScaleEnabled(false)
 
             if (data.isNotEmpty()) {
-                setVisibleYRange(0F, (data.maxOf { it.y } + 5), YAxis.AxisDependency.LEFT)
+                val max = if (data.maxOf { it.y } < 10) {
+                    10F
+                } else {
+                    data.maxOf { it.y } + 5
+                }
+                setVisibleYRange(0F, max, YAxis.AxisDependency.LEFT)
             }
             invalidate()
         }
@@ -224,7 +228,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     private fun setupRv() {
         rvAdapter = UpcomingWeeklyTodoAdapter(dateUtil)
-        binding.weeklyTaskRv.adapter = rvAdapter
+        binding.weeklyTodosRv.adapter = rvAdapter
     }
 
     private fun getDateRangeText(selectedDate: Long?): String {

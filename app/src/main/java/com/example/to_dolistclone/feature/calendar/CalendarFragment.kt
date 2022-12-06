@@ -60,10 +60,10 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
         val daysOfWeek = daysOfWeek()
         setupCalendar(startMonth, endMonth, currentMonth, daysOfWeek)
         setupCalendarTodosRv()
-        binding.fabFade.setImageResource(R.drawable.fab_bg)
         pulseAnimation(binding.fabFade)
+
         binding.add.setOnClickListener {
-            dialogsManager.createTaskModalBottomSheet(selectedDate)
+            dialogsManager.showTodoShortcut(selectedDate)
         }
 
         collectLatestLifecycleFlow(viewModel.calendarFragmentUiState) { uiState ->
@@ -141,11 +141,11 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
         when (date) {
             today -> {
                 textView.setBackgroundResource(R.drawable.calendar_today_bg)
-                eventInd.makeInVisible()
+                eventInd.visibility = View.INVISIBLE
             }
             selectedDate -> {
                 textView.setBackgroundResource(R.drawable.calendar_selected_bg)
-                eventInd.makeInVisible()
+                eventInd.visibility = View.INVISIBLE
             }
             else -> {
                 textView.background = null
@@ -200,8 +200,8 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
 
     private fun setupCalendarTodosRv() {
         calendarTodosAdapter = CalendarTodosAdapter(dateUtil) {
+            viewModel.saveSelectedTodoId(it.todoId)
             val intent = Intent(requireContext(), DetailsActivity::class.java)
-            intent.putExtra("todoId", it.todoId)
             startActivity(intent)
         }
         binding.calendarTodoRv.adapter = calendarTodosAdapter
@@ -237,12 +237,4 @@ fun DayOfWeek.displayText(uppercase: Boolean = false): String {
 fun Month.displayText(short: Boolean = true): String {
     val style = if (short) TextStyle.SHORT else TextStyle.FULL
     return getDisplayName(style, Locale.getDefault())
-}
-
-fun View.makeVisible() {
-    visibility = View.VISIBLE
-}
-
-fun View.makeInVisible() {
-    visibility = View.INVISIBLE
 }

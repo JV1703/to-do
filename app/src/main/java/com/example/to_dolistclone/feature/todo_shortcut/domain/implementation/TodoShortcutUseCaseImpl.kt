@@ -19,7 +19,7 @@ class TodoShortcutUseCaseImpl @Inject constructor(private val todoRepository: To
         return todoRepository.insertTasks(filteredTasks)
     }
 
-    suspend fun insertTodoCategory(categoryName: String) =
+    suspend fun insertTodoCategory(categoryName: String): Long =
         todoRepository.insertTodoCategory(TodoCategory(categoryName))
 
     fun getTodoCategories() = todoRepository.getTodoCategories()

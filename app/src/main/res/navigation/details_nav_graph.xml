@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/noteFragment"
-        android:name="com.example.to_dolistclone.feature.detail.ui.note.NoteFragment"
+        android:name="com.example.to_dolistclone.feature.detail.ui.notes.NoteFragment"
         android:label="fragment_note"
         tools:layout="@layout/fragment_note" />
 </navigation>

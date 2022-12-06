@@ -15,7 +15,6 @@ import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.utils.ui.makeToast
 import com.example.to_dolistclone.databinding.DateTimePickerDialogFragmentBinding
 import com.example.to_dolistclone.feature.calendar.displayText
-import com.example.to_dolistclone.feature.calendar.makeInVisible
 import com.example.to_dolistclone.feature.calendar.misc.MonthDayViewContainer
 import com.kizitonwose.calendar.core.*
 import com.kizitonwose.calendar.view.MonthDayBinder
@@ -85,7 +84,7 @@ class DateTimePickerDialogFragment : DialogFragment() {
         }
 
         binding.reminderTv.setOnClickListener {
-            dialogsManager.createReminderDateTimePickerDialog {
+            dialogsManager.showReminderDateTimePickerDialog {
                 val dateFormatter =
                     DateTimeFormatter.ofPattern("EEE, MMM dd, yyyy", Locale.getDefault())
                 val timeFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault())
@@ -156,11 +155,11 @@ class DateTimePickerDialogFragment : DialogFragment() {
         when (date) {
             today -> {
                 textView.setBackgroundResource(R.drawable.calendar_today_bg)
-                eventInd.makeInVisible()
+                eventInd.visibility = View.INVISIBLE
             }
             selectedDate -> {
                 textView.setBackgroundResource(R.drawable.calendar_selected_bg)
-                eventInd.makeInVisible()
+                eventInd.visibility = View.INVISIBLE
             }
             else -> {
                 textView.background = null

@@ -1,5 +1,8 @@
 package com.example.to_dolistclone.core.repository.abstraction
 
+import com.example.to_dolistclone.core.data.local.model.AttachmentEntity
+import com.example.to_dolistclone.core.data.local.model.NoteEntity
+import com.example.to_dolistclone.core.data.local.model.TaskEntity
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -45,21 +48,21 @@ interface TodoRepository {
 
     suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
 
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
+
     fun getTodoDetails(todoId: String): Flow<TodoDetails?>
 
     fun getTodos(): Flow<List<Todo>>
-
-    fun getTodos(from: Long, to: Long): Flow<List<Todo>>
 
     suspend fun deleteTodo(todoId: String): Int
 
     suspend fun insertNote(note: Note): Long
 
+    fun getNotes(): Flow<List<Note>>
+
     suspend fun deleteNote(noteId: String): Int
 
     suspend fun insertTask(task: Task): Long
-
-    suspend fun getTaskSize(): Int
 
     suspend fun updateTaskPosition(taskId: String, position: Int): Int
 
@@ -69,11 +72,15 @@ interface TodoRepository {
 
     suspend fun insertTasks(tasks: List<Task>): LongArray
 
+    fun getTasks(): Flow<List<Task>>
+
     suspend fun deleteTask(taskId: String): Int
 
     suspend fun insertAttachment(attachment: Attachment): Long
 
     suspend fun insertAttachments(attachments: List<Attachment>): LongArray
+
+    fun getAttachments(): Flow<List<Attachment>>
 
     suspend fun deleteAttachment(attachmentId: String): Int
 
@@ -83,13 +90,13 @@ interface TodoRepository {
 
     suspend fun deleteTodoCategory(todoCategoryName: String): Int
 
-    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNote>
+    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNote?>
 
-    fun getTodoWithTasks(todoId: String): Flow<TodoWithTasks>
+    fun getTodoWithTasks(todoId: String): Flow<TodoWithTasks?>
 
-    fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachments>
+    fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachments?>
 
-    fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<List<TodoCategoryWithTodos>>
+    fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<TodoCategoryWithTodos?>
 
     fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodos>>
 

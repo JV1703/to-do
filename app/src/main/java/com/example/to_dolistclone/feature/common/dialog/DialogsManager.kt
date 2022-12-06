@@ -8,27 +8,27 @@ import javax.inject.Inject
 
 class DialogsManager @Inject constructor(private val fragmentManager: FragmentManager) {
 
-    fun createTaskModalBottomSheet(date: LocalDate? = null) {
+    fun showTodoShortcut(date: LocalDate? = null) {
         val todoShortcut = TodoShortcut(date)
         todoShortcut.show(fragmentManager, TodoShortcut.TAG)
     }
 
-    fun createAddCategoryDialogFragment(saveClickListener: (String) -> Unit) {
+    fun showAddCategoryDialogFragment(saveClickListener: (String) -> Unit) {
         val addCategoryDialogFragment = AddCategoryDialogFragment(saveClickListener)
         addCategoryDialogFragment.show(fragmentManager, AddCategoryDialogFragment.TAG)
     }
 
-    fun createDateTimePickerDialog() {
+    fun showDateTimePickerDialog() {
         val dateTimePickerDialogFragment = DateTimePickerDialogFragment()
         dateTimePickerDialogFragment.show(fragmentManager, DateTimePickerDialogFragment.TAG)
     }
 
-    fun createReminderDialog() {
+    fun showReminderDialog() {
         val reminderDialogFragment = ReminderDialogFragment()
         reminderDialogFragment.show(fragmentManager, ReminderDialogFragment.TAG)
     }
 
-    fun createReminderDateTimePickerDialog(onClick: (LocalDateTime) -> Unit) {
+    fun showReminderDateTimePickerDialog(onClick: (LocalDateTime) -> Unit) {
         val reminderDateTimePickerDialog = ReminderDateTimePickerDialogFragment { onClick(it) }
         reminderDateTimePickerDialog.show(fragmentManager, ReminderDateTimePickerDialogFragment.TAG)
     }

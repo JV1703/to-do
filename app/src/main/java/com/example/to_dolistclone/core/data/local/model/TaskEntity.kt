@@ -15,7 +15,7 @@ import com.example.to_dolistclone.core.domain.model.Task
         onDelete = ForeignKey.CASCADE
     )]
 )
-class TaskEntity(
+data class TaskEntity(
     @PrimaryKey(autoGenerate = false) val taskId: String,
     val task: String,
     val isComplete: Boolean = false,

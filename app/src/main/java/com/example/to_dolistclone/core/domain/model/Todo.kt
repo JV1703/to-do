@@ -14,7 +14,7 @@ data class Todo(
     val tasks: Boolean = false,
     val notes: Boolean = false,
     val attachments: Boolean = false,
-    val alarmRef: Int,
+    val alarmRef: Int?,
     val todoCategoryRefName: String
 )
 

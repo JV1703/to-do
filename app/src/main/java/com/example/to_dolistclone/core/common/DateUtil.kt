@@ -1,6 +1,5 @@
 package com.example.to_dolistclone.core.common
 
-import com.kizitonwose.calendar.core.WeekDay
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
@@ -23,8 +22,20 @@ class DateUtil {
         return date.toInstant().atZone(zoneId).toLocalDate()
     }
 
+    fun toLocalDate(date: LocalDateTime): LocalDate {
+        return date.toLocalDate()
+    }
+
     fun toLocalDate(date: String): LocalDate {
         return LocalDate.parse(date)
+    }
+
+    fun toLocalDate(
+        date: String, pattern: String, locale: Locale = Locale.getDefault()
+    ): LocalDate {
+        val formatter = DateTimeFormatter.ofPattern(pattern)
+        formatter.withLocale(locale)
+        return LocalDate.parse(date, formatter)
     }
 
     fun toLocalDate(date: Long): LocalDate {
@@ -99,7 +110,7 @@ class DateUtil {
         return currentDate.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
     }
 
-    fun getFirstDateOfWeek(date: LocalDate): LocalDate{
+    fun getFirstDateOfWeek(date: LocalDate): LocalDate {
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
         return date.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
     }

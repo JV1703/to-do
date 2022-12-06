@@ -46,6 +46,8 @@ interface LocalDataSource {
 
     suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
 
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
+
     fun getTodoDetails(todoId: String): Flow<TodoDetailsEntity?>
 
     fun getTodos(): Flow<List<TodoEntity>>
@@ -55,6 +57,8 @@ interface LocalDataSource {
     suspend fun deleteTodo(todoId: String): Int
 
     suspend fun insertNote(note: NoteEntity): Long
+
+    fun getNotes(): Flow<List<NoteEntity>>
 
     suspend fun deleteNote(noteId: String): Int
 
@@ -70,13 +74,17 @@ interface LocalDataSource {
 
     suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
 
+    fun getTasks(): Flow<List<TaskEntity>>
+
     suspend fun deleteTask(taskId: String): Int
 
     suspend fun insertAttachment(attachment: AttachmentEntity): Long
 
-    suspend fun deleteAttachment(attachmentId: String): Int
-
     suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray
+
+    fun getAttachments(): Flow<List<AttachmentEntity>>
+
+    suspend fun deleteAttachment(attachmentId: String): Int
 
     suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long
 
@@ -84,13 +92,13 @@ interface LocalDataSource {
 
     suspend fun deleteTodoCategory(todoCategoryName: String): Int
 
-    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity>
+    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity?>
 
-    fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity>
+    fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity?>
 
-    fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachmentsEntity>
+    fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachmentsEntity?>
 
-    fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<List<TodoCategoryWithTodosEntity>>
+    fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<TodoCategoryWithTodosEntity?>
 
     fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodosEntity>>
 

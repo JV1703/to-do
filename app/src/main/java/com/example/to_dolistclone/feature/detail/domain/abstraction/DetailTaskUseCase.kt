@@ -2,7 +2,7 @@ package com.example.to_dolistclone.feature.detail.domain.abstraction
 
 import com.example.to_dolistclone.core.domain.model.Task
 
-interface TaskUseCase {
+interface DetailTaskUseCase {
 
     suspend fun insertTasks(tasks: List<Task>): LongArray
     suspend fun insertTask(task: Task): Long

@@ -1,6 +1,5 @@
 package com.example.to_dolistclone.feature.profile.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.to_dolistclone.core.common.DateUtil
@@ -20,10 +19,8 @@ import javax.inject.Inject
 data class ProfileUiState(
     val selectedDate: Long = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()
         .toEpochMilli(),
+    val pieGraphFilter: PieGraphFilter = PieGraphFilter.WEEK,
     val todos: List<Todo> = emptyList(),
-    val barChartData: List<BarEntry> = emptyList(),
-    val recyclerViewData: List<Todo> = emptyList(),
-    val pieChartData: List<PieEntry> = emptyList(),
 )
 
 @HiltViewModel
@@ -32,7 +29,7 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val selectedDate = MutableStateFlow(dateUtil.getCurrentDateTimeLong())
-    private val todos = todoUseCase.todos
+    private val todos = todoUseCase.todosSortedByCompletedOn
 
     val pieGraphFilter = todoUseCase.getSelectedPieGraphOption().map {
         when (it) {
@@ -49,24 +46,13 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private val barGraphData = selectedDate.flatMapLatest { date ->
-        getBarGraphData(date)
-    }
-    private val recyclerViewData = getRecyclerViewData(dateUtil.getCurrentDateTimeLong())
-    private val pieGraphData = pieGraphFilter.flatMapLatest { filter ->
-        getPieChartData(filter)
-    }
-
     val uiState = combine(
-        selectedDate, todos, barGraphData, recyclerViewData, pieGraphData
-    ) { selectedDate, todos, barGraphData, recyclerViewData, pieGraphData ->
-        Log.i("profileUiState", "triggered")
+        todos, selectedDate, pieGraphFilter
+    ) { todos, selectedDate, pieGraphFilter ->
         ProfileUiState(
             selectedDate = selectedDate,
-            todos = todos,
-            barChartData = barGraphData,
-            recyclerViewData = recyclerViewData,
-            pieChartData = pieGraphData
+            pieGraphFilter = pieGraphFilter,
+            todos = todos
         )
     }.stateIn(
         scope = viewModelScope,
@@ -74,16 +60,16 @@ class ProfileViewModel @Inject constructor(
         initialValue = ProfileUiState()
     )
 
-    private fun getBarGraphData(date: Long): Flow<List<BarEntry>> {
+    fun generateBarChartData(todos: List<Todo>, date: Long): List<BarEntry>{
         val firstDateOfWeek = dateUtil.toLong(dateUtil.getFirstDateOfWeek(date))
         val lastDateOfWeek = dateUtil.toLong(dateUtil.getLastDateOfWeek(date))
 
-        return todoUseCase.getCompletedTodosWithinTimeFrame(firstDateOfWeek, lastDateOfWeek)
-            .map { todos ->
-                val test = todos.groupingBy { dateUtil.toLocalDate(it.completedOn!!).dayOfWeek }
-                    .eachCount()
-                generateBarEntry(test)
-            }
+        val data = todoUseCase.getCompletedTodosWithinTimeRange(todos, firstDateOfWeek, lastDateOfWeek).groupingBy {
+            dateUtil.toLocalDate(it.completedOn!!).dayOfWeek
+        }.eachCount()
+
+
+        return generateBarEntry(data)
     }
 
     private fun generateBarEntry(data: Map<DayOfWeek, Int>): List<BarEntry> {
@@ -108,23 +94,19 @@ class ProfileViewModel @Inject constructor(
         return output
     }
 
-    private fun getPieChartData(timeFrame: PieGraphFilter): Flow<List<PieEntry>> {
-        val data = todoUseCase.getTodosInTimeFrame(timeFrame)
-        return data.map { todos ->
-            todos.groupingBy { it.todoCategoryRefName }.eachCount().toMutableMap().mapKeys {
-                "${it.key} (${it.value})"
-            }.entries.map {
-                PieEntry(it.value.toFloat(), it.key)
-            }
+    fun generatePieChartData(todos: List<Todo>, timeFrame: PieGraphFilter, date: LocalDate): List<PieEntry>{
+        val data = todoUseCase.getTodosInTimeFrame(todos, timeFrame, date)
+        return data.groupingBy { it.todoCategoryRefName }.eachCount().toMutableMap().mapKeys {
+            "${it.key} (${it.value})"
+        }.entries.map {
+            PieEntry(it.value.toFloat(), it.key)
         }
     }
 
-    private fun getRecyclerViewData(date: Long): Flow<List<Todo>> {
+    fun generateIncompleteTodosForTheNext7Days(todos: List<Todo>, date: Long): List<Todo>{
         val startDate = dateUtil.toLocalDate(date).plusDays(1)
         val endDate = dateUtil.toLocalDate(date).plusWeeks(1)
-        return todoUseCase.getTodosWithinTimeFrame(
-            dateUtil.toLong(startDate), dateUtil.toLong(endDate)
-        )
+        return todoUseCase.getTodosWithinTimeRange(todos, dateUtil.toLong(startDate), dateUtil.toLong(endDate))
     }
 
     fun nextWeek(date: Long): LocalDate {

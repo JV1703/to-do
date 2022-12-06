@@ -160,6 +160,11 @@ class LocalDataSourceImpl @Inject constructor(
         todoDao.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
     }
 
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int =
+        withContext(dispatcherIO) {
+            todoDao.updateTodoAlarmRef(todoId, alarmRef)
+        }
+
     override fun getTodo(todoId: String): Flow<TodoEntity> =
         todoDao.getTodo(todoId).flowOn(dispatcherIO)
 
@@ -177,6 +182,8 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertNote(note: NoteEntity): Long =
         withContext(dispatcherIO) { todoDao.insertNote(note) }
+
+    override fun getNotes(): Flow<List<NoteEntity>> = todoDao.getNotes().flowOn(dispatcherIO)
 
     override suspend fun deleteNote(noteId: String): Int =
         withContext(dispatcherIO) { todoDao.deleteNote(noteId) }
@@ -204,6 +211,8 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun insertTasks(tasks: List<TaskEntity>): LongArray =
         withContext(dispatcherIO) { todoDao.insertTasks(tasks) }
 
+    override fun getTasks(): Flow<List<TaskEntity>> = todoDao.getTasks().flowOn(dispatcherIO)
+
     override suspend fun deleteTask(taskId: String): Int =
         withContext(dispatcherIO) { todoDao.deleteTask(taskId) }
 
@@ -212,6 +221,9 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray =
         withContext(dispatcherIO) { todoDao.insertAttachments(attachments) }
+
+    override fun getAttachments(): Flow<List<AttachmentEntity>> =
+        todoDao.getAttachments().flowOn(dispatcherIO)
 
     override suspend fun deleteAttachment(attachmentId: String): Int =
         withContext(dispatcherIO) { todoDao.deleteAttachment(attachmentId) }
@@ -225,16 +237,16 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun deleteTodoCategory(todoCategoryName: String): Int =
         withContext(dispatcherIO) { todoDao.deleteTodoCategory(todoCategoryName) }
 
-    override fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity> =
+    override fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity?> =
         todoDao.getTodoAndNoteWithTodoId(todoId).flowOn(dispatcherIO)
 
-    override fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity> =
+    override fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity?> =
         todoDao.getTodoWithTasks(todoId).flowOn(dispatcherIO)
 
-    override fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachmentsEntity> =
+    override fun getTodoWithAttachments(todoId: String): Flow<TodoWithAttachmentsEntity?> =
         todoDao.getTodoWithAttachments(todoId).flowOn(dispatcherIO)
 
-    override fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<List<TodoCategoryWithTodosEntity>> =
+    override fun getTodoCategoryWithTodos(todoCategoryName: String): Flow<TodoCategoryWithTodosEntity?> =
         todoDao.getTodoCategoryWithTodos(todoCategoryName).flowOn(dispatcherIO)
 
     override fun getTodoCategoriesWithTodos(): Flow<List<TodoCategoryWithTodosEntity>> =

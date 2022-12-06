@@ -1,4 +1,4 @@
-package com.example.to_dolistclone.feature.todo
+package com.example.to_dolistclone.feature.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,11 +28,11 @@ class TodoViewModel @Inject constructor(
     private val todoUseCase: TodoUseCase, private val dateUtil: DateUtil
 ) : ViewModel() {
 
-    private val todos = todoUseCase.getMappedTodos()
+    private val mappedTodos = todoUseCase.getMappedTodos(dateUtil.getCurrentDate())
     private val showStatus = todoUseCase.getShowStatus()
 
     val todoFragmentUiState = combine(
-        todos, showStatus
+        mappedTodos, showStatus
     ) { todos, showStatus ->
         TodoFragmentUiState(
             showPrevious = showStatus["previous"] ?: true,
@@ -82,6 +82,12 @@ class TodoViewModel @Inject constructor(
     fun saveShowCompletedToday(isShow: Boolean) {
         viewModelScope.launch {
             todoUseCase.saveShowCompletedToday(isShow)
+        }
+    }
+
+    fun saveSelectedTodoId(todoId: String){
+        viewModelScope.launch {
+            todoUseCase.saveSelectedTodoId(todoId)
         }
     }
 }

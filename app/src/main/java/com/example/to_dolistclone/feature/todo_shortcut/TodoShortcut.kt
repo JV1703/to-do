@@ -9,10 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
-import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.common.*
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.core.utils.ui.makeToast
@@ -28,12 +26,11 @@ import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
+class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var dialogsManager: DialogsManager
@@ -48,11 +45,12 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
 
     private var _binding: ModalBottomSheetContentBinding? = null
     private val binding get() = _binding!!
+
+
     private lateinit var tasksAdapter: TaskAdapter
     private lateinit var alarmManager: AlarmManager
 
-    private val zoneId = ZoneId.systemDefault()
-    private var dueDate: Long? = date?.atStartOfDay()?.atZone(zoneId)?.toInstant()?.toEpochMilli()
+    private var dueDate: Long? = null
     private var reminderDate: Long? = null
 
     private val todoId = UUID.randomUUID().toString()
@@ -73,9 +71,14 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         setupTasksAdapter()
+
+        dueDate = date?.let {
+            dateUtil.toLong(it)
+        }
 
         dueDate?.let {
             binding.deadline.text = getDateString(dateUtil.toLocalDate(it))
@@ -83,7 +86,9 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
         }
 
         binding.addSubTask.setOnClickListener {
+            val taskSize = tasksAdapter.getTasks().size
             tasksAdapter.addTask()
+            binding.taskRv.scrollToPosition(taskSize - 1)
         }
 
         binding.insertTodoBtn.setOnClickListener {
@@ -100,7 +105,7 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
         }
 
         binding.reminder.setOnClickListener {
-            dialogsManager.createReminderDateTimePickerDialog {
+            dialogsManager.showReminderDateTimePickerDialog {
                 val dateString = getDateString(it)
                 val timeString = dateUtil.toString(it, "hh:mm a", Locale.getDefault())
                 reminderDate = dateUtil.toLong(it)
@@ -140,10 +145,6 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
         _binding = null
     }
 
-    companion object {
-        const val TAG = "ModalBottomSheet"
-    }
-
     private fun getDateString(localDate: LocalDate): String {
         return if (localDate.year == LocalDate.now().year) {
             dateUtil.toString(localDate, "EEE, MMM dd", Locale.getDefault())
@@ -168,7 +169,7 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
         ) { menuItem ->
             when (menuItem.title) {
                 "Create New" -> {
-                    dialogsManager.createAddCategoryDialogFragment { categoryName ->
+                    dialogsManager.showAddCategoryDialogFragment { categoryName ->
                         if (categoryName.isNotEmpty()) {
                             viewModel.insertTodoCategory(categoryName)
                             viewModel.updateSelectedCategory(categoryName)
@@ -181,7 +182,11 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
                 else -> {
                     makeToast(menuItem.title.toString())
                     viewModel.updateSelectedCategory(menuItem.title.toString())
-                    binding.category.text = setStringSpanColor(requireContext(), menuItem.title.toString(), android.R.color.tab_indicator_text)
+                    binding.category.text = setStringSpanColor(
+                        requireContext(),
+                        menuItem.title.toString(),
+                        android.R.color.tab_indicator_text
+                    )
                     true
                 }
             }
@@ -210,14 +215,16 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
                 tasks = !isTaskEmpty,
                 notes = false,
                 attachments = false,
-                alarmRef = alarmRef,
+                alarmRef = if (reminderDate != null) alarmRef else null,
                 todoCategoryRefName = binding.category.text.toString()
             )
 
             viewModel.insertTodo(tasksProxy, todo)
 
             if (todo.reminder == null) {
-                cancelAlarm(todo.alarmRef)
+                todo.alarmRef?.let {
+                    cancelAlarm(it)
+                }
             } else {
                 setAlarm(todo.reminder, todo.title)
             }
@@ -229,14 +236,15 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
     private fun setAlarm(reminderAt: Long, title: String) {
         val flags =
             PendingIntent.FLAG_UPDATE_CURRENT or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
-        val noCreateFlag =
-            PendingIntent.FLAG_NO_CREATE or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         intent.putExtra(TODO_ID, todoId)
         intent.putExtra(ALARM_REF, alarmRef)
         intent.putExtra(NOTIFICATION_TITLE, title)
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), alarmRef, intent, flags)
         alarmManager.setExact(AlarmManager.RTC, reminderAt, pendingIntent)
+
+        val noCreateFlag =
+            PendingIntent.FLAG_NO_CREATE or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
 
         val testAlarm = (PendingIntent.getBroadcast(
             requireContext(),
@@ -258,5 +266,9 @@ class TodoShortcut(date: LocalDate? = null) : BottomSheetDialogFragment() {
         val intent = Intent(requireContext(), AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), alarmRef, intent, flags)
         alarmManager.cancel(pendingIntent)
+    }
+
+    companion object {
+        const val TAG = "ModalBottomSheet"
     }
 }

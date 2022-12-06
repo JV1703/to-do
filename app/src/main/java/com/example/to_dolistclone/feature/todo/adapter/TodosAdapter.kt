@@ -3,6 +3,7 @@ package com.example.to_dolistclone.feature.todo.adapter
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,51 +13,38 @@ import com.example.to_dolistclone.databinding.TodoItemBinding
 
 class TodosAdapter(
     private val dateUtil: DateUtil,
-    private val onClickCheckBox: (Todo) -> Unit,
-    private val onClickNavigation: (Todo) -> Unit
-) :
-    ListAdapter<Todo, TodosAdapter.TodosAdapterViewHolder>(DiffUtilCallback) {
+    private val clickListener: TodosAdapterClickListener
+) : ListAdapter<Todo, TodosAdapter.TodosAdapterViewHolder>(DiffUtilCallback) {
 
     inner class TodosAdapterViewHolder(
-        private val binding: TodoItemBinding,
-        private val dateUtil: DateUtil
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+        private val binding: TodoItemBinding, private val dateUtil: DateUtil
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun setupListener() {
-            binding.taskCb.setOnCheckedChangeListener { _, isChecked ->
-                onClickCheckBox(
-                    getItem(absoluteAdapterPosition).copy(
-                        isComplete = isChecked,
-                        completedOn = if (isChecked) dateUtil.getCurrentDateTimeLong() else null
-                    )
-                )
 
-                if (isChecked) {
-                    binding.taskTv.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                } else {
-                    binding.taskTv.paintFlags = 0
-                }
+            binding.taskCb.setOnClickListener {
+                val todo = getItem(absoluteAdapterPosition)
+                clickListener.complete(todo.todoId, !todo.isComplete)
+                setStrikeThrough(binding.taskTv, todo.isComplete)
             }
+
         }
 
         fun bind(todo: Todo) {
+            setStrikeThrough(binding.taskTv, todo.isComplete)
             binding.taskCb.isChecked = todo.isComplete
             binding.taskTv.text = todo.title
-
-            if (todo.isComplete) {
-                binding.taskCb.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            } else {
-                binding.taskCb.paintFlags = 0
-            }
         }
+    }
+
+    private fun setStrikeThrough(textView: TextView, isComplete: Boolean) {
+        textView.paintFlags = if (isComplete) Paint.STRIKE_THRU_TEXT_FLAG else 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodosAdapterViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return TodosAdapterViewHolder(
-            TodoItemBinding.inflate(layoutInflater, parent, false),
-            dateUtil
+            TodoItemBinding.inflate(layoutInflater, parent, false), dateUtil
         )
     }
 
@@ -65,7 +53,7 @@ class TodosAdapter(
         holder.setupListener()
         holder.bind(todo)
         holder.itemView.setOnClickListener {
-            onClickNavigation(todo)
+            clickListener.navigate(todo)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.to_dolistclone.feature.detail.ui.note
+package com.example.to_dolistclone.feature.detail.ui.notes
 
 import android.os.Bundle
 import android.view.View
@@ -7,7 +7,6 @@ import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
-import com.example.to_dolistclone.core.utils.ui.makeToast
 import com.example.to_dolistclone.databinding.FragmentNoteBinding
 import com.example.to_dolistclone.feature.BaseFragment
 import com.example.to_dolistclone.feature.detail.viewmodel.DetailsViewModel
@@ -59,11 +58,12 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>(FragmentNoteBinding::infl
 
                 if (binding.titleEt.text?.isNotEmpty() == true || binding.bodyEt.text?.isNotEmpty() == true) {
                     viewModel.insertNote(newNote)
+                    viewModel.updateTodoNotesAvailability(todoId, true)
                 } else {
                     viewModel.deleteNote(noteId = todoId)
+                    viewModel.updateTodoNotesAvailability(todoId, false)
                 }
 
-                makeToast("haha")
                 isEnabled = false
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }

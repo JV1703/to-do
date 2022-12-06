@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.FileProvider
@@ -28,8 +29,8 @@ import com.example.to_dolistclone.core.domain.model.Task
 import com.example.to_dolistclone.core.utils.ui.*
 import com.example.to_dolistclone.databinding.FragmentDetailsBinding
 import com.example.to_dolistclone.feature.BaseFragment
-import com.example.to_dolistclone.feature.common.popup_menu.CategoryPopupMenu
 import com.example.to_dolistclone.feature.common.dialog.DialogsManager
+import com.example.to_dolistclone.feature.common.popup_menu.CategoryPopupMenu
 import com.example.to_dolistclone.feature.detail.adapter.*
 import com.example.to_dolistclone.feature.detail.adapter.attachment.DetailAttachmentAdapter
 import com.example.to_dolistclone.feature.detail.adapter.attachment.DetailAttachmentAdapterListener
@@ -41,6 +42,7 @@ import java.io.File
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
+import kotlin.random.Random.Default.nextInt
 
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBinding::inflate),
@@ -101,14 +103,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             }
         }
 
-        binding.checkbox.setOnCheckedChangeListener { _, isComplete ->
-            todoId?.let {
-                viewModel.updateTodoCompletion(
-                    todoId = it, isComplete = isComplete
-                )
-            }
-        }
-
         binding.dueDateTv.transformIntoDatePicker(requireContext()) { localDate ->
             binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(localDate))
             todoId?.let {
@@ -153,22 +147,32 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             binding.titleTv.setText(uiState.todoDetails?.todo?.title)
 
             binding.categoryTv.text = uiState.todoDetails?.todo?.todoCategoryRefName
-
-            binding.dueDateTvClear.isGone = uiState.todoDetails?.todo?.deadline == null
-            binding.reminderTvClear.isGone = uiState.todoDetails?.todo?.reminder == null
-            binding.repeatTvClear.isGone = uiState.todoDetails?.todo?.repeat.isNullOrEmpty()
-            binding.notesTvClear.isGone = uiState.todoDetails?.note == null
-            Log.i("attachment", "${uiState.todoDetails?.attachments == null} ")
-
-            if(uiState.todoDetails?.todo?.deadline == null){
-                binding.dueDateTv.text = "Due Date"
-            }else{
-                binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(uiState.todoDetails.todo.deadline))
+            binding.categoryContainer.setOnClickListener {
+                showCategoryPopupMenu(
+                    it, uiState.categories, uiState.todoDetails?.todo?.todoCategoryRefName
+                )
             }
 
-            if(uiState.todoDetails?.todo?.reminder == null){
+            binding.dueDateTvClear.isGone = uiState.todoDetails?.todo?.deadline == null
+
+            binding.reminderTvClear.isGone = uiState.todoDetails?.todo?.reminder == null
+
+            binding.repeatTvClear.isGone = uiState.todoDetails?.todo?.repeat.isNullOrEmpty()
+
+            binding.notesTvClear.isGone = uiState.todoDetails?.note == null
+
+            binding.attachmentRv.isGone = uiState.todoDetails?.attachments.isNullOrEmpty()
+
+            if (uiState.todoDetails?.todo?.deadline == null) {
+                binding.dueDateTv.text = "Due Date"
+            } else {
+                binding.dueDateTv.text =
+                    getDateString(dateUtil.toLocalDateTime(uiState.todoDetails.todo.deadline))
+            }
+
+            if (uiState.todoDetails?.todo?.reminder == null) {
                 binding.reminderTv.text = "Reminder"
-            }else{
+            } else {
                 binding.reminderTv.text = generateReminderString(uiState.todoDetails.todo.reminder)
             }
 
@@ -178,14 +182,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 binding.notesTv.text = uiState.todoDetails.note.title
             }
 
-            binding.categoryContainer.setOnClickListener {
-                showCategoryPopupMenu(
-                    it, uiState.categories, uiState.todoDetails?.todo?.todoCategoryRefName
-                )
-            }
-
-            binding.attachmentRv.isGone = uiState.todoDetails?.attachments.isNullOrEmpty()
-
             uiState.todoDetails?.todo?.createdOn?.let {
                 binding.createdOnTv.text =
                     "Created on ${getDateString(dateUtil.toLocalDateTime(it))}"
@@ -193,26 +189,46 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
             uiState.todoDetails?.todo?.let { todo ->
 
-                binding.checkbox.isChecked = todo.isComplete
+                val isComplete = todo.isComplete
+                binding.checkbox.isChecked = isComplete
+
+                binding.checkbox.setOnClickListener {
+                    viewModel.updateTodoCompletion(
+                        todoId = todo.todoId, isComplete = !isComplete
+                    )
+                }
 
                 binding.reminderTv.setOnClickListener {
-                    dialogsManager.createReminderDateTimePickerDialog { reminder ->
+                    dialogsManager.showReminderDateTimePickerDialog { reminder ->
                         binding.reminderTv.text = generateReminderString(dateUtil.toLong(reminder))
                         viewModel.updateReminder(todoId = todo.todoId, dateUtil.toLong(reminder))
-                        setAlarm(todo.alarmRef, dateUtil.toLong(reminder), todo.title)
+                        if (todo.alarmRef != null) {
+                            setAlarm(todo.alarmRef, dateUtil.toLong(reminder), todo.title)
+                        } else {
+                            val alarmRef = nextInt()
+                            viewModel.updateTodoAlarmRef(todo.todoId, alarmRef)
+                        }
                         binding.dueDateTvClear.isGone = false
                     }
                 }
 
                 onClearText(binding.reminderTvClear, binding.reminderTv, "Reminder") {
                     viewModel.updateReminder(todoId = todo.todoId, reminder = null)
-                    cancelAlarm(todo.alarmRef)
+                    todo.alarmRef?.let {
+                        cancelAlarm(it)
+                        viewModel.updateTodoAlarmRef(todo.todoId, null)
+                    }
                 }
 
                 binding.deleteIv.setOnClickListener {
-                    requireActivity().finish()
                     viewModel.deleteTodo(todoId = todo.todoId)
-                    cancelAlarm(todo.alarmRef)
+                    todo.alarmRef?.let {
+                        cancelAlarm(it)
+                    }
+                    uiState.todoDetails.attachments.forEach {
+                        viewModel.deleteFileFromInternalStorage(it.uri)
+                    }
+                    requireActivity().finish()
                 }
 
             }
@@ -226,13 +242,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 activity?.onBackPressedDispatcher?.onBackPressed()
             }
         }
-    }
-
-    private fun setupTaskRv() {
-        taskAdapter = DetailTaskAdapter(this, this)
-        enableDragAndDrop()
-        enableSwipeToDeleteAndUndo()
-        binding.taskRv.adapter = taskAdapter
     }
 
     private fun generateReminderString(reminder: Long): String {
@@ -249,19 +258,53 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         }
     }
 
-    override fun requestDrag(viewHolder: RecyclerView.ViewHolder) {
-        dragHelper.startDrag(viewHolder)
+    private fun showCategoryPopupMenu(
+        view: View, categories: Set<String>, selectedCategory: String?
+    ) {
+        categoryPopupMenu.build(
+            view, categories, selectedCategory
+        ) { menuItem ->
+            when (menuItem.title) {
+                "Create New" -> {
+                    dialogsManager.showAddCategoryDialogFragment { categoryName ->
+                        if (categoryName.isNotEmpty()) {
+                            viewModel.insertTodoCategory(categoryName)
+                            todoId?.let {
+                                viewModel.updateTodoCategory(todoId = it, category = categoryName)
+                            }
+                        } else {
+                            makeToast("Please provide name for category")
+                        }
+                    }
+                    true
+                }
+                else -> {
+                    makeToast(menuItem.title.toString())
+                    todoId?.let {
+                        viewModel.updateTodoCategory(
+                            todoId = it, category = menuItem.title.toString()
+                        )
+                    }
+                    binding.categoryTv.text = menuItem.title
+                    true
+                }
+            }
+        }
     }
 
-    private fun enableDragAndDrop() {
-        val callback: ItemTouchHelper.Callback = DragAndDropController(this)
-        dragHelper = ItemTouchHelper(callback)
-        dragHelper.attachToRecyclerView(binding.taskRv)
+    private fun setupTaskRv() {
+        taskAdapter = DetailTaskAdapter(this)
+        enableDragAndDrop()
+        enableSwipeToDeleteAndUndo()
+        binding.taskRv.adapter = taskAdapter
     }
 
     private fun enableSwipeToDeleteAndUndo() {
         val swipeToDeleteCallback = object : SwipeController(requireContext()) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                // clear focus from textview because to avoid outofboundsexception.
+                viewHolder.itemView.findViewById<AppCompatEditText>(R.id.task).clearFocus()
                 val position = viewHolder.absoluteAdapterPosition
                 val task = taskAdapter.currentList[position]
                 if (taskAdapter.currentList.size == 1) {
@@ -291,38 +334,14 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         }
     }
 
-    private fun showCategoryPopupMenu(
-        view: View, categories: Set<String>, selectedCategory: String?
-    ) {
-        categoryPopupMenu.build(
-            view, categories, selectedCategory
-        ) { menuItem ->
-            when (menuItem.title) {
-                "Create New" -> {
-                    dialogsManager.createAddCategoryDialogFragment { categoryName ->
-                        if (categoryName.isNotEmpty()) {
-                            viewModel.insertTodoCategory(categoryName)
-                            todoId?.let {
-                                viewModel.updateTodoCategory(todoId = it, category = categoryName)
-                            }
-                        } else {
-                            makeToast("Please provide name for category")
-                        }
-                    }
-                    true
-                }
-                else -> {
-                    makeToast(menuItem.title.toString())
-                    todoId?.let {
-                        viewModel.updateTodoCategory(
-                            todoId = it, category = menuItem.title.toString()
-                        )
-                    }
-                    binding.categoryTv.text = menuItem.title
-                    true
-                }
-            }
-        }
+    override fun requestDrag(viewHolder: RecyclerView.ViewHolder) {
+        dragHelper.startDrag(viewHolder)
+    }
+
+    private fun enableDragAndDrop() {
+        val callback: ItemTouchHelper.Callback = DragAndDropController(this)
+        dragHelper = ItemTouchHelper(callback)
+        dragHelper.attachToRecyclerView(binding.taskRv)
     }
 
     override fun onRowMoved(fromPosition: Int, toPosition: Int) {
@@ -337,7 +356,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             }
         }
         taskAdapter.submitList(list)
-        viewModel.updateTaskPosition(list)
     }
 
     override fun onRowSelected(myViewHolder: DetailTaskAdapter.DetailTaskViewHolder?) {
@@ -375,8 +393,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     ) {
         imageView.setOnClickListener {
             textView.text = text
-            callback()
             imageView.isGone = true
+            callback()
         }
     }
 
@@ -415,6 +433,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
     private fun getFiles() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.type = "*/*"
         val title = "Get attachment from"
         val selector = Intent.createChooser(intent, title)
@@ -426,24 +445,50 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
-                val uri = data?.data
-                val file = uri?.let {
-                    fileManager.getFile(it)
+
+                data?.let {
+                    if (data.clipData != null) {
+                        val clipData = data.clipData!!
+                        val count = clipData.itemCount
+                        for (i in 0 until count) {
+                            val uri = clipData.getItemAt(i)?.uri
+                            val file = uri?.let {
+                                fileManager.getFile(it)
+                            }
+                            file?.let {
+                                val attachment = viewModel.createAttachment(
+                                    fileName = it.name,
+                                    filePath = it.path,
+                                    type = it.extension,
+                                    size = it.length(),
+                                    todoRefId = todoId!!
+                                )
+                                viewModel.insertAttachment(attachment)
+                            }
+                        }
+                    } else {
+                        val uri = data.data
+                        uri?.let {
+                            fileManager.getFile(it)
+                        }
+                        val file = uri?.let {
+                            fileManager.getFile(it)
+                        }
+                        file?.let {
+                            val attachment = viewModel.createAttachment(
+                                fileName = it.name,
+                                filePath = it.path,
+                                type = it.extension,
+                                size = it.length(),
+                                todoRefId = todoId!!
+                            )
+                            viewModel.insertAttachment(attachment)
+                        }
+                    }
+                    todoId?.let {
+                        viewModel.updateTodoAttachmentsAvailability(it, true)
+                    }
                 }
-
-                file?.let {
-                    val attachment = viewModel.createAttachment(
-                        fileName = it.name,
-                        filePath = it.path,
-                        type = it.extension,
-                        size = it.length(),
-                        todoRefId = todoId!!
-                    )
-
-                    viewModel.insertAttachment(attachment)
-                }
-
-                Log.i("file", "name: ${file?.name}, path: ${file?.path}, ext: ${file?.extension}")
             }
         }
 
@@ -486,6 +531,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     }
 
     override fun deleteAttachment(attachment: Attachment) {
+        if (attachmentAdapter.itemCount == 1) {
+            viewModel.updateTodoAttachmentsAvailability(attachment.todoRefId, false)
+        }
         viewModel.deleteAttachment(attachment)
     }
 

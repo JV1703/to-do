@@ -25,17 +25,17 @@ data class DetailsActivityUiState(
 class DetailsViewModel @Inject constructor(
     private val detailTodoUseCase: DetailTodoUseCase,
     private val todoCategoryUseCase: TodoCategoryUseCase,
-    private val taskUseCase: TaskUseCase,
-    private val noteUseCase: NoteUseCase,
-    private val attachmentUseCase: AttachmentUseCase,
+    private val detailTaskUseCase: DetailTaskUseCase,
+    private val detailNoteUseCase: DetailNoteUseCase,
+    private val detailAttachmentUseCase: DetailAttachmentUseCase,
     private val dateUtil: DateUtil,
     private val fileManager: FileManager
 ) : ViewModel() {
     val todoId = detailTodoUseCase.getSelectedTodoId()
 
     private val todoDetails = todoId.flatMapLatest { detailTodoUseCase.getTodoDetails(it) }
-    private val todoCategories = todoCategoryUseCase.getTodoCategories().map {
-        it.map { it.todoCategoryName }.toSet()
+    private val todoCategories = todoCategoryUseCase.getTodoCategories().map { todos ->
+        todos.map { todo -> todo.todoCategoryName }.toSet()
     }
 
     val uiState = combine(
@@ -67,14 +67,14 @@ class DetailsViewModel @Inject constructor(
 
     fun updateTaskPosition(tasks: List<Task>) {
         viewModelScope.launch {
-            taskUseCase.insertTasks(tasks)
+            detailTaskUseCase.insertTasks(tasks)
         }
     }
 
     fun insertTask(taskId: String? = null, title: String, position: Int, todoRefId: String) {
         viewModelScope.launch {
             val task = createTask(taskId, title, position, todoRefId)
-            taskUseCase.insertTask(task)
+            detailTaskUseCase.insertTask(task)
         }
     }
 
@@ -88,19 +88,19 @@ class DetailsViewModel @Inject constructor(
 
     fun deleteTask(taskId: String) {
         viewModelScope.launch {
-            taskUseCase.deleteTask(taskId)
+            detailTaskUseCase.deleteTask(taskId)
         }
     }
 
     fun updateTaskPosition(taskId: String, position: Int) {
         viewModelScope.launch {
-            taskUseCase.updateTaskPosition(taskId, position)
+            detailTaskUseCase.updateTaskPosition(taskId, position)
         }
     }
 
     fun restoreDeletedTaskProxy(task: Task) {
         viewModelScope.launch {
-            taskUseCase.insertTask(task)
+            detailTaskUseCase.insertTask(task)
         }
     }
 
@@ -118,13 +118,13 @@ class DetailsViewModel @Inject constructor(
 
     fun updateTaskTitle(taskId: String, title: String) {
         viewModelScope.launch {
-            taskUseCase.updateTaskTitle(taskId, title)
+            detailTaskUseCase.updateTaskTitle(taskId, title)
         }
     }
 
     fun updateTaskCompletion(taskId: String, isComplete: Boolean) {
         viewModelScope.launch {
-            taskUseCase.updateTaskCompletion(taskId, isComplete)
+            detailTaskUseCase.updateTaskCompletion(taskId, isComplete)
         }
     }
 
@@ -142,7 +142,7 @@ class DetailsViewModel @Inject constructor(
 
     fun insertNote(note: Note) {
         viewModelScope.launch {
-            noteUseCase.insertNote(note)
+            detailNoteUseCase.insertNote(note)
         }
     }
 
@@ -161,7 +161,7 @@ class DetailsViewModel @Inject constructor(
 
     fun deleteNote(noteId: String) {
         viewModelScope.launch {
-            noteUseCase.deleteNote(noteId)
+            detailNoteUseCase.deleteNote(noteId)
         }
     }
 
@@ -177,8 +177,7 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun updateTodoTasksAvailability(
-        todoId: String,
-        tasksAvailability: Boolean
+        todoId: String, tasksAvailability: Boolean
     ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoTasksAvailability(todoId, tasksAvailability)
@@ -202,6 +201,12 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
+    fun updateTodoAlarmRef(todoId: String, alarmRef: Int?){
+        viewModelScope.launch {
+            detailTodoUseCase.updateTodoAlarmRef(todoId, alarmRef)
+        }
+    }
+
     fun createAttachment(
         fileName: String, filePath: String, type: String, size: Long, todoRefId: String
     ): Attachment {
@@ -217,25 +222,20 @@ class DetailsViewModel @Inject constructor(
 
     fun insertAttachment(attachment: Attachment) {
         viewModelScope.launch {
-            attachmentUseCase.insertAttachment(attachment)
+            detailAttachmentUseCase.insertAttachment(attachment)
         }
     }
 
-    fun deleteAttachment(attachment: Attachment){
+    fun deleteAttachment(attachment: Attachment) {
         viewModelScope.launch {
-            attachmentUseCase.deleteAttachment(attachmentId = attachment.attachmentId)
+            detailAttachmentUseCase.deleteAttachment(attachmentId = attachment.attachmentId)
             deleteFileFromInternalStorage(attachment.uri)
         }
     }
 
-    private suspend fun deleteFileFromInternalStorage(filePath: String){
-        val test = fileManager.deleteFileFromInternalStorage(filePath)
-        Log.i("deleteFile", "$test")
-   }
-
-    fun saveSelectedTodoId(todoId: String){
+    fun deleteFileFromInternalStorage(filePath: String) {
         viewModelScope.launch {
-            detailTodoUseCase.saveSelectedTodoId(todoId)
+            fileManager.deleteFileFromInternalStorage(filePath)
         }
     }
 

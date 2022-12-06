@@ -6,28 +6,27 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.common.DateUtil
-import com.example.to_dolistclone.core.common.TODO_ID
+import com.example.to_dolistclone.core.domain.model.Todo
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.databinding.FragmentTodoBinding
 import com.example.to_dolistclone.feature.BaseFragment
 import com.example.to_dolistclone.feature.common.dialog.DialogsManager
 import com.example.to_dolistclone.feature.detail.ui.DetailsActivity
-import com.example.to_dolistclone.feature.todo.TodoViewModel
 import com.example.to_dolistclone.feature.todo.adapter.TodosAdapter
+import com.example.to_dolistclone.feature.todo.adapter.TodosAdapterClickListener
+import com.example.to_dolistclone.feature.todo.viewmodel.TodoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::inflate) {
+class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::inflate), TodosAdapterClickListener {
 
     @Inject
     lateinit var dialogsManager: DialogsManager
@@ -49,10 +48,14 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
 
         setupAdapter()
 
-        binding.fabFade.setImageResource(R.drawable.fab_bg)
         pulseAnimation(binding.fabFade)
         binding.add.setOnClickListener {
-            dialogsManager.createTaskModalBottomSheet()
+            dialogsManager.showTodoShortcut()
+        }
+
+        binding.viewCompletedTaskTv.setOnClickListener {
+            val intent = Intent(requireContext(), CompletedTodosActivity::class.java)
+            startActivity(intent)
         }
 
         collectLatestLifecycleFlow(viewModel.todoFragmentUiState) { uiState ->
@@ -66,25 +69,29 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
             }
 
             binding.previousToggleContainer.setOnClickListener {
-                toggle(binding.previousToggle, binding.previousRv, uiState.showPrevious){
+                toggle(binding.previousToggle, binding.previousRv, uiState.showPrevious) {
                     viewModel.saveShowPrevious(!uiState.showPrevious)
                 }
             }
 
             binding.todayToggleContainer.setOnClickListener {
-                toggle(binding.todayToggle, binding.todayRv, uiState.showToday){
+                toggle(binding.todayToggle, binding.todayRv, uiState.showToday) {
                     viewModel.saveShowToday(!uiState.showToday)
                 }
             }
 
             binding.futureToggleContainer.setOnClickListener {
-                toggle(binding.futureToggle, binding.futureRv, uiState.showFuture){
+                toggle(binding.futureToggle, binding.futureRv, uiState.showFuture) {
                     viewModel.saveShowFuture(!uiState.showFuture)
                 }
             }
 
             binding.completedTodayToggleContainer.setOnClickListener {
-                toggle(binding.completedTodayToggle, binding.completedTodayRv, uiState.showCompletedToday){
+                toggle(
+                    binding.completedTodayToggle,
+                    binding.completedTodayRv,
+                    uiState.showCompletedToday
+                ) {
                     viewModel.saveShowCompletedToday(!uiState.showCompletedToday)
                 }
             }
@@ -106,10 +113,6 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
         pulseObjetAnimator.cancel()
     }
 
-    private fun showGroup(isGone: Boolean, container: ViewGroup) {
-        container.isGone = isGone
-    }
-
     private fun toggle(
         imageView: AppCompatImageView,
         recyclerView: RecyclerView,
@@ -122,26 +125,31 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
     }
 
     private fun setupAdapter() {
-        previousAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-        }, onClickNavigation = {
-            navigateToDetailsActivity(it.todoId)
-        })
-        todayAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-        }, onClickNavigation = {
-            navigateToDetailsActivity(it.todoId)
-        })
-        futureAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-        }, onClickNavigation = {
-            navigateToDetailsActivity(it.todoId)
-        })
-        completedToday = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-        }, onClickNavigation = {
-            navigateToDetailsActivity(it.todoId)
-        })
+//        previousAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
+//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
+//        }, onClickNavigation = {
+//            navigateToDetailsActivity(it.todoId)
+//        })
+//        todayAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
+//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
+//        }, onClickNavigation = {
+//            navigateToDetailsActivity(it.todoId)
+//        })
+//        futureAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
+//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
+//        }, onClickNavigation = {
+//            navigateToDetailsActivity(it.todoId)
+//        })
+//        completedToday = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
+//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
+//        }, onClickNavigation = {
+//            navigateToDetailsActivity(it.todoId)
+//        })
+
+        previousAdapter = TodosAdapter(dateUtil = dateUtil, this)
+        todayAdapter = TodosAdapter(dateUtil = dateUtil, this)
+        futureAdapter = TodosAdapter(dateUtil = dateUtil, this)
+        completedToday = TodosAdapter(dateUtil = dateUtil, this)
         binding.previousRv.adapter = previousAdapter
         binding.todayRv.adapter = todayAdapter
         binding.futureRv.adapter = futureAdapter
@@ -149,8 +157,8 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
     }
 
     private fun navigateToDetailsActivity(todoId: String) {
+        viewModel.saveSelectedTodoId(todoId)
         val intent = Intent(requireContext(), DetailsActivity::class.java)
-        intent.putExtra(TODO_ID, todoId)
         startActivity(intent)
     }
 
@@ -174,4 +182,13 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
         pulseObjetAnimator.repeatMode = repeatMode
     }
 
+    override fun navigate(todo: Todo) {
+        viewModel.saveSelectedTodoId(todo.todoId)
+        val intent = Intent(requireContext(), DetailsActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun complete(todoId: String, isComplete: Boolean) {
+        viewModel.updateTodoCompletion(todoId, isComplete)
+    }
 }

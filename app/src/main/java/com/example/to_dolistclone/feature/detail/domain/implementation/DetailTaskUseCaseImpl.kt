@@ -2,11 +2,11 @@ package com.example.to_dolistclone.feature.detail.domain.implementation
 
 import com.example.to_dolistclone.core.domain.model.Task
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
-import com.example.to_dolistclone.feature.detail.domain.abstraction.TaskUseCase
+import com.example.to_dolistclone.feature.detail.domain.abstraction.DetailTaskUseCase
 import javax.inject.Inject
 
-class TaskUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) :
-    TaskUseCase {
+class DetailTaskUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) :
+    DetailTaskUseCase {
 
     override suspend fun insertTasks(tasks: List<Task>): LongArray {
         val filteredTasks = tasks.filter {

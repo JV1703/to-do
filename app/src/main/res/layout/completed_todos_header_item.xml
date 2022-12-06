@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <View
+        android:id="@+id/timeline"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/black"/>
+
+    <View
+        android:id="@+id/timeline_dot"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        app:layout_constraintVertical_bias="0.75"
+        android:background="@drawable/timeline_dot"
+        app:layout_constraintTop_toTopOf="@id/timeline"
+        app:layout_constraintBottom_toBottomOf="@id/timeline"
+        app:layout_constraintStart_toStartOf="@id/timeline"
+        app:layout_constraintEnd_toEndOf="@id/timeline"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/completed_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="2022/12/31"
+        app:layout_constraintStart_toEndOf="@id/timeline_dot"
+        android:layout_marginStart="12dp"
+        app:layout_constraintTop_toTopOf="@id/timeline_dot"
+        app:layout_constraintBottom_toBottomOf="@id/timeline_dot"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

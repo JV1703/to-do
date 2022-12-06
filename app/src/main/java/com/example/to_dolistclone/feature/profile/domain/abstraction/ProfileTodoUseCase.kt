@@ -4,18 +4,20 @@ import com.example.to_dolistclone.core.domain.model.Todo
 import com.example.to_dolistclone.feature.profile.viewmodel.PieGraphFilter
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface ProfileTodoUseCase {
 
-    val todos: Flow<List<Todo>>
-
-    fun getTodosWithinTimeFrame(from: Long, to: Long): Flow<List<Todo>>
-
-    fun getTodosInTimeFrame(timeFrame: PieGraphFilter): Flow<List<Todo>>
-
-    fun getCompletedTodosWithinTimeFrame(from: Long, to: Long): Flow<List<Todo>>
+    val todosSortedByCompletedOn: Flow<List<Todo>>
 
     fun getSelectedPieGraphOption(): Flow<Int>
 
     suspend fun saveSelectedPieGraphOption(selectedOption: Int)
+
+    fun getTodosWithinTimeRange(todos: List<Todo>, from: Long, to: Long): List<Todo>
+
+    fun getTodosInTimeFrame(todos: List<Todo>, timeFrame: PieGraphFilter, date: LocalDate): List<Todo>
+
+    fun getCompletedTodosWithinTimeRange(todos: List<Todo>, from: Long, to: Long): List<Todo>
+
 }

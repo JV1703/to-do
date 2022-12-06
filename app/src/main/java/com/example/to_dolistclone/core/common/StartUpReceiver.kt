@@ -40,14 +40,14 @@ class StartUpReceiver : BroadcastReceiver() {
 
             scope.launch {
                 val todos = todoRepository.getTodos().first()
-                todos.filter { it.reminder != null && !it.isComplete && it.reminder > currentTime }
+                todos.filter { it.reminder != null && !it.isComplete && it.reminder > currentTime && it.alarmRef != null }
                     .forEach {
                         val i = Intent(context, AlarmReceiver::class.java)
                         i.putExtra(TODO_ID, it.todoId)
                         i.putExtra(ALARM_REF, it.alarmRef)
                         i.putExtra(NOTIFICATION_TITLE, it.title)
                         val pendingIntent =
-                            PendingIntent.getBroadcast(context, it.alarmRef, i, flags)
+                            PendingIntent.getBroadcast(context, it.alarmRef!!, i, flags)
                         alarmManager.set(AlarmManager.RTC, it.reminder!!, pendingIntent)
                         Log.i("startup", "title: ${it.title}, reminderOn: ${dateUtil.toString(it.reminder, "EEE, MM dd", java.util.Locale.getDefault())}")
                     }

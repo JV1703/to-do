@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface HomeTodoCategoryUseCase {
 
     fun getTodoCategoriesName(): Flow<List<String>>
+    suspend fun insertTodoCategory(categoryName: String): Long
 
 }

@@ -13,4 +13,5 @@ class HomeTodoCategoryUseCaseImpl @Inject constructor(private val todoRepository
 
     override fun getTodoCategoriesName(): Flow<List<String>> = todoCategories.map { it.map { it.todoCategoryName } }
 
+    override suspend fun insertTodoCategory(categoryName: String): Long = todoRepository.insertTodoCategory(TodoCategory(categoryName))
 }

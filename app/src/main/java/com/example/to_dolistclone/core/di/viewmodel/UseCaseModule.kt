@@ -3,6 +3,8 @@ package com.example.to_dolistclone.core.di.viewmodel
 
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
+import com.example.to_dolistclone.feature.calendar.domain.abstraction.CalendarTodoUseCase
+import com.example.to_dolistclone.feature.calendar.domain.implementation.CalendarTodoUseCaseImpl
 import com.example.to_dolistclone.feature.detail.domain.abstraction.*
 import com.example.to_dolistclone.feature.detail.domain.implementation.*
 import com.example.to_dolistclone.feature.home.domain.abstraction.HomeTodoCategoryUseCase
@@ -23,18 +25,18 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideAttachment(todoRepository: TodoRepository): AttachmentUseCase =
-        AttachmentUseCaseImpl(todoRepository)
+    fun provideAttachment(todoRepository: TodoRepository): DetailAttachmentUseCase =
+        DetailAttachmentUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideNoteUseCase(todoRepository: TodoRepository): NoteUseCase =
-        NoteUseCaseImpl(todoRepository)
+    fun provideNoteUseCase(todoRepository: TodoRepository): DetailNoteUseCase =
+        DetailNoteUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
-    fun provideTaskUseCase(todoRepository: TodoRepository): TaskUseCase =
-        TaskUseCaseImpl(todoRepository)
+    fun provideTaskUseCase(todoRepository: TodoRepository): DetailTaskUseCase =
+        DetailTaskUseCaseImpl(todoRepository)
 
     @Provides
     @ViewModelScoped
@@ -59,4 +61,9 @@ object UseCaseModule {
     @Provides
     @ViewModelScoped
     fun provideProfileTodoUseCase(todoRepository: TodoRepository, dateUtil: DateUtil): ProfileTodoUseCase = ProfileTodoUseCaseImpl(todoRepository, dateUtil)
+
+    @Provides
+    @ViewModelScoped
+    fun provideCalendarTodoUseCase(todoRepository: TodoRepository, dateUtil: DateUtil): CalendarTodoUseCase = CalendarTodoUseCaseImpl(todoRepository, dateUtil)
+
 }

@@ -31,26 +31,27 @@
             app:layout_constraintTop_toTopOf="@id/profile_iv" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tasks_overview_tv"
+            android:id="@+id/todos_overview_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Tasks Overview"
+            android:text="Todos Overview"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/profile_iv"
             app:layout_constraintTop_toBottomOf="@id/profile_iv" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/completed_tasks_container"
+            android:id="@+id/completed_todos_container"
             android:layout_width="0dp"
+            android:layout_marginTop="12dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="6dp"
             app:cardCornerRadius="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/pending_tasks_container"
+            app:layout_constraintEnd_toStartOf="@+id/pending_todos_container"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="@id/tasks_overview_tv"
-            app:layout_constraintTop_toBottomOf="@id/tasks_overview_tv">
+            app:layout_constraintStart_toStartOf="@id/todos_overview_tv"
+            app:layout_constraintTop_toBottomOf="@id/todos_overview_tv">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -69,19 +70,19 @@
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/completed_tasks_tv"
+                    android:id="@+id/completed_todos_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="12dp"
-                    android:text="Completed Tasks" />
+                    android:text="Completed Todos" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/pending_tasks_container"
+            android:id="@+id/pending_todos_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
@@ -89,8 +90,8 @@
             app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/completed_tasks_container"
-            app:layout_constraintTop_toTopOf="@id/completed_tasks_container">
+            app:layout_constraintStart_toEndOf="@+id/completed_todos_container"
+            app:layout_constraintTop_toTopOf="@id/completed_todos_container">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -109,26 +110,26 @@
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/pending_tasks_tv"
+                    android:id="@+id/pending_todos_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="12dp"
-                    android:text="Pending Tasks" />
+                    android:text="Pending Todos" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/weekly_task_bar_chart_container"
+            android:id="@+id/weekly_todos_bar_chart_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
-            app:layout_constraintEnd_toEndOf="@id/pending_tasks_container"
-            app:layout_constraintStart_toStartOf="@id/completed_tasks_container"
-            app:layout_constraintTop_toBottomOf="@id/completed_tasks_container">
+            app:layout_constraintEnd_toEndOf="@id/pending_todos_container"
+            app:layout_constraintStart_toStartOf="@id/completed_todos_container"
+            app:layout_constraintTop_toBottomOf="@id/completed_todos_container">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -140,7 +141,7 @@
                     android:id="@+id/completion_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Completion of Daily Tasks"
+                    android:text="Completion of Daily Todos"
                     app:layout_constraintBottom_toBottomOf="@id/next_week"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/prev_week" />
@@ -189,14 +190,14 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/weekly_task_rv_container"
+            android:id="@+id/weekly_todos_rv_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
-            app:layout_constraintEnd_toEndOf="@id/weekly_task_bar_chart_container"
-            app:layout_constraintStart_toStartOf="@id/weekly_task_bar_chart_container"
-            app:layout_constraintTop_toBottomOf="@id/weekly_task_bar_chart_container">
+            app:layout_constraintEnd_toEndOf="@id/weekly_todos_bar_chart_container"
+            app:layout_constraintStart_toStartOf="@id/weekly_todos_bar_chart_container"
+            app:layout_constraintTop_toBottomOf="@id/weekly_todos_bar_chart_container">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -205,21 +206,21 @@
                 android:padding="8dp">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/upcoming_tasks_tv"
+                    android:id="@+id/upcoming_todos_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tasks in Next 7 Days"
+                    android:text="Todos in Next 7 Days"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/weekly_task_rv"
+                    android:id="@+id/weekly_todos_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/upcoming_tasks_tv" />
+                    app:layout_constraintTop_toBottomOf="@id/upcoming_todos_tv" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -230,9 +231,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:cardCornerRadius="8dp"
-            app:layout_constraintEnd_toEndOf="@id/weekly_task_rv_container"
-            app:layout_constraintStart_toStartOf="@id/weekly_task_rv_container"
-            app:layout_constraintTop_toBottomOf="@id/weekly_task_rv_container">
+            app:layout_constraintEnd_toEndOf="@id/weekly_todos_rv_container"
+            app:layout_constraintStart_toStartOf="@id/weekly_todos_rv_container"
+            app:layout_constraintTop_toBottomOf="@id/weekly_todos_rv_container">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -244,7 +245,7 @@
                     android:id="@+id/pie_chart_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pending Tasks in Categories"
+                    android:text="Pending Todos in Categories"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

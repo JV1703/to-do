@@ -12,9 +12,9 @@ interface TodoUseCase {
         todoId: String, isComplete: Boolean, completedOn: Long?
     ): Int
 
-    fun getTodos(): Flow<List<Todo>>
+//    fun getTodos(): Flow<List<Todo>>
 
-    fun getMappedTodos(): Flow<Map<String, List<Todo>>>
+    fun getMappedTodos(date: LocalDate): Flow<Map<String, List<Todo>>>
 
     fun getTodosGroupByDeadline(): Flow<Map<LocalDate?, List<Todo>>>
 
@@ -36,4 +36,7 @@ interface TodoUseCase {
 
     fun getShowCompletedToday(): Flow<Boolean>
 
+    suspend fun saveSelectedTodoId(todoId: String)
+
+    fun getCompletedTodos(): Flow<List<Todo>>
 }

@@ -3,7 +3,6 @@ package com.example.to_dolistclone.core.common
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
@@ -158,7 +157,3 @@ class FileManager @Inject constructor(
         }
     }
 }
-
-data class InternalStoragePhoto(
-    val name: String, val bmp: Bitmap
-)

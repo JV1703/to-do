@@ -2,7 +2,6 @@ package com.example.to_dolistclone.feature.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.to_dolistclone.feature.detail.domain.abstraction.DetailTodoUseCase
 import com.example.to_dolistclone.feature.home.domain.abstraction.HomeTodoCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DrawerUiState(
@@ -37,7 +37,9 @@ class HomeViewModel @Inject constructor(
     }
 
     fun insertTodoCategory(categoryName: String) {
-        insertTodoCategory(categoryName)
+        viewModelScope.launch {
+            todoCategoryUseCase.insertTodoCategory(categoryName)
+        }
     }
 
 }

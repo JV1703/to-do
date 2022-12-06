@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 data class TodoShortcutUiState(
@@ -21,20 +20,20 @@ data class TodoShortcutUiState(
 @HiltViewModel
 class TodoShortcutViewModel @Inject constructor(
     private val useCase: TodoShortcutUseCaseImpl
-): ViewModel() {
+) : ViewModel() {
 
     private val selectedCategory = MutableStateFlow<String?>(null)
     private val todoCategories = useCase.getTodoCategories().map { todoCategories ->
         todoCategories.map { todoCategory ->
-            todoCategory.todoCategoryName }.toSet()
+            todoCategory.todoCategoryName
+        }.toSet()
     }
 
-    val uiState =
-        combine(selectedCategory, todoCategories) { selectedCategory, todoCategories ->
-            TodoShortcutUiState(
-                categories = todoCategories, selectedCategory = selectedCategory
-            )
-        }
+    val uiState = combine(selectedCategory, todoCategories) { selectedCategory, todoCategories ->
+        TodoShortcutUiState(
+            categories = todoCategories, selectedCategory = selectedCategory
+        )
+    }
 
     fun insertTodo(tasksProxy: List<TaskProxy>, todo: Todo) {
         if (todo.title.isNotEmpty()) {
@@ -51,7 +50,7 @@ class TodoShortcutViewModel @Inject constructor(
         }
     }
 
-    fun insertTodoCategory(categoryName: String){
+    fun insertTodoCategory(categoryName: String) {
         viewModelScope.launch {
             useCase.insertTodoCategory(categoryName)
         }
@@ -73,7 +72,7 @@ class TodoShortcutViewModel @Inject constructor(
         tasks: Boolean,
         notes: Boolean,
         attachments: Boolean,
-        alarmRef: Int,
+        alarmRef: Int?,
         todoCategoryRefName: String
     ) = Todo(
         todoId = todoId,
