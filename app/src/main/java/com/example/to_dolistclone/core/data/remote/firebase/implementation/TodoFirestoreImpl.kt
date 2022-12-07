@@ -1,4 +1,4 @@
-package com.example.to_dolistclone.core.data.remote.firebase
+package com.example.to_dolistclone.core.data.remote.firebase.implementation
 
 import android.util.Log
 import com.example.to_dolistclone.core.data.remote.model.TodoNetwork

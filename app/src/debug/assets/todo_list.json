@@ -55,7 +55,7 @@
     "completedOn": null,
     "tasks": true,
     "notes": true,
-    "attachments": false,
+    "attachments": true,
     "alarmRef": 1111,
     "todoCategoryRefName": "Work"
   },

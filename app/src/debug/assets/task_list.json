@@ -2,25 +2,29 @@
   {
     "taskId": "b985d017-ecc0-4eab-b920-5f108929376c",
     "task": "add feature xxxx to the app",
-    "isComplete": "true",
+    "isComplete": true,
+    "position": 0,
     "todoRefId": "57fbb884-466e-4756-b060-269e95d96c88"
   },
   {
     "taskId": "e44f1e3d-a0c5-4080-8cc7-ea74218bf2fd",
     "task": "add feature yyyy to the app",
-    "isComplete": "true",
+    "isComplete": false,
+    "position": 1,
     "todoRefId": "57fbb884-466e-4756-b060-269e95d96c88"
   },
   {
     "taskId": "5533d9fb-8b92-4b16-b8be-85796d2e2bd0",
     "task": "bring up subject xxxx during the meeting",
-    "isComplete": "true",
+    "isComplete": true,
+    "position": 0,
     "todoRefId": "68b7ae44-79a0-4a9a-88b5-44dfe53b362a"
   },
   {
     "taskId": "32d883ff-2ca9-4849-b251-9c0920aec5a9",
     "task": "Inform Bob about the bug found in feature zzzz",
-    "isComplete": "true",
+    "isComplete": false,
+    "position": 1,
     "todoRefId": "68b7ae44-79a0-4a9a-88b5-44dfe53b362a"
   }
 ]

@@ -166,7 +166,7 @@ class TodoDaoTest {
         return attachmentEntityList
     }
 
-    private fun generateSingleAttachment(todoRefId: String) = AttachmentEntity(
+    private fun generateSingleAttachmentEntity(todoRefId: String) = AttachmentEntity(
         attachmentId = UUID.randomUUID().toString(),
         name = "attachment name",
         uri = "uri $1",
@@ -642,8 +642,8 @@ class TodoDaoTest {
         val id2 = UUID.randomUUID().toString()
         val todoEntity1 = generateSingleTodoEntity(id1)
         val todoEntity2 = generateSingleTodoEntity(id2)
-        val attachmentEntity1 = generateSingleAttachment(id1)
-        val attachmentEntity2 = generateSingleAttachment(id2)
+        val attachmentEntity1 = generateSingleAttachmentEntity(id1)
+        val attachmentEntity2 = generateSingleAttachmentEntity(id2)
         val attachmentList = listOf(attachmentEntity1, attachmentEntity2)
 
         dao.insertTodo(todoEntity1)
@@ -661,7 +661,7 @@ class TodoDaoTest {
     @Test(expected = SQLiteConstraintException::class)
     fun insertAttachment_fail() = runTest {
         val id1 = UUID.randomUUID().toString()
-        val attachmentEntity1 = generateSingleAttachment(id1)
+        val attachmentEntity1 = generateSingleAttachmentEntity(id1)
         dao.insertAttachment(attachmentEntity1)
     }
 
@@ -671,8 +671,8 @@ class TodoDaoTest {
         val id2 = UUID.randomUUID().toString()
         val todoEntity1 = generateSingleTodoEntity(id1)
         val todoEntity2 = generateSingleTodoEntity(id2)
-        val attachmentEntity1 = generateSingleAttachment(id1)
-        val attachmentEntity2 = generateSingleAttachment(id2)
+        val attachmentEntity1 = generateSingleAttachmentEntity(id1)
+        val attachmentEntity2 = generateSingleAttachmentEntity(id2)
         val attachmentList = listOf(attachmentEntity1, attachmentEntity2)
 
         dao.insertTodo(todoEntity1)
@@ -689,8 +689,8 @@ class TodoDaoTest {
     fun insertAttachments_fail() = runTest {
         val id1 = UUID.randomUUID().toString()
         val id2 = UUID.randomUUID().toString()
-        val attachmentEntity1 = generateSingleAttachment(id1)
-        val attachmentEntity2 = generateSingleAttachment(id2)
+        val attachmentEntity1 = generateSingleAttachmentEntity(id1)
+        val attachmentEntity2 = generateSingleAttachmentEntity(id2)
         val attachmentList = listOf(attachmentEntity1, attachmentEntity2)
 
         dao.insertAttachments(attachmentList)
@@ -706,8 +706,8 @@ class TodoDaoTest {
         val id2 = UUID.randomUUID().toString()
         val todoEntity1 = generateSingleTodoEntity(id1)
         val todoEntity2 = generateSingleTodoEntity(id2)
-        val attachmentEntity1 = generateSingleAttachment(id1)
-        val attachmentEntity2 = generateSingleAttachment(id2)
+        val attachmentEntity1 = generateSingleAttachmentEntity(id1)
+        val attachmentEntity2 = generateSingleAttachmentEntity(id2)
         val attachmentList = listOf(attachmentEntity1, attachmentEntity2)
 
         dao.insertTodo(todoEntity1)
@@ -726,8 +726,8 @@ class TodoDaoTest {
         val id2 = UUID.randomUUID().toString()
         val todoEntity1 = generateSingleTodoEntity(id1)
         val todoEntity2 = generateSingleTodoEntity(id2)
-        val attachmentEntity1 = generateSingleAttachment(id1)
-        val attachmentEntity2 = generateSingleAttachment(id2)
+        val attachmentEntity1 = generateSingleAttachmentEntity(id1)
+        val attachmentEntity2 = generateSingleAttachmentEntity(id2)
         val attachmentList = listOf(attachmentEntity1, attachmentEntity2)
 
         dao.insertTodo(todoEntity1)
@@ -822,8 +822,8 @@ class TodoDaoTest {
     fun getTodoWithAttachments() = runTest {
         val todoId = UUID.randomUUID().toString()
         val todoEntity = generateSingleTodoEntity(todoId)
-        val attachmentEntity1 = generateSingleAttachment(todoId)
-        val attachmentEntity2 = generateSingleAttachment(todoId)
+        val attachmentEntity1 = generateSingleAttachmentEntity(todoId)
+        val attachmentEntity2 = generateSingleAttachmentEntity(todoId)
         val attachmentEntityList = listOf(attachmentEntity1, attachmentEntity2)
         dao.insertTodo(todoEntity)
         val dbData = dao.getTodoWithAttachments(todoId).first()
@@ -844,8 +844,8 @@ class TodoDaoTest {
         val taskEntity2 = generateSingleTaskEntity(todoId, 1)
         val taskEntityList = listOf(taskEntity1, taskEntity2)
         val noteEntity = generateSingleNoteEntity(todoId)
-        val attachmentEntity1 = generateSingleAttachment(todoId)
-        val attachmentEntity2 = generateSingleAttachment(todoId)
+        val attachmentEntity1 = generateSingleAttachmentEntity(todoId)
+        val attachmentEntity2 = generateSingleAttachmentEntity(todoId)
         val attachmentEntityList = listOf(attachmentEntity1, attachmentEntity2)
 
         dao.insertTodo(todoEntity)

@@ -163,7 +163,7 @@ class TodoFirestoreTest {
         )
 
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
-        assertNotNull(networkData.find { it.isComplete == newTodoCompletion && it.completedOn == newCompletedOn})
+        assertNotNull(networkData.find { it.todoId == todoToUpdate.todoId && it.isComplete == newTodoCompletion && it.completedOn == newCompletedOn})
         assertTrue(networkData.contains(todoToUpdate.copy(isComplete = newTodoCompletion, completedOn = newCompletedOn)))
     }
 
