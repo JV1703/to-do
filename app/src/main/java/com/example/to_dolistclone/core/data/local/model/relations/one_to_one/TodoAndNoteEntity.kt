@@ -5,6 +5,7 @@ import androidx.room.Relation
 import com.example.to_dolistclone.core.data.local.model.NoteEntity
 import com.example.to_dolistclone.core.data.local.model.TodoEntity
 import com.example.to_dolistclone.core.data.local.model.toNote
+import com.example.to_dolistclone.core.data.local.model.toTodo
 import com.example.to_dolistclone.core.domain.model.relation.one_to_one.TodoAndNote
 
 data class TodoAndNoteEntity(
@@ -13,11 +14,9 @@ data class TodoAndNoteEntity(
         parentColumn = "todoId",
         entityColumn = "noteId"
     )
-    val note: NoteEntity
+    val note: NoteEntity?
 )
 
-fun TodoAndNoteEntity.toNote() = this.note.toNote()
-
 fun TodoAndNoteEntity.toTodoAndNote() = TodoAndNote(
-    todo = todo, note = note
+    todo = todo.toTodo(), note = note?.toNote()
 )

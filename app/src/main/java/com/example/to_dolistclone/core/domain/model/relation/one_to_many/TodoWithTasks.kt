@@ -1,9 +1,8 @@
 package com.example.to_dolistclone.core.domain.model.relation.one_to_many
 
-import com.example.to_dolistclone.core.data.local.model.TaskEntity
-import com.example.to_dolistclone.core.data.local.model.TodoEntity
+import com.example.to_dolistclone.core.domain.model.Task
+import com.example.to_dolistclone.core.domain.model.Todo
 
 data class TodoWithTasks(
-    val todo: TodoEntity,
-    val tasks: List<TaskEntity>
+    val todo: Todo, val tasks: List<Task>
 )

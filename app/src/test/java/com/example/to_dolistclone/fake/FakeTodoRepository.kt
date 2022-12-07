@@ -395,7 +395,7 @@ class FakeTodoRepository : TodoRepository {
         }
     }
 
-    override fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNote?> {
+    override fun getTodoAndNote(todoId: String): Flow<TodoAndNote?> {
         val todo = todoList.find { it.todoId == todoId }
         val note = noteList.find { it.noteId == todoId }
         val todoAndNote = todo?.let {

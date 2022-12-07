@@ -52,8 +52,6 @@ interface LocalDataSource {
 
     fun getTodos(): Flow<List<TodoEntity>>
 
-    fun getTodos(from: Long, to: Long): Flow<List<TodoEntity>>
-
     suspend fun deleteTodo(todoId: String): Int
 
     suspend fun insertNote(note: NoteEntity): Long
@@ -63,8 +61,6 @@ interface LocalDataSource {
     suspend fun deleteNote(noteId: String): Int
 
     suspend fun insertTask(task: TaskEntity): Long
-
-    suspend fun getTaskSize(): Int
 
     suspend fun updateTaskPosition(taskId: String, position: Int): Int
 
@@ -92,7 +88,7 @@ interface LocalDataSource {
 
     suspend fun deleteTodoCategory(todoCategoryName: String): Int
 
-    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity?>
+    fun getTodoAndNote(todoId: String): Flow<TodoAndNoteEntity?>
 
     fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity?>
 

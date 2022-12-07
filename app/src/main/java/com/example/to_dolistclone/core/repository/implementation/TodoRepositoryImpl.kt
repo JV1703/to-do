@@ -153,8 +153,8 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource)
     override suspend fun deleteTodoCategory(todoCategoryName: String): Int =
         local.deleteTodoCategory(todoCategoryName)
 
-    override fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNote?> =
-        local.getTodoAndNoteWithTodoId(todoId).map { entityModel ->
+    override fun getTodoAndNote(todoId: String): Flow<TodoAndNote?> =
+        local.getTodoAndNote(todoId).map { entityModel ->
             entityModel?.toTodoAndNote()
         }
 

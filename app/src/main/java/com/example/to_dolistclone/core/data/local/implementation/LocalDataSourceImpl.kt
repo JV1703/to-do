@@ -170,9 +170,6 @@ class LocalDataSourceImpl @Inject constructor(
 
     override fun getTodos(): Flow<List<TodoEntity>> = todoDao.getTodos().flowOn(dispatcherIO)
 
-    override fun getTodos(from: Long, to: Long): Flow<List<TodoEntity>> =
-        todoDao.getTodos(from, to).flowOn(dispatcherIO)
-
     override fun getTodoDetails(todoId: String): Flow<TodoDetailsEntity?> {
         return todoDao.getTodoDetails(todoId).flowOn(dispatcherIO)
     }
@@ -180,8 +177,14 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun deleteTodo(todoId: String): Int =
         withContext(dispatcherIO) { todoDao.deleteTodo(todoId) }
 
-    override suspend fun insertNote(note: NoteEntity): Long =
-        withContext(dispatcherIO) { todoDao.insertNote(note) }
+    override suspend fun insertNote(note: NoteEntity) = withContext(dispatcherIO) {
+        try {
+            todoDao.insertNote(note)
+        } catch (e: Exception) {
+            Log.e(this.javaClass.name, "insertNote - ${e.message}")
+            -1
+        }
+    }
 
     override fun getNotes(): Flow<List<NoteEntity>> = todoDao.getNotes().flowOn(dispatcherIO)
 
@@ -190,10 +193,6 @@ class LocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertTask(task: TaskEntity): Long =
         withContext(dispatcherIO) { todoDao.insertTask(task) }
-
-    override suspend fun getTaskSize(): Int = withContext(dispatcherIO) {
-        todoDao.getTaskSize()
-    }
 
     override suspend fun updateTaskPosition(taskId: String, position: Int): Int =
         withContext(dispatcherIO) {
@@ -209,7 +208,14 @@ class LocalDataSourceImpl @Inject constructor(
         }
 
     override suspend fun insertTasks(tasks: List<TaskEntity>): LongArray =
-        withContext(dispatcherIO) { todoDao.insertTasks(tasks) }
+        withContext(dispatcherIO) {
+            try {
+                todoDao.insertTasks(tasks)
+            } catch (e: Exception) {
+                Log.e(this.javaClass.name, "insertTasks - errorMsg: ${e.message}")
+                longArrayOf(-1)
+            }
+        }
 
     override fun getTasks(): Flow<List<TaskEntity>> = todoDao.getTasks().flowOn(dispatcherIO)
 
@@ -217,10 +223,24 @@ class LocalDataSourceImpl @Inject constructor(
         withContext(dispatcherIO) { todoDao.deleteTask(taskId) }
 
     override suspend fun insertAttachment(attachment: AttachmentEntity): Long =
-        withContext(dispatcherIO) { todoDao.insertAttachment(attachment) }
+        withContext(dispatcherIO) {
+            try {
+                todoDao.insertAttachment(attachment)
+            } catch (e: Exception) {
+                Log.e(this.javaClass.name, "insertAttachment - errorMsg: ${e.message}")
+                -1
+            }
+        }
 
     override suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray =
-        withContext(dispatcherIO) { todoDao.insertAttachments(attachments) }
+        withContext(dispatcherIO) {
+            try {
+                todoDao.insertAttachments(attachments)
+            } catch (e: Exception) {
+                Log.e(this.javaClass.name, "insertAttachments - errorMsg: ${e.message}")
+                longArrayOf(-1)
+            }
+        }
 
     override fun getAttachments(): Flow<List<AttachmentEntity>> =
         todoDao.getAttachments().flowOn(dispatcherIO)
@@ -237,8 +257,8 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun deleteTodoCategory(todoCategoryName: String): Int =
         withContext(dispatcherIO) { todoDao.deleteTodoCategory(todoCategoryName) }
 
-    override fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity?> =
-        todoDao.getTodoAndNoteWithTodoId(todoId).flowOn(dispatcherIO)
+    override fun getTodoAndNote(todoId: String): Flow<TodoAndNoteEntity?> =
+        todoDao.getTodoAndNote(todoId).flowOn(dispatcherIO)
 
     override fun getTodoWithTasks(todoId: String): Flow<TodoWithTasksEntity?> =
         todoDao.getTodoWithTasks(todoId).flowOn(dispatcherIO)

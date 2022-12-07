@@ -1,6 +1,7 @@
 package com.example.to_dolistclone.core.domain.model
 
 import com.example.to_dolistclone.core.data.local.model.TodoEntity
+import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 
 data class Todo(
     val todoId: String,
@@ -19,6 +20,22 @@ data class Todo(
 )
 
 fun Todo.toTodoEntity(): TodoEntity = TodoEntity(
+    todoId = todoId,
+    title = title,
+    deadline = deadline,
+    reminder = reminder,
+    repeat = repeat,
+    isComplete = isComplete,
+    createdOn = createdOn,
+    completedOn = completedOn,
+    tasks = tasks,
+    notes = notes,
+    attachments = attachments,
+    alarmRef = alarmRef,
+    todoCategoryRefName = todoCategoryRefName
+)
+
+fun Todo.toTodoNetwork(): TodoNetwork = TodoNetwork(
     todoId = todoId,
     title = title,
     deadline = deadline,

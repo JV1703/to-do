@@ -27,9 +27,6 @@ interface TodoDao {
     @Query("SELECT * FROM todo")
     fun getTodos(): Flow<List<TodoEntity>>
 
-    @Query("SELECT * FROM TODO WHERE completedOn BETWEEN :from AND :to ORDER BY completedOn ASC")
-    fun getTodos(from: Long, to: Long): Flow<List<TodoEntity>>
-
     @Query("DELETE FROM todo WHERE todoId = :todoId")
     suspend fun deleteTodo(todoId: String): Int
 
@@ -65,9 +62,6 @@ interface TodoDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTask(task: TaskEntity): Long
-
-    @Query("SELECT COUNT(taskId) FROM task")
-    suspend fun getTaskSize(): Int
 
     @Query("UPDATE task SET position = :position WHERE taskId = :taskId")
     suspend fun updateTaskPosition(taskId: String, position: Int): Int
@@ -110,7 +104,7 @@ interface TodoDao {
 
     @Transaction
     @Query("SELECT * FROM todo WHERE todoId = :todoId")
-    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNoteEntity?>
+    fun getTodoAndNote(todoId: String): Flow<TodoAndNoteEntity?>
 
     @Transaction
     @Query("SELECT * FROM todo WHERE todoId = :todoId")

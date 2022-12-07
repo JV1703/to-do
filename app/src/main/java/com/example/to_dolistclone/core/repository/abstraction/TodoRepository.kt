@@ -1,8 +1,5 @@
 package com.example.to_dolistclone.core.repository.abstraction
 
-import com.example.to_dolistclone.core.data.local.model.AttachmentEntity
-import com.example.to_dolistclone.core.data.local.model.NoteEntity
-import com.example.to_dolistclone.core.data.local.model.TaskEntity
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -46,7 +43,10 @@ interface TodoRepository {
 
     suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
 
-    suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
+    suspend fun updateTodoAttachmentsAvailability(
+        todoId: String,
+        attachmentsAvailability: Boolean
+    ): Int
 
     suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
 
@@ -90,7 +90,7 @@ interface TodoRepository {
 
     suspend fun deleteTodoCategory(todoCategoryName: String): Int
 
-    fun getTodoAndNoteWithTodoId(todoId: String): Flow<TodoAndNote?>
+    fun getTodoAndNote(todoId: String): Flow<TodoAndNote?>
 
     fun getTodoWithTasks(todoId: String): Flow<TodoWithTasks?>
 

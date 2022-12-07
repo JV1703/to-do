@@ -2,6 +2,7 @@ package com.example.to_dolistclone.core.data.local.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 import com.example.to_dolistclone.core.domain.model.Todo
 
 const val MAX_INT = 2147483647
@@ -25,17 +26,33 @@ data class TodoEntity(
 )
 
 fun TodoEntity.toTodo() = Todo(
-    todoId,
-    title,
-    deadline,
-    reminder,
-    repeat,
-    isComplete,
-    createdOn,
-    completedOn,
-    tasks,
-    notes,
-    attachments,
+    todoId = todoId,
+    title = title,
+    deadline = deadline,
+    reminder = reminder,
+    repeat = repeat,
+    isComplete = isComplete,
+    createdOn = createdOn,
+    completedOn = completedOn,
+    tasks = tasks,
+    notes = notes,
+    attachments = attachments,
     alarmRef = alarmRef,
-    todoCategoryRefName
+    todoCategoryRefName = todoCategoryRefName
+)
+
+fun TodoEntity.toTodoNetwork() = TodoNetwork(
+    todoId = todoId,
+    title = title,
+    deadline = deadline,
+    reminder = reminder,
+    repeat = repeat,
+    isComplete = isComplete,
+    createdOn = createdOn,
+    completedOn = completedOn,
+    tasks = tasks,
+    notes = notes,
+    attachments = attachments,
+    alarmRef = alarmRef,
+    todoCategoryRefName = todoCategoryRefName
 )
