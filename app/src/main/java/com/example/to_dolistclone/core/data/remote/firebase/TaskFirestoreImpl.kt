@@ -15,7 +15,7 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
         return try {
             firestore
                 .collection(ACTIVE_COLLECTION)
-                .document(USER_ID_DOCUMENT)
+                .document(TEST_USER_ID_DOCUMENT)
                 .collection(TASK_COLLECTION)
                 .document(task.taskId)
                 .set(task)
@@ -32,7 +32,7 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
         return try {
             val data = firestore
                 .collection(ACTIVE_COLLECTION)
-                .document(USER_ID_DOCUMENT)
+                .document(TEST_USER_ID_DOCUMENT)
                 .collection(TASK_COLLECTION)
                 .get()
                 .await()
@@ -49,7 +49,7 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
         return try {
             val data = firestore
                 .collection(ACTIVE_COLLECTION)
-                .document(USER_ID_DOCUMENT)
+                .document(TEST_USER_ID_DOCUMENT)
                 .collection(TASK_COLLECTION)
                 .whereEqualTo("todoRefId", todoRefId)
                 .get()
@@ -67,7 +67,7 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
         return try {
             firestore
                 .collection(ACTIVE_COLLECTION)
-                .document(USER_ID_DOCUMENT)
+                .document(TEST_USER_ID_DOCUMENT)
                 .collection(TASK_COLLECTION)
                 .document(taskId)
                 .delete()
@@ -84,12 +84,12 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
 
        return try {
             val path = firestore.collection(ACTIVE_COLLECTION)
-                .document(USER_ID_DOCUMENT)
+                .document(TEST_USER_ID_DOCUMENT)
                 .collection(TASK_COLLECTION)
 
             firestore
                 .collection(ACTIVE_COLLECTION)
-                .document(USER_ID_DOCUMENT)
+                .document(TEST_USER_ID_DOCUMENT)
                 .collection(TASK_COLLECTION)
                 .whereEqualTo("todoRefId", todoRefId)
                 .get()

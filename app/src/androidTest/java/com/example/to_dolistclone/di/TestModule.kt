@@ -2,6 +2,7 @@ package com.example.to_dolistclone.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import com.example.to_dolistclone.core.data.local.TodoDatabase
 import com.example.to_dolistclone.core.di.app.ProductionModule
 import com.google.firebase.firestore.FirebaseFirestore
@@ -24,7 +25,7 @@ object TestModule {
             .allowMainThreadQueries().build()
     }
 
-    //    @Provides
+//    @Provides
 //    fun provideTestContext(): Context = ApplicationProvider.getApplicationContext()
 //
 //    @Provides
@@ -32,6 +33,7 @@ object TestModule {
 //        PreferenceDataStoreFactory.create(scope = TestScope(),
 //            produceFile = { testContext.preferencesDataStoreFile(FAKE_DATASTORE) })
 //
+
     @Provides
     fun provideFirestoreSettings(): FirebaseFirestoreSettings {
         return FirebaseFirestoreSettings.Builder().setHost("10.0.2.2:8080").setSslEnabled(false)
