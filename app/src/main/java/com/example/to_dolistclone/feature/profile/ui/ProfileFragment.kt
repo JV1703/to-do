@@ -49,7 +49,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         }
 
         collectLatestLifecycleFlow(viewModel.pieGraphFilter) {
-            Log.i("pieFilter", "${it.name}")
+            Log.i("pieFilter", it.name)
             binding.pieChartFilter.text = when (it) {
                 PieGraphFilter.WEEK -> {
                     "In 7 days"
@@ -69,7 +69,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             binding.pendingAmountTv.text = uiState.todos.count { !it.isComplete }.toString()
 
             setupBarChart(viewModel.generateBarChartData(uiState.todos, uiState.selectedDate))
-            setupPieChart(viewModel.generatePieChartData(uiState.todos, uiState.pieGraphFilter, dateUtil.getCurrentDate().plusDays(1)))
+            setupPieChart(
+                viewModel.generatePieChartData(
+                    uiState.todos,
+                    uiState.pieGraphFilter,
+                    dateUtil.getCurrentDate().plusDays(1)
+                )
+            )
 
             rvAdapter.submitList(
                 viewModel.generateIncompleteTodosForTheNext7Days(

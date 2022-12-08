@@ -27,6 +27,6 @@ data class TodoDetailsEntity(
 fun TodoDetailsEntity.toTodoDetails() = TodoDetails(
     todo = todo.toTodo(),
     tasks = tasks.map { it.toTask() }.sortedBy { it.position },
-    note = note?.let { it.toNote() },
+    note = note?.toNote(),
     attachments = attachments.map { it.toAttachment() }
 )

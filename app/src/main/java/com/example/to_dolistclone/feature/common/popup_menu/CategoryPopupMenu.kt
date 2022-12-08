@@ -16,13 +16,19 @@ import javax.inject.Inject
 
 class CategoryPopupMenu @Inject constructor(@ActivityContext private val context: Context) {
 
+    private lateinit var popup: PopupMenu
+
+    fun showCategoryPopupMenu(){
+        popup.show()
+    }
+
     fun build(
         v: View,
         setOfTodoCategories: Set<String>,
         selectedCategory: String?,
         onClick: (MenuItem) -> Boolean
     ) {
-        val popup = PopupMenu(context, v)
+        popup = PopupMenu(context, v)
         setupMenuOptions(popup.menu, setOfTodoCategories, selectedCategory)
 
         val inflater = popup.menuInflater
@@ -35,8 +41,6 @@ class CategoryPopupMenu @Inject constructor(@ActivityContext private val context
         popup.setOnMenuItemClickListener {
             onClick(it)
         }
-
-        popup.show()
     }
 
     private fun generateOptions(set: Set<String>): MutableSet<String> {

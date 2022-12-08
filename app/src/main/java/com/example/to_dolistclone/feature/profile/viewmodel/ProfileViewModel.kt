@@ -60,13 +60,15 @@ class ProfileViewModel @Inject constructor(
         initialValue = ProfileUiState()
     )
 
-    fun generateBarChartData(todos: List<Todo>, date: Long): List<BarEntry>{
+    fun generateBarChartData(todos: List<Todo>, date: Long): List<BarEntry> {
         val firstDateOfWeek = dateUtil.toLong(dateUtil.getFirstDateOfWeek(date))
         val lastDateOfWeek = dateUtil.toLong(dateUtil.getLastDateOfWeek(date))
 
-        val data = todoUseCase.getCompletedTodosWithinTimeRange(todos, firstDateOfWeek, lastDateOfWeek).groupingBy {
-            dateUtil.toLocalDate(it.completedOn!!).dayOfWeek
-        }.eachCount()
+        val data =
+            todoUseCase.getCompletedTodosWithinTimeRange(todos, firstDateOfWeek, lastDateOfWeek)
+                .groupingBy {
+                    dateUtil.toLocalDate(it.completedOn!!).dayOfWeek
+                }.eachCount()
 
 
         return generateBarEntry(data)
@@ -94,7 +96,11 @@ class ProfileViewModel @Inject constructor(
         return output
     }
 
-    fun generatePieChartData(todos: List<Todo>, timeFrame: PieGraphFilter, date: LocalDate): List<PieEntry>{
+    fun generatePieChartData(
+        todos: List<Todo>,
+        timeFrame: PieGraphFilter,
+        date: LocalDate
+    ): List<PieEntry> {
         val data = todoUseCase.getTodosInTimeFrame(todos, timeFrame, date)
         return data.groupingBy { it.todoCategoryRefName }.eachCount().toMutableMap().mapKeys {
             "${it.key} (${it.value})"
@@ -103,10 +109,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun generateIncompleteTodosForTheNext7Days(todos: List<Todo>, date: Long): List<Todo>{
+    fun generateIncompleteTodosForTheNext7Days(todos: List<Todo>, date: Long): List<Todo> {
         val startDate = dateUtil.toLocalDate(date).plusDays(1)
         val endDate = dateUtil.toLocalDate(date).plusWeeks(1)
-        return todoUseCase.getTodosWithinTimeRange(todos, dateUtil.toLong(startDate), dateUtil.toLong(endDate))
+        return todoUseCase.getTodosWithinTimeRange(
+            todos,
+            dateUtil.toLong(startDate),
+            dateUtil.toLong(endDate)
+        )
     }
 
     fun nextWeek(date: Long): LocalDate {

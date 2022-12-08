@@ -60,10 +60,16 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideProfileTodoUseCase(todoRepository: TodoRepository, dateUtil: DateUtil): ProfileTodoUseCase = ProfileTodoUseCaseImpl(todoRepository, dateUtil)
+    fun provideProfileTodoUseCase(
+        todoRepository: TodoRepository,
+        dateUtil: DateUtil
+    ): ProfileTodoUseCase = ProfileTodoUseCaseImpl(todoRepository, dateUtil)
 
     @Provides
     @ViewModelScoped
-    fun provideCalendarTodoUseCase(todoRepository: TodoRepository, dateUtil: DateUtil): CalendarTodoUseCase = CalendarTodoUseCaseImpl(todoRepository, dateUtil)
+    fun provideCalendarTodoUseCase(
+        todoRepository: TodoRepository,
+        dateUtil: DateUtil
+    ): CalendarTodoUseCase = CalendarTodoUseCaseImpl(todoRepository, dateUtil)
 
 }

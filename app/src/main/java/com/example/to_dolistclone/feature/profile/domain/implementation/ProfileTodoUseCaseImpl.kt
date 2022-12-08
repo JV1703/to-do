@@ -9,7 +9,6 @@ import com.example.to_dolistclone.feature.profile.viewmodel.PieGraphFilter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 class ProfileTodoUseCaseImpl @Inject constructor(
@@ -30,7 +29,11 @@ class ProfileTodoUseCaseImpl @Inject constructor(
         todo.isComplete && isWithinDateRange(todo.completedOn, from, to)
     }.sortedBy { it.completedOn }
 
-    override fun getTodosInTimeFrame(todos: List<Todo>, timeFrame: PieGraphFilter, date: LocalDate): List<Todo> {
+    override fun getTodosInTimeFrame(
+        todos: List<Todo>,
+        timeFrame: PieGraphFilter,
+        date: LocalDate
+    ): List<Todo> {
         val todayPlus7Days = date.plusDays(6)
         val todayPlus30Days = date.plusDays(29)
 

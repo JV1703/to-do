@@ -1,6 +1,7 @@
 package com.example.to_dolistclone.core.data.remote.firebase.implementation
 
 import android.util.Log
+import com.example.to_dolistclone.core.data.remote.firebase.abstraction.TodoFirestore
 import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -8,18 +9,17 @@ import javax.inject.Inject
 
 val ACTIVE_COLLECTION = "Active"
 val TEST_USER_ID_DOCUMENT = "5H0SmyClFgZqvE8bF55HofmTECm1"
+val TODO_COLLECTION = "Todos"
 
 class TodoFirestoreImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-) {
+) : TodoFirestore {
 
-    val TODO_COLLECTION = "Todos"
-
-    suspend fun upsertTodo(todo: TodoNetwork) {
+    override suspend fun insertTodo(userId: String, todo: TodoNetwork) {
         try {
             firestore
                 .collection(ACTIVE_COLLECTION)
-                .document(TEST_USER_ID_DOCUMENT)
+                .document(userId)
                 .collection(TODO_COLLECTION)
                 .document(todo.todoId)
                 .set(todo)
@@ -29,7 +29,7 @@ class TodoFirestoreImpl @Inject constructor(
         }
     }
 
-    suspend fun getTodos(userId: String): List<TodoNetwork> {
+    override suspend fun getTodos(userId: String): List<TodoNetwork> {
         return firestore.collection(ACTIVE_COLLECTION)
             .document(userId)
             .collection(TODO_COLLECTION)
@@ -39,7 +39,7 @@ class TodoFirestoreImpl @Inject constructor(
             .sortedWith(compareBy({ it.completedOn }, { it.todoId }))
     }
 
-    suspend fun deleteTodo(userId: String, todoId: String) {
+    override suspend fun deleteTodo(userId: String, todoId: String) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -49,7 +49,7 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoTitle(userId: String, todoId: String, title: String) {
+    override suspend fun updateTodoTitle(userId: String, todoId: String, title: String) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -59,7 +59,11 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoCategory(userId: String, todoId: String, todoCategoryRefName: String) {
+    override suspend fun updateTodoCategory(
+        userId: String,
+        todoId: String,
+        todoCategoryRefName: String
+    ) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -69,7 +73,7 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoDeadline(userId: String, todoId: String, deadline: Long?) {
+    override suspend fun updateTodoDeadline(userId: String, todoId: String, deadline: Long?) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -79,7 +83,7 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoReminder(userId: String, todoId: String, reminder: Long?) {
+    override suspend fun updateTodoReminder(userId: String, todoId: String, reminder: Long?) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -89,7 +93,12 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoCompletion(userId: String, todoId: String, isComplete: Boolean, completedOn: Long?) {
+    override suspend fun updateTodoCompletion(
+        userId: String,
+        todoId: String,
+        isComplete: Boolean,
+        completedOn: Long?
+    ) {
         val dataToUpdate = mapOf("isComplete" to isComplete, "completedOn" to completedOn)
         firestore
             .collection(ACTIVE_COLLECTION)
@@ -100,7 +109,11 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoTasksAvailability(userId: String, todoId: String, tasksAvailability: Boolean) {
+    override suspend fun updateTodoTasksAvailability(
+        userId: String,
+        todoId: String,
+        tasksAvailability: Boolean
+    ) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -110,7 +123,11 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoNotesAvailability(userId: String, todoId: String, notesAvailability: Boolean) {
+    override suspend fun updateTodoNotesAvailability(
+        userId: String,
+        todoId: String,
+        notesAvailability: Boolean
+    ) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -120,7 +137,7 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoAttachmentsAvailability(
+    override suspend fun updateTodoAttachmentsAvailability(
         userId: String, todoId: String,
         attachmentsAvailability: Boolean
     ) {
@@ -133,7 +150,7 @@ class TodoFirestoreImpl @Inject constructor(
             .await()
     }
 
-    suspend fun updateTodoAlarmRef(userId: String, todoId: String, alarmRef: Int?) {
+    override suspend fun updateTodoAlarmRef(userId: String, todoId: String, alarmRef: Int?) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)

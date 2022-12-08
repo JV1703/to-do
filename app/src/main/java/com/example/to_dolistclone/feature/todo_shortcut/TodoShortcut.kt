@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import com.example.to_dolistclone.core.common.*
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.core.utils.ui.makeToast
 import com.example.to_dolistclone.core.utils.ui.setStringSpanColor
@@ -131,10 +132,18 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
             }
         }
 
+        binding.category.setOnClickListener {
+            categoryPopupMenu.showCategoryPopupMenu()
+        }
+
         collectLatestLifecycleFlow(viewModel.uiState) { uiState ->
-            binding.category.setOnClickListener {
-                showCategoryPopupMenu(it, uiState.categories, uiState.selectedCategory)
+            setupCategoryPopupMenu(binding.category, uiState.categories, uiState.selectedCategory)
+
+            uiState.errorMsg?.let {
+                makeToast(it)
+                viewModel.errorMessageShown()
             }
+
             binding.category.text = uiState.selectedCategory ?: "No Category"
         }
 
@@ -161,7 +170,7 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
         }
     }
 
-    private fun showCategoryPopupMenu(
+    private fun setupCategoryPopupMenu(
         view: View, categories: Set<String>, selectedCategory: String?
     ) {
         categoryPopupMenu.build(
@@ -171,7 +180,10 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
                 "Create New" -> {
                     dialogsManager.showAddCategoryDialogFragment { categoryName ->
                         if (categoryName.isNotEmpty()) {
-                            viewModel.insertTodoCategory(categoryName)
+                            viewModel.insertTodoCategory(
+                                userId = TEST_USER_ID_DOCUMENT,
+                                categoryName = categoryName
+                            )
                             viewModel.updateSelectedCategory(categoryName)
                         } else {
                             makeToast("Please provide name for category")

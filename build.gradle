@@ -29,4 +29,5 @@ ext{
     calendar_version = "2.0.0"
     flexbox_version = "3.0.0"
     lifecycle_version = "2.5.1"
+    work_version = "2.7.1"
 }

@@ -49,7 +49,16 @@ class StartUpReceiver : BroadcastReceiver() {
                         val pendingIntent =
                             PendingIntent.getBroadcast(context, it.alarmRef!!, i, flags)
                         alarmManager.set(AlarmManager.RTC, it.reminder!!, pendingIntent)
-                        Log.i("startup", "title: ${it.title}, reminderOn: ${dateUtil.toString(it.reminder, "EEE, MM dd", java.util.Locale.getDefault())}")
+                        Log.i(
+                            "startup",
+                            "title: ${it.title}, reminderOn: ${
+                                dateUtil.toString(
+                                    it.reminder,
+                                    "EEE, MM dd",
+                                    java.util.Locale.getDefault()
+                                )
+                            }"
+                        )
                     }
             }
         }

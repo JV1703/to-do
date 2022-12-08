@@ -36,19 +36,22 @@ class DetailTaskAdapter(private val taskListener: DetailTaskAdapterListener) :
             }
 
             binding.task.setOnFocusChangeListener { _, hasFocus ->
-                if(!hasFocus){
-                    if(binding.task.text.toString().trim().isEmpty()){
+                if (!hasFocus) {
+                    if (binding.task.text.toString().trim().isEmpty()) {
                         taskListener.deleteTask(getItem(absoluteAdapterPosition).taskId)
-                    }else{
-                        taskListener.updateTaskTitle(getItem(absoluteAdapterPosition).taskId, binding.task.text.toString().trim())
+                    } else {
+                        taskListener.updateTaskTitle(
+                            getItem(absoluteAdapterPosition).taskId,
+                            binding.task.text.toString().trim()
+                        )
                     }
                 }
             }
         }
     }
 
-    private fun setStrikeThrough(textView: TextView, isComplete: Boolean){
-        textView.paintFlags = if(isComplete) Paint.STRIKE_THRU_TEXT_FLAG else 0
+    private fun setStrikeThrough(textView: TextView, isComplete: Boolean) {
+        textView.paintFlags = if (isComplete) Paint.STRIKE_THRU_TEXT_FLAG else 0
     }
 
     override fun onCreateViewHolder(

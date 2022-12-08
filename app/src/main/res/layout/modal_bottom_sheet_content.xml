@@ -16,9 +16,9 @@
             android:layout_margin="12dp"
             android:background="@drawable/bottom_sheet_edit_text_bg"
             android:hint="Input new task here"
-            android:padding="12dp"
             android:inputType="text"
             android:maxLines="1"
+            android:padding="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

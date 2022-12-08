@@ -3,10 +3,11 @@ package com.example.to_dolistclone.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.note.utils.MainCoroutineRule
-import com.example.to_dolistclone.core.data.remote.firebase.ACTIVE_COLLECTION
-import com.example.to_dolistclone.core.data.remote.firebase.TASK_COLLECTION
-import com.example.to_dolistclone.core.data.remote.firebase.TEST_USER_ID_DOCUMENT
-import com.example.to_dolistclone.core.data.remote.firebase.TaskFirestoreImpl
+import com.example.to_dolistclone.core.data.remote.firebase.abstraction.TaskFirestore
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.ACTIVE_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TASK_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TaskFirestoreImpl
 import com.example.to_dolistclone.core.data.remote.model.TaskNetwork
 import com.example.to_dolistclone.utils.TestDataGenerator
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,7 +44,7 @@ class TaskFirestoreTest {
     @Inject
     lateinit var testDataGenerator: TestDataGenerator
 
-    private lateinit var taskFirestore: TaskFirestoreImpl
+    private lateinit var taskFirestore: TaskFirestore
     private lateinit var taskNetworkList: MutableList<TaskNetwork>
     private lateinit var TEST_TASK_TODO_REF: String
 

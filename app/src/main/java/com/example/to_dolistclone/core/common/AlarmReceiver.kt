@@ -79,7 +79,7 @@ class AlarmReceiver : BroadcastReceiver() {
 const val REMINDER_CHANNEL_ID = "todo_alarm"
 const val REMINDER_CHANNEL_GROUP = "com.example.to_dolistclone.REMINDER_GROUP"
 
-class ReminderNotificationService(@ActivityContext private val context: Context) {
+class ReminderNotificationService @Inject constructor(@ActivityContext private val context: Context) {
 
     fun showNotification(todoId: String, notificationId: Int, body: String) {
 

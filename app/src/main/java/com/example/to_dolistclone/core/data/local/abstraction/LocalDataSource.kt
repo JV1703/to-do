@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.core.data.local.abstraction
 
+import com.example.to_dolistclone.core.data.local.CacheResult
 import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoCategoryWithTodosEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoDetailsEntity
@@ -44,7 +45,10 @@ interface LocalDataSource {
 
     suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
 
-    suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
+    suspend fun updateTodoAttachmentsAvailability(
+        todoId: String,
+        attachmentsAvailability: Boolean
+    ): Int
 
     suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
 
@@ -82,7 +86,7 @@ interface LocalDataSource {
 
     suspend fun deleteAttachment(attachmentId: String): Int
 
-    suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long
+    suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): CacheResult<Long?>
 
     fun getTodoCategories(): Flow<List<TodoCategoryEntity>>
 

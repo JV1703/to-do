@@ -15,7 +15,8 @@ abstract class SwipeController(private val context: Context) : ItemTouchHelper.C
     private var mClearPaint: Paint = Paint()
     private var mBackground: ColorDrawable = ColorDrawable()
     private var backgroundColor = 0
-    private var deleteDrawable: Drawable? = ContextCompat.getDrawable(context, R.drawable.ic_delete_trash)
+    private var deleteDrawable: Drawable? =
+        ContextCompat.getDrawable(context, R.drawable.ic_delete_trash)
     private var intrinsicWidth = deleteDrawable!!.intrinsicWidth
     private var intrinsicHeight = deleteDrawable!!.intrinsicHeight
 

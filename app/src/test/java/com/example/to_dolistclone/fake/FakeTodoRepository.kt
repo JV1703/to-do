@@ -372,7 +372,7 @@ class FakeTodoRepository : TodoRepository {
     }
 
     override suspend fun insertTodoCategory(todoCategory: TodoCategory): Long {
-        val todoCategoryEntity = todoCategory.toTodoEntity()
+        val todoCategoryEntity = todoCategory.toTodoCategoryEntity()
         todoCategoryList.add(todoCategoryEntity)
         return if (todoCategoryList.contains(todoCategoryEntity)) {
             todoCategoryList.indexOf(todoCategoryEntity).toLong()
@@ -400,7 +400,7 @@ class FakeTodoRepository : TodoRepository {
         val note = noteList.find { it.noteId == todoId }
         val todoAndNote = todo?.let {
             TodoAndNote(
-                todo = it, note = note
+                todo = it.toTodo(), note = note?.toNote()
             )
         }
         return flow { emit(todoAndNote) }
@@ -411,7 +411,7 @@ class FakeTodoRepository : TodoRepository {
         val tasks = taskList.filter { it.todoRefId == todoId }
         val todoWithTasks = todo?.let {
             TodoWithTasks(
-                todo = it, tasks = tasks
+                todo = it.toTodo(), tasks = tasks.map { it.toTask() }
             )
         }
         return flow { emit(todoWithTasks) }

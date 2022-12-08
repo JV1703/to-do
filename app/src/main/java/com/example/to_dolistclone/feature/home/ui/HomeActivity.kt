@@ -43,10 +43,10 @@ class HomeActivity : AppCompatActivity() {
         setupDrawer()
 
         binding.drawer.addCategory.setOnClickListener {
-            dialogsManager.showAddCategoryDialogFragment{ categoryName ->
-                if(categoryName.isNotEmpty()){
+            dialogsManager.showAddCategoryDialogFragment { categoryName ->
+                if (categoryName.isNotEmpty()) {
                     viewModel.insertTodoCategory(categoryName)
-                }else{
+                } else {
                     makeToast("Please provide name for category")
                 }
             }

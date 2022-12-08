@@ -24,5 +24,9 @@ data class TaskEntity(
 )
 
 fun TaskEntity.toTask() = Task(
-    taskId = taskId, task = task, isComplete = isComplete,position = position, todoRefId = todoRefId
+    taskId = taskId,
+    task = task,
+    isComplete = isComplete,
+    position = position,
+    todoRefId = todoRefId
 )

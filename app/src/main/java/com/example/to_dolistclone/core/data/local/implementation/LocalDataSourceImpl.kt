@@ -3,6 +3,7 @@ package com.example.to_dolistclone.core.data.local.implementation
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import com.example.to_dolistclone.core.data.local.CacheResult
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
 import com.example.to_dolistclone.core.data.local.dao.TodoDao
 import com.example.to_dolistclone.core.data.local.implementation.PreferencesKeys.SELECTED_PIE_GRAPH_OPTION
@@ -17,6 +18,7 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.To
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithAttachmentsEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoWithTasksEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.TodoAndNoteEntity
+import com.example.to_dolistclone.core.data.local.safeCacheCall
 import com.example.to_dolistclone.core.di.coroutine_dispatchers.CoroutinesQualifiers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -248,8 +250,10 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun deleteAttachment(attachmentId: String): Int =
         withContext(dispatcherIO) { todoDao.deleteAttachment(attachmentId) }
 
-    override suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long =
-        withContext(dispatcherIO) { todoDao.insertTodoCategory(todoCategory) }
+    override suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): CacheResult<Long?> =
+        safeCacheCall(dispatcherIO){
+            todoDao.insertTodoCategory(todoCategory)
+        }
 
     override fun getTodoCategories(): Flow<List<TodoCategoryEntity>> =
         todoDao.getTodoCategories().flowOn(dispatcherIO)

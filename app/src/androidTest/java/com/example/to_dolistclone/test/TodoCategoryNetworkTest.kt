@@ -4,6 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.note.utils.MainCoroutineRule
 import com.example.to_dolistclone.core.data.remote.firebase.*
+import com.example.to_dolistclone.core.data.remote.firebase.abstraction.TodoCategoryFirestore
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.ACTIVE_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TODO_CATEGORY_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TodoCategoryFirestoreImpl
 import com.example.to_dolistclone.core.data.remote.model.TodoCategoryNetwork
 import com.example.to_dolistclone.utils.TestDataGenerator
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,7 +45,7 @@ class TodoCategoryNetworkTest {
     @Inject
     lateinit var testDataGenerator: TestDataGenerator
 
-    private lateinit var todoCategoryFirestore: TodoCategoryFirestoreImpl
+    private lateinit var todoCategoryFirestore: TodoCategoryFirestore
     private lateinit var todoCategoryNetworkList: MutableList<TodoCategoryNetwork>
     private lateinit var TEST_ATTACHMENT_TODO_REF: String
 
@@ -69,8 +74,7 @@ class TodoCategoryNetworkTest {
         todoCategoryNetworkList.add(newTodoCategory)
         assertTrue(networkData.containsAll(todoCategoryNetworkList))
         todoCategoryFirestore.deleteAttachment(
-            TEST_USER_ID_DOCUMENT,
-            newTodoCategory.todoCategoryName
+            TEST_USER_ID_DOCUMENT, newTodoCategory.todoCategoryName
         )
     }
 
@@ -90,11 +94,9 @@ class TodoCategoryNetworkTest {
     fun getTodoCategory() = runTest {
         val attachmentToGet =
             todoCategoryNetworkList[Random.nextInt(todoCategoryNetworkList.size - 1)]
-        val networkData =
-            todoCategoryFirestore.getTodoCategory(
-                TEST_USER_ID_DOCUMENT,
-                attachmentToGet.todoCategoryName
-            )
+        val networkData = todoCategoryFirestore.getTodoCategory(
+            TEST_USER_ID_DOCUMENT, attachmentToGet.todoCategoryName
+        )
         assertEquals(attachmentToGet, networkData)
     }
 
@@ -109,8 +111,7 @@ class TodoCategoryNetworkTest {
         val todoCategoryToDelete =
             todoCategoryNetworkList[Random.nextInt(todoCategoryNetworkList.size - 1)]
         todoCategoryFirestore.deleteAttachment(
-            TEST_USER_ID_DOCUMENT,
-            todoCategoryToDelete.todoCategoryName
+            TEST_USER_ID_DOCUMENT, todoCategoryToDelete.todoCategoryName
         )
         val networkData = todoCategoryFirestore.getAttachments(TEST_USER_ID_DOCUMENT)
         assertTrue(!networkData.contains(todoCategoryToDelete))

@@ -63,7 +63,7 @@ class DetailTaskUseCaseTest {
     }
 
     @Test
-    fun updateTaskPosition() = runTest{
+    fun updateTaskPosition() = runTest {
         fakeTaskEntityList.forEach { useCase.insertTask(it.toTask()) }
 
         val savedTask = fakeTodoRepository.getTasks().first()
@@ -74,8 +74,14 @@ class DetailTaskUseCaseTest {
         useCase.updateTaskPosition(taskToUpdate.taskId, newPosition)
         val updatedTaskList = fakeTodoRepository.getTasks().first()
 
-        assertNotEquals(previousTaskPosition, updatedTaskList.find { it.taskId == taskToUpdate.taskId}?.position)
-        assertEquals(newPosition, updatedTaskList.find { it.taskId == taskToUpdate.taskId}?.position)
+        assertNotEquals(
+            previousTaskPosition,
+            updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.position
+        )
+        assertEquals(
+            newPosition,
+            updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.position
+        )
     }
 
     @Test
@@ -83,31 +89,40 @@ class DetailTaskUseCaseTest {
         fakeTaskEntityList.forEach { useCase.insertTask(it.toTask()) }
 
         val savedTask = fakeTodoRepository.getTasks().first()
-        val taskToUpdate = savedTask[nextInt(savedTask.size-1)]
+        val taskToUpdate = savedTask[nextInt(savedTask.size - 1)]
         val previousTaskTitle = taskToUpdate.task
 
         val newTitle = "Random"
         useCase.updateTaskTitle(taskToUpdate.taskId, "Random")
         val updatedTaskList = fakeTodoRepository.getTasks().first()
 
-        assertNotEquals(previousTaskTitle, updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.position)
+        assertNotEquals(
+            previousTaskTitle,
+            updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.position
+        )
         assertEquals(newTitle, updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.task)
     }
 
     @Test
-    fun updateTaskCompletion() = runTest{
+    fun updateTaskCompletion() = runTest {
         fakeTaskEntityList.forEach { useCase.insertTask(it.toTask()) }
 
         val savedTask = fakeTodoRepository.getTasks().first()
-        val taskToUpdate = savedTask[nextInt(savedTask.size-1)]
+        val taskToUpdate = savedTask[nextInt(savedTask.size - 1)]
         val previousTaskCompletion = taskToUpdate.isComplete
 
         val newCompletion = !previousTaskCompletion
         useCase.updateTaskCompletion(taskToUpdate.taskId, newCompletion)
         val updatedTaskList = fakeTodoRepository.getTasks().first()
 
-        assertNotEquals(previousTaskCompletion, updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.isComplete)
-        assertEquals(newCompletion, updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.isComplete)
+        assertNotEquals(
+            previousTaskCompletion,
+            updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.isComplete
+        )
+        assertEquals(
+            newCompletion,
+            updatedTaskList.find { it.taskId == taskToUpdate.taskId }?.isComplete
+        )
     }
 
     @Test

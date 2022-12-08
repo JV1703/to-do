@@ -4,7 +4,6 @@ import com.example.to_dolistclone.core.domain.model.Todo
 import com.example.to_dolistclone.feature.profile.viewmodel.PieGraphFilter
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 interface ProfileTodoUseCase {
 
@@ -16,7 +15,11 @@ interface ProfileTodoUseCase {
 
     fun getTodosWithinTimeRange(todos: List<Todo>, from: Long, to: Long): List<Todo>
 
-    fun getTodosInTimeFrame(todos: List<Todo>, timeFrame: PieGraphFilter, date: LocalDate): List<Todo>
+    fun getTodosInTimeFrame(
+        todos: List<Todo>,
+        timeFrame: PieGraphFilter,
+        date: LocalDate
+    ): List<Todo>
 
     fun getCompletedTodosWithinTimeRange(todos: List<Todo>, from: Long, to: Long): List<Todo>
 

@@ -41,9 +41,9 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
                 task.isComplete = !task.isComplete
 
-                if(task.isComplete){
+                if (task.isComplete) {
                     binding.task.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                }else{
+                } else {
                     binding.task.paintFlags = 0
                 }
 

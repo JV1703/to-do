@@ -4,6 +4,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.note.utils.MainCoroutineRule
 import com.example.to_dolistclone.core.data.remote.firebase.*
+import com.example.to_dolistclone.core.data.remote.firebase.abstraction.AttachmentFirestore
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.ACTIVE_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.ATTACHMENT_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.AttachmentFirestoreImpl
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.core.data.remote.model.AttachmentNetwork
 import com.example.to_dolistclone.utils.TestDataGenerator
 import com.google.firebase.firestore.FirebaseFirestore
@@ -40,7 +45,7 @@ class AttachmentFirestoreTest {
     @Inject
     lateinit var testDataGenerator: TestDataGenerator
 
-    private lateinit var attachmentFirestore: AttachmentFirestoreImpl
+    private lateinit var attachmentFirestore: AttachmentFirestore
     private lateinit var attachmentNetworkList: MutableList<AttachmentNetwork>
     private lateinit var TEST_ATTACHMENT_TODO_REF: String
 

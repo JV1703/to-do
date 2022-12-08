@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_margin="4dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/content_type_container"
@@ -35,11 +35,11 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
                 android:visibility="gone"
+                app:indicatorColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:indicatorColor="@color/white" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -73,11 +73,11 @@
         android:id="@+id/delete_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_close_delete"
         android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_close_delete"
+        app:layout_constraintBottom_toBottomOf="@id/separator"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/file_name_tv"
-        app:layout_constraintBottom_toBottomOf="@id/separator"/>
+        app:layout_constraintTop_toTopOf="@id/file_name_tv" />
 
     <View
         android:id="@+id/separator"

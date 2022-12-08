@@ -11,7 +11,7 @@ val ATTACHMENT_COLLECTION = "Attachments"
 class AttachmentFirestoreImpl @Inject constructor(private val firestore: FirebaseFirestore) :
     AttachmentFirestore {
 
-    override suspend fun upsertAttachment(userId: String, attachment: AttachmentNetwork){
+    override suspend fun upsertAttachment(userId: String, attachment: AttachmentNetwork) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -21,7 +21,7 @@ class AttachmentFirestoreImpl @Inject constructor(private val firestore: Firebas
             .await()
     }
 
-    override suspend fun getAttachment(userId: String, attachmentId: String): AttachmentNetwork?{
+    override suspend fun getAttachment(userId: String, attachmentId: String): AttachmentNetwork? {
         return firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -32,7 +32,7 @@ class AttachmentFirestoreImpl @Inject constructor(private val firestore: Firebas
             .toObject(AttachmentNetwork::class.java)
     }
 
-    override suspend fun getAttachments(userId: String): List<AttachmentNetwork>{
+    override suspend fun getAttachments(userId: String): List<AttachmentNetwork> {
         return firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -42,7 +42,7 @@ class AttachmentFirestoreImpl @Inject constructor(private val firestore: Firebas
             .toObjects(AttachmentNetwork::class.java)
     }
 
-    override suspend fun deleteAttachment(userId: String, attachmentId: String){
+    override suspend fun deleteAttachment(userId: String, attachmentId: String) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)

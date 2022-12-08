@@ -2,6 +2,7 @@ package com.example.to_dolistclone.feature.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.feature.home.domain.abstraction.HomeTodoCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +39,7 @@ class HomeViewModel @Inject constructor(
 
     fun insertTodoCategory(categoryName: String) {
         viewModelScope.launch {
-            todoCategoryUseCase.insertTodoCategory(categoryName)
+            todoCategoryUseCase.insertTodoCategory(TEST_USER_ID_DOCUMENT, categoryName)
         }
     }
 

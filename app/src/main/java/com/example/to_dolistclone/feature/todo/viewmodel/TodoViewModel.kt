@@ -85,7 +85,7 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    fun saveSelectedTodoId(todoId: String){
+    fun saveSelectedTodoId(todoId: String) {
         viewModelScope.launch {
             todoUseCase.saveSelectedTodoId(todoId)
         }

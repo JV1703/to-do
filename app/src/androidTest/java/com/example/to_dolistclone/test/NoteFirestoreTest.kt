@@ -4,8 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.note.utils.MainCoroutineRule
 import com.example.to_dolistclone.core.common.DateUtil
-import com.example.to_dolistclone.core.data.local.model.NoteEntity
 import com.example.to_dolistclone.core.data.remote.firebase.*
+import com.example.to_dolistclone.core.data.remote.firebase.abstraction.NoteFirestore
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.ACTIVE_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.NOTE_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.NoteFirestoreImpl
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.core.data.remote.model.NoteNetwork
 import com.example.to_dolistclone.utils.TestDataGenerator
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,7 +24,6 @@ import org.junit.Rule
 import org.junit.Test
 import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 import kotlin.random.Random.Default.nextInt
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -46,7 +49,7 @@ class NoteFirestoreTest {
     @Inject
     lateinit var testDataGenerator: TestDataGenerator
 
-    private lateinit var noteFirestore: NoteFirestoreImpl
+    private lateinit var noteFirestore: NoteFirestore
     private lateinit var noteNetworkList: MutableList<NoteNetwork>
     private lateinit var TEST_NOTE_TODO_REF: String
 
@@ -55,7 +58,7 @@ class NoteFirestoreTest {
         hiltRule.inject()
         noteFirestore = NoteFirestoreImpl(firebaseFirestore)
         insertNotes()
-        TEST_NOTE_TODO_REF = noteNetworkList[Random.nextInt(noteNetworkList.size - 1)].noteId
+        TEST_NOTE_TODO_REF = noteNetworkList[nextInt(noteNetworkList.size - 1)].noteId
     }
 
     private fun insertNotes() {
@@ -87,7 +90,7 @@ class NoteFirestoreTest {
 
     @Test
     fun updateNote() = runTest {
-        val noteToUpdate = noteNetworkList[nextInt(noteNetworkList.size-1)].copy(title = "Banana")
+        val noteToUpdate = noteNetworkList[nextInt(noteNetworkList.size - 1)].copy(title = "Banana")
         noteFirestore.upsertNote(TEST_USER_ID_DOCUMENT, noteToUpdate)
 
         val networkData = noteFirestore.getNotes(TEST_USER_ID_DOCUMENT)
@@ -96,7 +99,7 @@ class NoteFirestoreTest {
 
     @Test
     fun getNote() = runTest {
-        val noteToGet = noteNetworkList[nextInt(noteNetworkList.size-1)]
+        val noteToGet = noteNetworkList[nextInt(noteNetworkList.size - 1)]
         val networkData = noteFirestore.getNote(TEST_USER_ID_DOCUMENT, noteToGet.noteId)
         assertEquals(noteToGet, networkData)
     }
@@ -109,7 +112,7 @@ class NoteFirestoreTest {
 
     @Test
     fun deleteNote() = runTest {
-        val noteToDelete = noteNetworkList[nextInt(noteNetworkList.size-1)]
+        val noteToDelete = noteNetworkList[nextInt(noteNetworkList.size - 1)]
         noteFirestore.deleteNote(TEST_USER_ID_DOCUMENT, noteToDelete.noteId)
         val networkData = noteFirestore.getNotes(TEST_USER_ID_DOCUMENT)
         assertTrue(!networkData.contains(noteToDelete))

@@ -11,7 +11,8 @@ import com.example.to_dolistclone.core.data.local.model.*
 )
 abstract class TodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
-    companion object{
+
+    companion object {
         val DATABASE_NAME: String = "todo_database"
     }
 }

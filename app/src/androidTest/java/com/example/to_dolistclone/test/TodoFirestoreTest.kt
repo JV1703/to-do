@@ -4,9 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.note.utils.MainCoroutineRule
 import com.example.to_dolistclone.core.common.DateUtil
-import com.example.to_dolistclone.core.data.remote.firebase.ACTIVE_COLLECTION
-import com.example.to_dolistclone.core.data.remote.firebase.TEST_USER_ID_DOCUMENT
-import com.example.to_dolistclone.core.data.remote.firebase.TodoFirestoreImpl
+import com.example.to_dolistclone.core.data.remote.firebase.abstraction.TodoFirestore
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.ACTIVE_COLLECTION
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TodoFirestoreImpl
 import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 import com.example.to_dolistclone.utils.TestDataGenerator
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,7 +47,7 @@ class TodoFirestoreTest {
     @Inject
     lateinit var testDataGenerator: TestDataGenerator
 
-    private lateinit var todoFirestore: TodoFirestoreImpl
+    private lateinit var todoFirestore: TodoFirestore
     private lateinit var todoNetworkList: MutableList<TodoNetwork>
 
     @Before
@@ -84,7 +85,7 @@ class TodoFirestoreTest {
     fun upsertTodo_andGetTodos() = runTest {
         val todoId = UUID.randomUUID().toString()
         val newTodo = generateSingleTodoNetwork(todoId)
-        todoFirestore.upsertTodo(newTodo)
+        todoFirestore.insertTodo(TEST_USER_ID_DOCUMENT, newTodo)
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
         todoNetworkList.toMutableList().add(newTodo)
         assertTrue(networkData.containsAll(todoNetworkList))
@@ -95,7 +96,7 @@ class TodoFirestoreTest {
     fun deleteTodo() = runTest {
         val todoId = UUID.randomUUID().toString()
         val newTodo = generateSingleTodoNetwork(todoId)
-        todoFirestore.upsertTodo(newTodo)
+        todoFirestore.insertTodo(TEST_USER_ID_DOCUMENT, newTodo)
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
         assertTrue(networkData.contains(newTodo))
         todoFirestore.deleteTodo(TEST_USER_ID_DOCUMENT, newTodo.todoId)
@@ -141,7 +142,7 @@ class TodoFirestoreTest {
     }
 
     @Test
-    fun updateTodoReminder() = runTest{
+    fun updateTodoReminder() = runTest {
         val todoToUpdate = todoNetworkList[nextInt(todoNetworkList.size - 1)]
         val newTodoReminder = dateUtil.toLong(dateUtil.getCurrentDateTime().plusDays(1))
         todoFirestore.updateTodoReminder(
@@ -157,14 +158,22 @@ class TodoFirestoreTest {
     fun updateTodoCompletion() = runTest {
         val todoToUpdate = todoNetworkList[nextInt(todoNetworkList.size - 1)]
         val newTodoCompletion = !todoToUpdate.isComplete
-        val newCompletedOn = if(newTodoCompletion) dateUtil.toLong(dateUtil.getCurrentDateTime().plusDays(10)) else null
+        val newCompletedOn = if (newTodoCompletion) dateUtil.toLong(
+            dateUtil.getCurrentDateTime().plusDays(10)
+        ) else null
         todoFirestore.updateTodoCompletion(
             TEST_USER_ID_DOCUMENT, todoToUpdate.todoId, newTodoCompletion, newCompletedOn
         )
 
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
-        assertNotNull(networkData.find { it.todoId == todoToUpdate.todoId && it.isComplete == newTodoCompletion && it.completedOn == newCompletedOn})
-        assertTrue(networkData.contains(todoToUpdate.copy(isComplete = newTodoCompletion, completedOn = newCompletedOn)))
+        assertNotNull(networkData.find { it.todoId == todoToUpdate.todoId && it.isComplete == newTodoCompletion && it.completedOn == newCompletedOn })
+        assertTrue(
+            networkData.contains(
+                todoToUpdate.copy(
+                    isComplete = newTodoCompletion, completedOn = newCompletedOn
+                )
+            )
+        )
     }
 
     @Test
@@ -176,12 +185,12 @@ class TodoFirestoreTest {
         )
 
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
-        assertNotNull(networkData.find { it.tasks == newTodoTasksAvailability})
+        assertNotNull(networkData.find { it.tasks == newTodoTasksAvailability })
         assertTrue(networkData.contains(todoToUpdate.copy(tasks = newTodoTasksAvailability)))
     }
 
     @Test
-    fun updateTodoNotesAvailability() = runTest{
+    fun updateTodoNotesAvailability() = runTest {
         val todoToUpdate = todoNetworkList[nextInt(todoNetworkList.size - 1)]
         val newTodoNotesAvailability = !todoToUpdate.notes
         todoFirestore.updateTodoNotesAvailability(
@@ -189,7 +198,7 @@ class TodoFirestoreTest {
         )
 
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
-        assertNotNull(networkData.find { it.notes == newTodoNotesAvailability})
+        assertNotNull(networkData.find { it.notes == newTodoNotesAvailability })
         assertTrue(networkData.contains(todoToUpdate.copy(notes = newTodoNotesAvailability)))
     }
 
@@ -202,7 +211,7 @@ class TodoFirestoreTest {
         )
 
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
-        assertNotNull(networkData.find { it.attachments == newTodoAttachmentAvailability})
+        assertNotNull(networkData.find { it.attachments == newTodoAttachmentAvailability })
         assertTrue(networkData.contains(todoToUpdate.copy(attachments = newTodoAttachmentAvailability)))
     }
 
@@ -215,7 +224,7 @@ class TodoFirestoreTest {
         )
 
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
-        assertNotNull(networkData.find { it.alarmRef == newTodoAlarmRef})
+        assertNotNull(networkData.find { it.alarmRef == newTodoAlarmRef })
         assertTrue(networkData.contains(todoToUpdate.copy(alarmRef = newTodoAlarmRef)))
     }
 }

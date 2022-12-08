@@ -26,7 +26,7 @@ class CalendarViewModel @Inject constructor(
             viewModelScope, SharingStarted.WhileSubscribed(5000), CalendarFragmentUiState()
         )
 
-    fun saveSelectedTodoId(todoId: String){
+    fun saveSelectedTodoId(todoId: String) {
         viewModelScope.launch {
             todoUseCase.saveSelectedTodoId(todoId)
         }

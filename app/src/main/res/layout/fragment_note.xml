@@ -11,9 +11,9 @@
         android:id="@+id/title_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:hint="Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -21,10 +21,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        tools:text="Last update time: 2022/11/19 12:25 PM"
-        app:layout_constraintTop_toBottomOf="@id/title_et"
+        app:layout_constraintEnd_toEndOf="@id/title_et"
         app:layout_constraintStart_toStartOf="@id/title_et"
-        app:layout_constraintEnd_toEndOf="@id/title_et"/>
+        app:layout_constraintTop_toBottomOf="@id/title_et"
+        tools:text="Last update time: 2022/11/19 12:25 PM" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/body_et"

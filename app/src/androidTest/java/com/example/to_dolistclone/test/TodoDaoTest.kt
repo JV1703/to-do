@@ -23,7 +23,6 @@ import org.junit.Test
 import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 import kotlin.random.Random.Default.nextBoolean
 import kotlin.random.Random.Default.nextInt
 
@@ -80,7 +79,7 @@ class TodoDaoTest {
                 tasks = i % 2 == 0,
                 notes = i % 2 == 0,
                 attachments = i % 2 == 0,
-                alarmRef = if (i % 2 == 0) Random.nextInt() else null,
+                alarmRef = if (i % 2 == 0) nextInt() else null,
                 todoCategoryRefName = if (i % 2 == 0) "Personal" else "Work"
             )
             todoEntities.add(todoEntity)
@@ -832,12 +831,13 @@ class TodoDaoTest {
 
         dao.insertAttachments(attachmentEntityList)
         val updatedDbData = dao.getTodoWithAttachments(todoId).first()
-        val expectedResult = TodoWithAttachmentsEntity(todo = todoEntity, attachments = attachmentEntityList)
+        val expectedResult =
+            TodoWithAttachmentsEntity(todo = todoEntity, attachments = attachmentEntityList)
         assertEquals(expectedResult, updatedDbData)
     }
 
     @Test
-    fun getTodoDetails() = runTest{
+    fun getTodoDetails() = runTest {
         val todoId = UUID.randomUUID().toString()
         val todoEntity = generateSingleTodoEntity(todoId)
         val taskEntity1 = generateSingleTaskEntity(todoId, 0)
@@ -853,7 +853,12 @@ class TodoDaoTest {
         dao.insertNote(noteEntity)
         dao.insertAttachments(attachmentEntityList)
 
-        val expectedResult = TodoDetailsEntity(todo = todoEntity, tasks = taskEntityList, note = noteEntity, attachments = attachmentEntityList )
+        val expectedResult = TodoDetailsEntity(
+            todo = todoEntity,
+            tasks = taskEntityList,
+            note = noteEntity,
+            attachments = attachmentEntityList
+        )
         val dbData = dao.getTodoDetails(todoId).first()
 
         assertEquals(expectedResult, dbData)

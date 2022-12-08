@@ -67,7 +67,7 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
             .await()
     }
 
-    override suspend fun updateTaskPosition(userId: String, taskId: String, position: Int){
+    override suspend fun updateTaskPosition(userId: String, taskId: String, position: Int) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -77,7 +77,7 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
             .await()
     }
 
-    override suspend fun updateTaskTitle(userId: String, taskId: String, title: String){
+    override suspend fun updateTaskTitle(userId: String, taskId: String, title: String) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)
@@ -87,7 +87,7 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
             .await()
     }
 
-    override suspend fun updateTaskCompletion(userId: String, taskId: String, isComplete: Boolean){
+    override suspend fun updateTaskCompletion(userId: String, taskId: String, isComplete: Boolean) {
         firestore
             .collection(ACTIVE_COLLECTION)
             .document(userId)

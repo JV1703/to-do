@@ -43,8 +43,8 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/completed_todos_container"
             android:layout_width="0dp"
-            android:layout_marginTop="12dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="6dp"
             app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toStartOf="@+id/pending_todos_container"

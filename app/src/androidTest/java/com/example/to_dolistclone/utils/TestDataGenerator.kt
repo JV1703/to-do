@@ -13,40 +13,35 @@ import javax.inject.Inject
 class TestDataGenerator @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun produceListOfTodoNetwork(): List<TodoNetwork> {
-        val todos: List<TodoNetwork> = Gson().fromJson(
+        return Gson().fromJson(
             getFromFile("todo_list.json"), object : TypeToken<List<TodoNetwork>>() {}.type
         )
-        return todos
     }
 
     fun produceListOfTaskNetwork(): List<TaskNetwork> {
-        val tasks: List<TaskNetwork> = Gson().fromJson(
+        return Gson().fromJson(
             getFromFile("task_list.json"), object : TypeToken<List<TaskNetwork>>() {}.type
         )
-        return tasks
     }
 
     fun produceListOfNoteNetwork(): List<NoteNetwork> {
-        val notes: List<NoteNetwork> = Gson().fromJson(
+        return Gson().fromJson(
             getFromFile("note_list.json"), object : TypeToken<List<NoteNetwork>>() {}.type
         )
-        return notes
     }
 
     fun produceListOfAttachmentNetwork(): List<AttachmentNetwork> {
-        val attachments: List<AttachmentNetwork> = Gson().fromJson(
+        return Gson().fromJson(
             getFromFile("attachment_list.json"),
             object : TypeToken<List<AttachmentNetwork>>() {}.type
         )
-        return attachments
     }
 
     fun produceListOfTodoCategoryNetwork(): List<TodoCategoryNetwork> {
-        val todoCategoryNetwork: List<TodoCategoryNetwork> = Gson().fromJson(
+        return Gson().fromJson(
             getFromFile("todo_category_list.json"),
             object : TypeToken<List<TodoCategoryNetwork>>() {}.type
         )
-        return todoCategoryNetwork
     }
 
     private fun getFromFile(fileName: String): String? {

@@ -3,7 +3,6 @@ package com.example.to_dolistclone.core.di.activity
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import com.example.to_dolistclone.core.common.FileManager
 import com.example.to_dolistclone.core.common.ReminderNotificationService
 import dagger.Module
 import dagger.Provides
@@ -23,6 +22,7 @@ object ActivityModule {
 
     @Provides
     @ActivityScoped
-    fun provideNotificationManager(@ActivityContext context: Context): ReminderNotificationService = ReminderNotificationService(context)
+    fun provideNotificationManager(@ActivityContext context: Context): ReminderNotificationService =
+        ReminderNotificationService(context)
 
 }

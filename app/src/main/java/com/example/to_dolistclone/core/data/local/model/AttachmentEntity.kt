@@ -5,14 +5,16 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.to_dolistclone.core.domain.model.Attachment
 
-@Entity(tableName = "attachment",
+@Entity(
+    tableName = "attachment",
     foreignKeys = [ForeignKey(
         entity = TodoEntity::class,
         parentColumns = arrayOf("todoId"),
         childColumns = arrayOf("todoRefId"),
         onUpdate = ForeignKey.CASCADE,
         onDelete = ForeignKey.CASCADE
-    )])
+    )]
+)
 data class AttachmentEntity(
     @PrimaryKey(autoGenerate = false)
     val attachmentId: String,

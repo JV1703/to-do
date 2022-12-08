@@ -26,7 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::inflate), TodosAdapterClickListener {
+class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::inflate),
+    TodosAdapterClickListener {
 
     @Inject
     lateinit var dialogsManager: DialogsManager

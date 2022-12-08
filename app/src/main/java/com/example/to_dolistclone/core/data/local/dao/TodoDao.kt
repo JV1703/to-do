@@ -52,7 +52,10 @@ interface TodoDao {
     suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
 
     @Query("UPDATE todo SET attachments = :attachmentsAvailability WHERE todoId = :todoId")
-    suspend fun updateTodoAttachmentsAvailability(todoId: String, attachmentsAvailability: Boolean): Int
+    suspend fun updateTodoAttachmentsAvailability(
+        todoId: String,
+        attachmentsAvailability: Boolean
+    ): Int
 
     @Query("UPDATE todo SET alarmRef = :alarmRef WHERE todoId = :todoId")
     suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int

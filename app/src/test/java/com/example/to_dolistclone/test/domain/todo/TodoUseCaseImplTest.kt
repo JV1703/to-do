@@ -167,10 +167,10 @@ class TodoUseCaseImplTest {
         val expected = fakeTodoEntityList
             .map { todo -> todo.toTodo() }
             .groupBy { todo ->
-            todo.deadline?.let { deadline ->
-                dateUtil.toLocalDate(deadline)
+                todo.deadline?.let { deadline ->
+                    dateUtil.toLocalDate(deadline)
+                }
             }
-        }
 
         val actual = todoUseCase.getTodosGroupByDeadline().first()
 

@@ -1,5 +1,7 @@
 package com.example.to_dolistclone.core.repository.abstraction
 
+import com.example.to_dolistclone.core.data.local.CacheResult
+import com.example.to_dolistclone.core.data.remote.ApiResult
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -84,7 +86,7 @@ interface TodoRepository {
 
     suspend fun deleteAttachment(attachmentId: String): Int
 
-    suspend fun insertTodoCategory(todoCategory: TodoCategory): Long
+    suspend fun insertTodoCategory(todoCategory: TodoCategory): CacheResult<Long?>
 
     fun getTodoCategories(): Flow<List<TodoCategory>>
 
@@ -107,4 +109,8 @@ interface TodoRepository {
     fun getSelectedPieGraphOption(): Flow<Int>
 
     suspend fun saveSelectedPieGraphOption(selectedOption: Int)
+    suspend fun upsertTodoCategoryNetwork(
+        userId: String,
+        todoCategory: TodoCategory
+    ): ApiResult<Unit?>
 }

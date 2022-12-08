@@ -5,14 +5,16 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.to_dolistclone.core.domain.model.Note
 
-@Entity(tableName = "note",
+@Entity(
+    tableName = "note",
     foreignKeys = [ForeignKey(
         entity = TodoEntity::class,
         parentColumns = arrayOf("todoId"),
         childColumns = arrayOf("noteId"),
         onUpdate = ForeignKey.CASCADE,
         onDelete = ForeignKey.CASCADE
-    )])
+    )]
+)
 data class NoteEntity(
     @PrimaryKey(autoGenerate = false)
     val noteId: String,

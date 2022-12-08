@@ -15,7 +15,8 @@ class UpcomingWeeklyTodoAdapter(private val dateUtil: DateUtil) :
     ListAdapter<Todo, UpcomingWeeklyTodoAdapter.UpcomingWeeklyTodoViewHolder>(DiffUtilCallback) {
 
     inner class UpcomingWeeklyTodoViewHolder(
-        private val binding: ProfileFragmentWeeklyTaskItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        private val binding: ProfileFragmentWeeklyTaskItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(todo: Todo) {
             binding.todoItemTv.text = todo.title
             todo.deadline?.let {

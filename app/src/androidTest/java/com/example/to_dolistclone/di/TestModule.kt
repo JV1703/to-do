@@ -2,7 +2,6 @@ package com.example.to_dolistclone.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import com.example.to_dolistclone.core.data.local.TodoDatabase
 import com.example.to_dolistclone.core.di.app.ProductionModule
 import com.google.firebase.firestore.FirebaseFirestore

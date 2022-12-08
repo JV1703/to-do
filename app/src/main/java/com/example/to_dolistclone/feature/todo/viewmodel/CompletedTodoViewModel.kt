@@ -26,17 +26,17 @@ class CompletedTodoViewModel @Inject constructor(
         todos.map { dateUtil.toLocalDate(it.completedOn!!) }
             .distinct()
             .forEachIndexed { index, date ->
-            if(index == 0){
-                output.add(CompletedTodosHelper.HeaderStart(date))
-            }else{
-                output.add(CompletedTodosHelper.Header(date))
-            }
+                if (index == 0) {
+                    output.add(CompletedTodosHelper.HeaderStart(date))
+                } else {
+                    output.add(CompletedTodosHelper.Header(date))
+                }
 
-            todos.filter { dateUtil.toLocalDate(it.completedOn!!) == date }
-                .forEach { todo ->
-                output.add(CompletedTodosHelper.CompletedTodos(todo))
+                todos.filter { dateUtil.toLocalDate(it.completedOn!!) == date }
+                    .forEach { todo ->
+                        output.add(CompletedTodosHelper.CompletedTodos(todo))
+                    }
             }
-        }
 
         output.toList()
     }.stateIn(
@@ -45,7 +45,7 @@ class CompletedTodoViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
-    fun saveSelectedTodoId(todoId: String){
+    fun saveSelectedTodoId(todoId: String) {
         viewModelScope.launch {
             todoUseCase.saveSelectedTodoId(todoId)
         }

@@ -4,7 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import com.example.to_dolistclone.core.data.local.TodoDatabase
 import com.example.to_dolistclone.core.data.local.TodoDatabase.Companion.DATABASE_NAME
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,5 +31,9 @@ object ProductionModule {
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth = Firebase.auth
 
 }

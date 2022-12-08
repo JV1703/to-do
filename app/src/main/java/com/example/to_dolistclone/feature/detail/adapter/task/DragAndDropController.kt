@@ -4,7 +4,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 
-class DragAndDropController(private val mAdapter: ItemTouchHelperContract) : ItemTouchHelper.Callback() {
+class DragAndDropController(private val mAdapter: ItemTouchHelperContract) :
+    ItemTouchHelper.Callback() {
 
     override fun isLongPressDragEnabled(): Boolean {
         return true
@@ -36,8 +37,8 @@ class DragAndDropController(private val mAdapter: ItemTouchHelperContract) : Ite
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
 
-        if(actionState != ItemTouchHelper.ACTION_STATE_IDLE){
-            if(viewHolder is DetailTaskAdapter.DetailTaskViewHolder){
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+            if (viewHolder is DetailTaskAdapter.DetailTaskViewHolder) {
                 mAdapter.onRowSelected(viewHolder)
             }
         }
@@ -48,7 +49,7 @@ class DragAndDropController(private val mAdapter: ItemTouchHelperContract) : Ite
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
 
-        if(viewHolder is DetailTaskAdapter.DetailTaskViewHolder){
+        if (viewHolder is DetailTaskAdapter.DetailTaskViewHolder) {
             mAdapter.updateDb()
             mAdapter.onRowClear(viewHolder)
         }

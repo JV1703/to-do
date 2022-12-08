@@ -8,7 +8,8 @@ import com.example.to_dolistclone.feature.detail.domain.abstraction.DetailTodoUs
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) : BaseTodoUseCaseImpl(todoRepository),
+class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) :
+    BaseTodoUseCaseImpl(todoRepository),
     DetailTodoUseCase {
 
     override fun getTodoDetails(todoId: String): Flow<TodoDetails?> {
@@ -44,7 +45,8 @@ class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: Todo
         todoId: String, attachmentsAvailability: Boolean
     ): Int = todoRepository.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
 
-    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int = todoRepository.updateTodoAlarmRef(todoId, alarmRef)
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int =
+        todoRepository.updateTodoAlarmRef(todoId, alarmRef)
 
     override suspend fun deleteTodo(todoId: String): Int = todoRepository.deleteTodo(todoId)
 

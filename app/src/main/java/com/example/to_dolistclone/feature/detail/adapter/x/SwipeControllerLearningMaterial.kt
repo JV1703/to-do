@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 enum class ButtonsState {
     GONE, LEFT_VISIBLE, RIGHT_VISIBLE
 }
+
 @SuppressLint("ClickableViewAccessibility")
-class SwipeController(private val buttonsActions: SwipeControllerActionsLearningMaterial) : ItemTouchHelper.Callback() {
+class SwipeController(private val buttonsActions: SwipeControllerActionsLearningMaterial) :
+    ItemTouchHelper.Callback() {
 
     private var swipeBack = false
     private var buttonShowedState = ButtonsState.GONE
@@ -211,7 +213,7 @@ class SwipeController(private val buttonsActions: SwipeControllerActionsLearning
             itemView.right.toFloat(),
             itemView.bottom.toFloat()
         )
-        
+
         p.color = Color.RED
         c.drawRoundRect(rightButton, corners, corners, p)
         drawText("DELETE", c, rightButton, p)
