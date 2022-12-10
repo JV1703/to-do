@@ -1,6 +1,7 @@
 package com.example.to_dolistclone.core.domain.model
 
 import com.example.to_dolistclone.core.data.local.model.TaskEntity
+import com.example.to_dolistclone.core.data.remote.model.TaskNetwork
 import com.example.to_dolistclone.feature.home.adapter.TaskProxy
 
 data class Task(
@@ -20,6 +21,14 @@ fun Task.toTaskEntity() = TaskEntity(
 )
 
 fun Task.toTaskProxy() = TaskProxy(
+    taskId = taskId,
+    task = task,
+    isComplete = isComplete,
+    position = position,
+    todoRefId = todoRefId
+)
+
+fun Task.toTaskNetwork() = TaskNetwork(
     taskId = taskId,
     task = task,
     isComplete = isComplete,

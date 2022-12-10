@@ -2,6 +2,7 @@ package com.example.to_dolistclone.core.di.viewmodel
 
 
 import com.example.to_dolistclone.core.common.DateUtil
+import com.example.to_dolistclone.core.common.worker.WorkerManager
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.feature.calendar.domain.abstraction.CalendarTodoUseCase
 import com.example.to_dolistclone.feature.calendar.domain.implementation.CalendarTodoUseCaseImpl
@@ -25,38 +26,60 @@ object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideAttachment(todoRepository: TodoRepository): DetailAttachmentUseCase =
-        DetailAttachmentUseCaseImpl(todoRepository)
+    fun provideAttachment(
+        todoRepository: TodoRepository,
+        workerManager: WorkerManager
+    ): DetailAttachmentUseCase =
+        DetailAttachmentUseCaseImpl(todoRepository, workerManager)
 
     @Provides
     @ViewModelScoped
-    fun provideNoteUseCase(todoRepository: TodoRepository): DetailNoteUseCase =
-        DetailNoteUseCaseImpl(todoRepository)
+    fun provideNoteUseCase(
+        todoRepository: TodoRepository,
+        workerManager: WorkerManager
+    ): DetailNoteUseCase =
+        DetailNoteUseCaseImpl(todoRepository, workerManager)
 
     @Provides
     @ViewModelScoped
-    fun provideTaskUseCase(todoRepository: TodoRepository): DetailTaskUseCase =
-        DetailTaskUseCaseImpl(todoRepository)
+    fun provideTaskUseCase(
+        todoRepository: TodoRepository,
+        workerManager: WorkerManager
+    ): DetailTaskUseCase =
+        DetailTaskUseCaseImpl(todoRepository, workerManager)
 
     @Provides
     @ViewModelScoped
-    fun provideTodoCategoryUseCase(todoRepository: TodoRepository): TodoCategoryUseCase =
-        TodoCategoryUseCaseImpl(todoRepository)
+    fun provideTodoCategoryUseCase(
+        todoRepository: TodoRepository,
+        workerManager: WorkerManager
+    ): TodoCategoryUseCase =
+        TodoCategoryUseCaseImpl(todoRepository, workerManager)
 
     @Provides
     @ViewModelScoped
-    fun provideDetailTodoUseCase(todoRepository: TodoRepository): DetailTodoUseCase =
-        DetailTodoUseCaseImpl(todoRepository)
+    fun provideDetailTodoUseCase(
+        todoRepository: TodoRepository,
+        workerManager: WorkerManager
+    ): DetailTodoUseCase =
+        DetailTodoUseCaseImpl(todoRepository, workerManager)
 
     @Provides
     @ViewModelScoped
-    fun provideTodoUseCase(todoRepository: TodoRepository, dateUtil: DateUtil): TodoUseCase =
-        TodoUseCaseImpl(todoRepository, dateUtil)
+    fun provideTodoUseCase(
+        todoRepository: TodoRepository,
+        dateUtil: DateUtil,
+        workerManager: WorkerManager
+    ): TodoUseCase =
+        TodoUseCaseImpl(todoRepository, dateUtil, workerManager)
 
     @Provides
     @ViewModelScoped
-    fun provideHomeTodoCategoryUseCase(todoRepository: TodoRepository): HomeTodoCategoryUseCase =
-        HomeTodoCategoryUseCaseImpl(todoRepository)
+    fun provideHomeTodoCategoryUseCase(
+        todoRepository: TodoRepository,
+        workerManager: WorkerManager
+    ): HomeTodoCategoryUseCase =
+        HomeTodoCategoryUseCaseImpl(todoRepository, workerManager)
 
     @Provides
     @ViewModelScoped

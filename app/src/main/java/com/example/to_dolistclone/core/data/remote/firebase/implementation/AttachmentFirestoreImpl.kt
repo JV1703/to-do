@@ -52,4 +52,14 @@ class AttachmentFirestoreImpl @Inject constructor(private val firestore: Firebas
             .await()
     }
 
+    override suspend fun updateAttachment(userId: String, attachmentId: String, field: Map<String, Any>){
+        firestore
+            .collection(ACTIVE_COLLECTION)
+            .document(userId)
+            .collection(ATTACHMENT_COLLECTION)
+            .document(attachmentId)
+            .set(field)
+            .await()
+    }
+
 }

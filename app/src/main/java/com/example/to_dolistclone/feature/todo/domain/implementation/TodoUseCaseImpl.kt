@@ -2,6 +2,10 @@ package com.example.to_dolistclone.feature.todo.domain.implementation
 
 import android.util.Log
 import com.example.to_dolistclone.core.common.DateUtil
+import com.example.to_dolistclone.core.common.worker.WorkerManager
+import com.example.to_dolistclone.core.data.local.GenericCacheError.GENERIC_CACHE_ERROR
+import com.example.to_dolistclone.core.data.local.handleCacheResponse
+import com.example.to_dolistclone.core.domain.Async
 import com.example.to_dolistclone.core.domain.model.Todo
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.feature.common.domain.todo.BaseTodoUseCaseImpl
@@ -14,18 +18,40 @@ import javax.inject.Inject
 
 class TodoUseCaseImpl @Inject constructor(
     private val todoRepository: TodoRepository,
-    private val dateUtil: DateUtil
+    private val dateUtil: DateUtil,
+    private val workerManager: WorkerManager
 ) : BaseTodoUseCaseImpl(todoRepository), TodoUseCase {
 
-    override suspend fun insertTodo(todo: Todo): Long = todoRepository.insertTodo(todo)
+    override suspend fun insertTodo(userId: String, todo: Todo): Async<Long?>{
+        val cacheResult = todoRepository.insertTodo(todo)
+        return handleCacheResponse(cacheResult){resultObj ->
+            if(resultObj > 0){
+                workerManager.upsertTodo(userId, todo.todoId)
+                Async.Success(resultObj)
+            }else{
+                Async.Error(errorMsg = GENERIC_CACHE_ERROR)
+            }
+
+        }
+    }
 
     override fun getCompletedTodos(): Flow<List<Todo>> = todos.map { todos ->
         todos.filter { it.isComplete && it.completedOn != null }.sortedBy { it.completedOn }
     }
 
     override suspend fun updateTodoCompletion(
-        todoId: String, isComplete: Boolean, completedOn: Long?
-    ): Int = todoRepository.updateTodoCompletion(todoId, isComplete, completedOn)
+        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?
+    ): Async<Int> {
+        val cacheResult = todoRepository.updateTodoCompletion(todoId, isComplete, completedOn)
+        return handleCacheResponse(cacheResult){resultObj ->
+            if(resultObj>0){
+                workerManager.upsertTodo(userId, todoId)
+                Async.Success(resultObj)
+            }else{
+                Async.Error(errorMsg = GENERIC_CACHE_ERROR)
+            }
+        }
+    }
 
     private val todoTimeCategory = listOf("previous", "today", "future", "completedToday")
 

@@ -36,10 +36,10 @@ suspend fun <T> safeApiCall(
             when (throwable) {
                 is TimeoutCancellationException -> {
                     val code = 408 // timeout error code
-                    ApiResult.Error(code, "Network timeout")
+                    ApiResult.Error(code, "Network timeout - ${throwable.message}")
                 }
                 is IOException -> {
-                    ApiResult.Error(errorCode = null, errorMsg = "IOException - network error")
+                    ApiResult.Error(errorCode = null, errorMsg = "IOException - network error - ${throwable.message}")
                 }
                 is HttpException -> {
                     val code = throwable.code()

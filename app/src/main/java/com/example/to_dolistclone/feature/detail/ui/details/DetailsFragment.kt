@@ -37,6 +37,7 @@ import com.example.to_dolistclone.feature.detail.adapter.attachment.DetailAttach
 import com.example.to_dolistclone.feature.detail.adapter.task.*
 import com.example.to_dolistclone.feature.detail.viewmodel.DetailsViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.time.LocalDateTime
@@ -64,6 +65,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     @Inject
     lateinit var fileManager: FileManager
 
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+
 
     private val viewModel: DetailsViewModel by viewModels()
     private lateinit var taskAdapter: DetailTaskAdapter
@@ -83,7 +87,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
         binding.titleTv.onKeyboardEnter(false) { input ->
             todoId?.let {
-                viewModel.updateTodoTitle(title = input, todoId = it)
+                if (it.trim().toString().isEmpty()) {
+                    viewModel.updateTodoTitle(
+                        userId = firebaseAuth.currentUser!!.uid, title = input, todoId = it
+                    )
+                }
             }
             if (input.isEmpty()) {
                 makeToast("Please set title.")
@@ -93,11 +101,16 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         binding.taskEt.onKeyboardEnter(true) { input ->
             todoId?.let {
                 viewModel.insertTask(
-                    title = input, position = taskAdapter.currentList.size, todoRefId = it
+                    userId = firebaseAuth.currentUser!!.uid,
+                    title = input,
+                    position = taskAdapter.currentList.size,
+                    todoRefId = it
                 )
                 if (taskAdapter.currentList.size == 0) {
                     viewModel.updateTodoTasksAvailability(
-                        todoId = it, tasksAvailability = true
+                        userId = firebaseAuth.currentUser!!.uid,
+                        todoId = it,
+                        tasksAvailability = true
                     )
                 }
             }
@@ -106,26 +119,32 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         binding.dueDateTv.transformIntoDatePicker(requireContext()) { localDate ->
             binding.dueDateTv.text = getDateString(dateUtil.toLocalDateTime(localDate))
             todoId?.let {
-                viewModel.updateDeadline(todoId = it, deadline = dateUtil.toLong(localDate))
+                viewModel.updateDeadline(
+                    userId = firebaseAuth.currentUser!!.uid,
+                    todoId = it,
+                    deadline = dateUtil.toLong(localDate)
+                )
             }
             binding.dueDateTvClear.isGone = false
         }
 
         onClearText(binding.dueDateTvClear, binding.dueDateTv, "Due Date") {
             todoId?.let {
-                viewModel.updateDeadline(todoId = it, deadline = null)
+                viewModel.updateDeadline(
+                    userId = firebaseAuth.currentUser!!.uid, todoId = it, deadline = null
+                )
             }
         }
 
         binding.notesTv.setOnClickListener {
+            makeToast("delete note tapped")
             val action = DetailsFragmentDirections.actionDetailsFragmentToNoteFragment()
             findNavController().navigate(action)
         }
 
-        onClearText(binding.notesTvClear, binding.notesTv, "Repeat") {
-            makeToast("Reminder tapped")
+        onClearText(binding.notesTvClear, binding.notesTv, "Notes") {
             todoId?.let {
-                viewModel.deleteNote(noteId = it)
+                viewModel.deleteNote(userId = firebaseAuth.currentUser!!.uid, noteId = it)
             }
         }
 
@@ -133,12 +152,20 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             getFiles()
         }
 
+        binding.categoryContainer.setOnClickListener {
+            categoryPopupMenu.showCategoryPopupMenu()
+        }
+
         collectLifecycleFlow(viewModel.todoId) {
             todoId = it
         }
 
         collectLatestLifecycleFlow(viewModel.uiState) { uiState ->
-
+            setupCategoryPopupMenu(
+                binding.categoryContainer,
+                uiState.categories,
+                uiState.todoDetails?.todo?.todoCategoryRefName
+            )
             taskAdapter.submitList(uiState.todoDetails?.tasks)
             uiState.todoDetails?.attachments?.let {
                 attachmentAdapter.submitList(it)
@@ -147,11 +174,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             binding.titleTv.setText(uiState.todoDetails?.todo?.title)
 
             binding.categoryTv.text = uiState.todoDetails?.todo?.todoCategoryRefName
-            binding.categoryContainer.setOnClickListener {
-                showCategoryPopupMenu(
-                    it, uiState.categories, uiState.todoDetails?.todo?.todoCategoryRefName
-                )
-            }
 
             binding.dueDateTvClear.isGone = uiState.todoDetails?.todo?.deadline == null
 
@@ -194,34 +216,54 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
                 binding.checkbox.setOnClickListener {
                     viewModel.updateTodoCompletion(
-                        todoId = todo.todoId, isComplete = !isComplete
+                        userId = firebaseAuth.currentUser!!.uid,
+                        todoId = todo.todoId,
+                        isComplete = !isComplete
                     )
                 }
 
                 binding.reminderTv.setOnClickListener {
                     dialogsManager.showReminderDateTimePickerDialog { reminder ->
                         binding.reminderTv.text = generateReminderString(dateUtil.toLong(reminder))
-                        viewModel.updateReminder(todoId = todo.todoId, dateUtil.toLong(reminder))
+                        viewModel.updateReminder(
+                            userId = firebaseAuth.currentUser!!.uid,
+                            todoId = todo.todoId,
+                            reminder = dateUtil.toLong(reminder)
+                        )
                         if (todo.alarmRef != null) {
                             setAlarm(todo.alarmRef, dateUtil.toLong(reminder), todo.title)
                         } else {
                             val alarmRef = nextInt()
-                            viewModel.updateTodoAlarmRef(todo.todoId, alarmRef)
+                            viewModel.updateTodoAlarmRef(
+                                userId = firebaseAuth.currentUser!!.uid,
+                                todoId = todo.todoId,
+                                alarmRef = alarmRef
+                            )
                         }
                         binding.dueDateTvClear.isGone = false
                     }
                 }
 
                 onClearText(binding.reminderTvClear, binding.reminderTv, "Reminder") {
-                    viewModel.updateReminder(todoId = todo.todoId, reminder = null)
+                    viewModel.updateReminder(
+                        userId = firebaseAuth.currentUser!!.uid,
+                        todoId = todo.todoId,
+                        reminder = null
+                    )
                     todo.alarmRef?.let {
                         cancelAlarm(it)
-                        viewModel.updateTodoAlarmRef(todo.todoId, null)
+                        viewModel.updateTodoAlarmRef(
+                            userId = firebaseAuth.currentUser!!.uid,
+                            todoId = todo.todoId,
+                            alarmRef = null
+                        )
                     }
                 }
 
                 binding.deleteIv.setOnClickListener {
-                    viewModel.deleteTodo(todoId = todo.todoId)
+                    viewModel.deleteTodo(
+                        userId = firebaseAuth.currentUser!!.uid, todoId = todo.todoId
+                    )
                     todo.alarmRef?.let {
                         cancelAlarm(it)
                     }
@@ -258,7 +300,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         }
     }
 
-    private fun showCategoryPopupMenu(
+    private fun setupCategoryPopupMenu(
         view: View, categories: Set<String>, selectedCategory: String?
     ) {
         categoryPopupMenu.build(
@@ -268,9 +310,16 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 "Create New" -> {
                     dialogsManager.showAddCategoryDialogFragment { categoryName ->
                         if (categoryName.isNotEmpty()) {
-                            viewModel.insertTodoCategory(categoryName)
+                            viewModel.insertTodoCategory(
+                                userId = firebaseAuth.currentUser!!.uid,
+                                todoCategoryName = categoryName
+                            )
                             todoId?.let {
-                                viewModel.updateTodoCategory(todoId = it, category = categoryName)
+                                viewModel.updateTodoCategory(
+                                    userId = firebaseAuth.currentUser!!.uid,
+                                    todoId = it,
+                                    category = categoryName
+                                )
                             }
                         } else {
                             makeToast("Please provide name for category")
@@ -282,7 +331,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                     makeToast(menuItem.title.toString())
                     todoId?.let {
                         viewModel.updateTodoCategory(
-                            todoId = it, category = menuItem.title.toString()
+                            userId = firebaseAuth.currentUser!!.uid,
+                            todoId = it,
+                            category = menuItem.title.toString()
                         )
                     }
                     binding.categoryTv.text = menuItem.title
@@ -309,10 +360,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 val task = taskAdapter.currentList[position]
                 if (taskAdapter.currentList.size == 1) {
                     task.todoRefId?.let {
-                        viewModel.updateTodoTasksAvailability(todoId = it, false)
+                        viewModel.updateTodoTasksAvailability(
+                            userId = firebaseAuth.currentUser!!.uid, todoId = it, false
+                        )
                     }
                 }
-                viewModel.deleteTask(task.taskId)
+                viewModel.deleteTask(userId = firebaseAuth.currentUser!!.uid, taskId = task.taskId)
                 undoDeleteTask(task)
             }
         }
@@ -324,9 +377,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     private fun undoDeleteTask(task: Task) {
         Snackbar.make(binding.root, "Todo is deleted", Snackbar.LENGTH_SHORT).apply {
             setAction("Undo") {
-                viewModel.restoreDeletedTaskProxy(task)
+                viewModel.restoreDeletedTaskProxy(userId = firebaseAuth.currentUser!!.uid, task)
                 task.todoRefId?.let {
-                    viewModel.updateTodoTasksAvailability(todoId = it, tasksAvailability = true)
+                    viewModel.updateTodoTasksAvailability(
+                        userId = firebaseAuth.currentUser!!.uid,
+                        todoId = it,
+                        tasksAvailability = true
+                    )
                 }
             }
             setActionTextColor(Color.YELLOW)
@@ -369,20 +426,24 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     override fun updateDb() {
         val list = taskAdapter.currentList
         list.forEachIndexed { index, task ->
-            viewModel.updateTaskPosition(task.taskId, index)
+            viewModel.updateTaskPosition(firebaseAuth.currentUser!!.uid, task.taskId, index)
         }
     }
 
     override fun updateTaskTitle(taskId: String?, title: String) {
-        viewModel.updateTaskTitle(taskId!!, title)
+        viewModel.updateTaskTitle(
+            userId = firebaseAuth.currentUser!!.uid, taskId = taskId!!, title = title
+        )
     }
 
     override fun deleteTask(taskId: String) {
-        viewModel.deleteTask(taskId)
+        viewModel.deleteTask(userId = firebaseAuth.currentUser!!.uid, taskId = taskId)
     }
 
     override fun updateTaskCompletion(taskId: String?, isComplete: Boolean) {
-        viewModel.updateTaskCompletion(taskId!!, isComplete)
+        viewModel.updateTaskCompletion(
+            userId = firebaseAuth.currentUser!!.uid, taskId = taskId!!, isComplete = isComplete
+        )
     }
 
     private fun onClearText(
@@ -463,7 +524,9 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                                     size = it.length(),
                                     todoRefId = todoId!!
                                 )
-                                viewModel.insertAttachment(attachment)
+                                viewModel.insertAttachment(
+                                    userId = firebaseAuth.currentUser!!.uid, attachment = attachment
+                                )
                             }
                         }
                     } else {
@@ -482,11 +545,17 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                                 size = it.length(),
                                 todoRefId = todoId!!
                             )
-                            viewModel.insertAttachment(attachment)
+                            viewModel.insertAttachment(
+                                userId = firebaseAuth.currentUser!!.uid, attachment = attachment
+                            )
                         }
                     }
                     todoId?.let {
-                        viewModel.updateTodoAttachmentsAvailability(it, true)
+                        viewModel.updateTodoAttachmentsAvailability(
+                            userId = firebaseAuth.currentUser!!.uid,
+                            todoId = it,
+                            attachmentsAvailability = true
+                        )
                     }
                 }
             }
@@ -532,9 +601,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
     override fun deleteAttachment(attachment: Attachment) {
         if (attachmentAdapter.itemCount == 1) {
-            viewModel.updateTodoAttachmentsAvailability(attachment.todoRefId, false)
+            viewModel.updateTodoAttachmentsAvailability(
+                userId = firebaseAuth.currentUser!!.uid,
+                todoId = attachment.todoRefId,
+                attachmentsAvailability = false
+            )
         }
-        viewModel.deleteAttachment(attachment)
+        viewModel.deleteAttachment(userId = firebaseAuth.currentUser!!.uid, attachment = attachment)
     }
 
 }

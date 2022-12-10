@@ -19,22 +19,31 @@ class TodoCategoryFirestoreImpl @Inject constructor(private val firestore: Fireb
 
     override suspend fun getTodoCategory(
         userId: String,
-        attachmentId: String
+        todoCategoryName: String
     ): TodoCategoryNetwork? {
         return firestore.collection(ACTIVE_COLLECTION).document(userId)
-            .collection(TODO_CATEGORY_COLLECTION).document(attachmentId).get().await()
+            .collection(TODO_CATEGORY_COLLECTION).document(todoCategoryName).get().await()
             .toObject(TodoCategoryNetwork::class.java)
     }
 
-    override suspend fun getAttachments(userId: String): List<TodoCategoryNetwork> {
+    override suspend fun getTodoCategories(userId: String): List<TodoCategoryNetwork> {
         return firestore.collection(ACTIVE_COLLECTION).document(userId)
             .collection(TODO_CATEGORY_COLLECTION).get().await()
             .toObjects(TodoCategoryNetwork::class.java)
     }
 
-    override suspend fun deleteAttachment(userId: String, attachmentId: String) {
+    override suspend fun deleteTodoCategory(userId: String, todoCategoryName: String) {
         firestore.collection(ACTIVE_COLLECTION).document(userId)
-            .collection(TODO_CATEGORY_COLLECTION).document(attachmentId).delete().await()
+            .collection(TODO_CATEGORY_COLLECTION).document(todoCategoryName).delete().await()
+    }
+
+    override suspend fun updateTodoCategory(userId: String, todoCategoryName: String, field: Map<String, Any>){
+        firestore.collection(ACTIVE_COLLECTION)
+            .document(userId)
+            .collection(TODO_CATEGORY_COLLECTION)
+            .document(todoCategoryName)
+            .set(field)
+            .await()
     }
 
 }

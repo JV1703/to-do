@@ -42,6 +42,17 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
             .toObjects(TaskNetwork::class.java)
     }
 
+    override suspend fun getTask(userId: String, taskId: String): TaskNetwork?{
+        return firestore
+            .collection(ACTIVE_COLLECTION)
+            .document(userId)
+            .collection(TASK_COLLECTION)
+            .document(taskId)
+            .get()
+            .await()
+            .toObject(TaskNetwork::class.java)
+    }
+
     override suspend fun deleteTask(userId: String, taskId: String) {
         firestore
             .collection(ACTIVE_COLLECTION)
@@ -94,6 +105,16 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
             .collection(TASK_COLLECTION)
             .document(taskId)
             .update("isComplete", isComplete)
+            .await()
+    }
+
+    override suspend fun updateTask(userId: String, taskId: String, field: Map<String, Any>) {
+        firestore
+            .collection(ACTIVE_COLLECTION)
+            .document(userId)
+            .collection(TASK_COLLECTION)
+            .document(taskId)
+            .update(field)
             .await()
     }
 

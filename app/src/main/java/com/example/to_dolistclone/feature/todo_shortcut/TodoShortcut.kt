@@ -24,6 +24,7 @@ import com.example.to_dolistclone.feature.home.adapter.TaskAdapter
 import com.example.to_dolistclone.feature.home.adapter.TaskProxy
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -41,6 +42,9 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
 
     @Inject
     lateinit var categoryPopupMenu: CategoryPopupMenu
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     private val viewModel: TodoShortcutViewModel by viewModels()
 
@@ -181,7 +185,7 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
                     dialogsManager.showAddCategoryDialogFragment { categoryName ->
                         if (categoryName.isNotEmpty()) {
                             viewModel.insertTodoCategory(
-                                userId = TEST_USER_ID_DOCUMENT,
+                                userId = firebaseAuth.currentUser!!.uid,
                                 categoryName = categoryName
                             )
                             viewModel.updateSelectedCategory(categoryName)
@@ -231,7 +235,11 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
                 todoCategoryRefName = binding.category.text.toString()
             )
 
-            viewModel.insertTodo(tasksProxy, todo)
+            viewModel.insertTodo(
+                userId = firebaseAuth.currentUser!!.uid,
+                tasksProxy = tasksProxy,
+                todo = todo
+            )
 
             if (todo.reminder == null) {
                 todo.alarmRef?.let {

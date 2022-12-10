@@ -1,16 +1,17 @@
 package com.example.to_dolistclone.feature.todo.domain.abstraction
 
+import com.example.to_dolistclone.core.domain.Async
 import com.example.to_dolistclone.core.domain.model.Todo
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 interface TodoUseCase {
 
-    suspend fun insertTodo(todo: Todo): Long
+    suspend fun insertTodo(userId: String, todo: Todo): Async<Long?>
 
     suspend fun updateTodoCompletion(
-        todoId: String, isComplete: Boolean, completedOn: Long?
-    ): Int
+        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?
+    ): Async<Int>
 
 //    fun getTodos(): Flow<List<Todo>>
 

@@ -22,6 +22,7 @@ import com.example.to_dolistclone.feature.detail.ui.DetailsActivity
 import com.example.to_dolistclone.feature.todo.adapter.TodosAdapter
 import com.example.to_dolistclone.feature.todo.adapter.TodosAdapterClickListener
 import com.example.to_dolistclone.feature.todo.viewmodel.TodoViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -34,6 +35,9 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
 
     @Inject
     lateinit var dateUtil: DateUtil
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     private val viewModel: TodoViewModel by viewModels()
 
@@ -190,6 +194,6 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
     }
 
     override fun complete(todoId: String, isComplete: Boolean) {
-        viewModel.updateTodoCompletion(todoId, isComplete)
+        viewModel.updateTodoCompletion(firebaseAuth.currentUser!!.uid, todoId, isComplete)
     }
 }

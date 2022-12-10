@@ -115,55 +115,57 @@ class LocalDataSourceImpl @Inject constructor(
         Log.e("LocalDataSourceImpl", "getShowToday errorMsg: ${e.message}")
     }
 
-    override suspend fun insertTodo(todo: TodoEntity): Long {
-        return withContext(dispatcherIO) { todoDao.insertTodo(todo) }
+    override suspend fun insertTodo(todo: TodoEntity): CacheResult<Long?> {
+        return safeCacheCall(dispatcherIO) { todoDao.insertTodo(todo) }
     }
 
-    override suspend fun updateTodoTitle(todoId: String, title: String): Int =
-        withContext(dispatcherIO) {
+    override suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
             todoDao.updateTodoTitle(todoId, title)
         }
 
-    override suspend fun updateTodoCategory(todoId: String, category: String): Int =
-        withContext(dispatcherIO) {
+    override suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
             todoDao.updateTodoCategory(todoId, category)
         }
 
-    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int =
-        withContext(dispatcherIO) {
+    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
             todoDao.updateTodoDeadline(todoId, deadline)
         }
 
-    override suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int =
-        withContext(dispatcherIO) {
+    override suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
             todoDao.updateTodoReminder(todoId, reminder)
         }
 
     override suspend fun updateTodoCompletion(
         todoId: String, isComplete: Boolean, completedOn: Long?
-    ): Int = withContext(dispatcherIO) {
+    ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
         todoDao.updateTodoCompletion(todoId, isComplete, completedOn)
     }
 
     override suspend fun updateTodoTasksAvailability(
         todoId: String, tasksAvailability: Boolean
-    ): Int = withContext(dispatcherIO) {
+    ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
         todoDao.updateTodoTasksAvailability(todoId, tasksAvailability)
     }
 
     override suspend fun updateTodoNotesAvailability(
         todoId: String, notesAvailability: Boolean
-    ): Int =
-        withContext(dispatcherIO) { todoDao.updateTodoNotesAvailability(todoId, notesAvailability) }
+    ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
+        todoDao.updateTodoNotesAvailability(todoId, notesAvailability)
+    }
+
 
     override suspend fun updateTodoAttachmentsAvailability(
         todoId: String, attachmentsAvailability: Boolean
-    ): Int = withContext(dispatcherIO) {
+    ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
         todoDao.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
     }
 
-    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int =
-        withContext(dispatcherIO) {
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
             todoDao.updateTodoAlarmRef(todoId, alarmRef)
         }
 
@@ -176,36 +178,38 @@ class LocalDataSourceImpl @Inject constructor(
         return todoDao.getTodoDetails(todoId).flowOn(dispatcherIO)
     }
 
-    override suspend fun deleteTodo(todoId: String): Int =
-        withContext(dispatcherIO) { todoDao.deleteTodo(todoId) }
-
-    override suspend fun insertNote(note: NoteEntity) = withContext(dispatcherIO) {
-        try {
-            todoDao.insertNote(note)
-        } catch (e: Exception) {
-            Log.e(this.javaClass.name, "insertNote - ${e.message}")
-            -1
+    override suspend fun deleteTodo(todoId: String): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
+            todoDao.deleteTodo(todoId)
         }
-    }
+
+    override suspend fun insertNote(note: NoteEntity): CacheResult<Long?> =
+        safeCacheCall(dispatcherIO) {
+            todoDao.insertNote(note)
+        }
+
+    override fun getNote(noteId: String): Flow<NoteEntity?> = todoDao.getNote(noteId).flowOn(dispatcherIO)
 
     override fun getNotes(): Flow<List<NoteEntity>> = todoDao.getNotes().flowOn(dispatcherIO)
 
-    override suspend fun deleteNote(noteId: String): Int =
-        withContext(dispatcherIO) { todoDao.deleteNote(noteId) }
+    override suspend fun deleteNote(noteId: String): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
+            todoDao.deleteNote(noteId)
+        }
 
-    override suspend fun insertTask(task: TaskEntity): Long =
-        withContext(dispatcherIO) { todoDao.insertTask(task) }
+    override suspend fun insertTask(task: TaskEntity): CacheResult<Long?> =
+        safeCacheCall(dispatcherIO) { todoDao.insertTask(task) }
 
-    override suspend fun updateTaskPosition(taskId: String, position: Int): Int =
-        withContext(dispatcherIO) {
+    override suspend fun updateTaskPosition(taskId: String, position: Int): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) {
             todoDao.updateTaskPosition(taskId, position)
         }
 
-    override suspend fun updateTaskTitle(taskId: String, title: String): Int =
-        withContext(dispatcherIO) { todoDao.updateTaskTitle(taskId, title) }
+    override suspend fun updateTaskTitle(taskId: String, title: String): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) { todoDao.updateTaskTitle(taskId, title) }
 
     override suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean) =
-        withContext(dispatcherIO) {
+        safeCacheCall(dispatcherIO) {
             todoDao.updateTaskCompletion(taskId, isComplete)
         }
 
@@ -219,39 +223,35 @@ class LocalDataSourceImpl @Inject constructor(
             }
         }
 
+    override fun getTask(taskId: String): Flow<TaskEntity?> = todoDao.getTask(taskId)
+
     override fun getTasks(): Flow<List<TaskEntity>> = todoDao.getTasks().flowOn(dispatcherIO)
 
-    override suspend fun deleteTask(taskId: String): Int =
-        withContext(dispatcherIO) { todoDao.deleteTask(taskId) }
+    override suspend fun deleteTask(taskId: String): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO) { todoDao.deleteTask(taskId) }
 
-    override suspend fun insertAttachment(attachment: AttachmentEntity): Long =
-        withContext(dispatcherIO) {
-            try {
-                todoDao.insertAttachment(attachment)
-            } catch (e: Exception) {
-                Log.e(this.javaClass.name, "insertAttachment - errorMsg: ${e.message}")
-                -1
-            }
+    override suspend fun insertAttachment(attachment: AttachmentEntity): CacheResult<Long?> =
+        safeCacheCall(dispatcherIO){
+            todoDao.insertAttachment(attachment)
         }
 
-    override suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray =
-        withContext(dispatcherIO) {
-            try {
-                todoDao.insertAttachments(attachments)
-            } catch (e: Exception) {
-                Log.e(this.javaClass.name, "insertAttachments - errorMsg: ${e.message}")
-                longArrayOf(-1)
-            }
+    override suspend fun insertAttachments(attachments: List<AttachmentEntity>): CacheResult<LongArray?> =
+        safeCacheCall(dispatcherIO){
+            todoDao.insertAttachments(attachments)
         }
+
+    override fun getAttachment(attachmentId: String) = todoDao.getAttachment(attachmentId).flowOn(dispatcherIO)
 
     override fun getAttachments(): Flow<List<AttachmentEntity>> =
         todoDao.getAttachments().flowOn(dispatcherIO)
 
-    override suspend fun deleteAttachment(attachmentId: String): Int =
-        withContext(dispatcherIO) { todoDao.deleteAttachment(attachmentId) }
+    override suspend fun deleteAttachment(attachmentId: String): CacheResult<Int?> =
+        safeCacheCall(dispatcherIO){
+            todoDao.deleteAttachment(attachmentId)
+        }
 
     override suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): CacheResult<Long?> =
-        safeCacheCall(dispatcherIO){
+        safeCacheCall(dispatcherIO) {
             todoDao.insertTodoCategory(todoCategory)
         }
 

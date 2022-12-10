@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface HomeTodoCategoryUseCase {
 
     fun getTodoCategoriesName(): Flow<List<String>>
-    suspend fun insertTodoCategory(userId: String, todoCategoryName: String): Async<Unit?>
+    suspend fun insertTodoCategory(userId: String, todoCategoryName: String): Async<Long>
 
 }

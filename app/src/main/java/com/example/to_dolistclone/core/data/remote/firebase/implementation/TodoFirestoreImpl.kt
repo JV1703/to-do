@@ -15,7 +15,7 @@ class TodoFirestoreImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : TodoFirestore {
 
-    override suspend fun insertTodo(userId: String, todo: TodoNetwork) {
+    override suspend fun upsertTodo(userId: String, todo: TodoNetwork) {
         try {
             firestore
                 .collection(ACTIVE_COLLECTION)
@@ -46,6 +46,16 @@ class TodoFirestoreImpl @Inject constructor(
             .collection(TODO_COLLECTION)
             .document(todoId)
             .delete()
+            .await()
+    }
+
+    override suspend fun updateTodo(userId: String, todoId: String, field: Map<String, Any?>){
+        firestore
+            .collection(ACTIVE_COLLECTION)
+            .document(userId)
+            .collection(TODO_COLLECTION)
+            .document(todoId)
+            .update(field)
             .await()
     }
 

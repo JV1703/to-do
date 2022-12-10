@@ -52,4 +52,14 @@ class NoteFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
             .await()
     }
 
+    override suspend fun updateNote(userId: String, noteId: String, field: Map<String, Any>) {
+        firestore
+            .collection(ACTIVE_COLLECTION)
+            .document(userId)
+            .collection(NOTE_COLLECTION)
+            .document(noteId)
+            .set(field)
+            .await()
+    }
+
 }

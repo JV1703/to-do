@@ -30,8 +30,11 @@ interface TodoDao {
     @Query("DELETE FROM todo WHERE todoId = :todoId")
     suspend fun deleteTodo(todoId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteEntity): Long
+
+    @Query("SELECT * FROM note WHERE noteId = :noteId")
+    fun getNote(noteId: String): Flow<NoteEntity?>
 
     @Query("SELECT * FROM note")
     fun getNotes(): Flow<List<NoteEntity>>
@@ -53,8 +56,7 @@ interface TodoDao {
 
     @Query("UPDATE todo SET attachments = :attachmentsAvailability WHERE todoId = :todoId")
     suspend fun updateTodoAttachmentsAvailability(
-        todoId: String,
-        attachmentsAvailability: Boolean
+        todoId: String, attachmentsAvailability: Boolean
     ): Int
 
     @Query("UPDATE todo SET alarmRef = :alarmRef WHERE todoId = :todoId")
@@ -78,6 +80,9 @@ interface TodoDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
 
+    @Query("SELECT * FROM task WHERE taskId= :taskId ")
+    fun getTask(taskId: String): Flow<TaskEntity?>
+
     @Query("SELECT * FROM task")
     fun getTasks(): Flow<List<TaskEntity>>
 
@@ -89,6 +94,9 @@ interface TodoDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray
+
+    @Query("SELECT * FROM attachment WHERE attachmentId = :attachmentId")
+    fun getAttachment(attachmentId: String): Flow<AttachmentEntity?>
 
     @Query("SELECT * FROM attachment")
     fun getAttachments(): Flow<List<AttachmentEntity>>

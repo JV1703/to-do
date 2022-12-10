@@ -4,7 +4,7 @@ import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 
 interface TodoFirestore {
 
-    suspend fun insertTodo(userId: String, todo: TodoNetwork)
+    suspend fun upsertTodo(userId: String, todo: TodoNetwork)
 
     suspend fun getTodos(userId: String): List<TodoNetwork>
 
@@ -43,4 +43,5 @@ interface TodoFirestore {
     )
 
     suspend fun updateTodoAlarmRef(userId: String, todoId: String, alarmRef: Int?)
+    suspend fun updateTodo(userId: String, todoId: String, field: Map<String, Any?>)
 }

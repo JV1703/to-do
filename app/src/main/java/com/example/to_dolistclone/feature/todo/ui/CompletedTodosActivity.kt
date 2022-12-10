@@ -12,6 +12,7 @@ import com.example.to_dolistclone.feature.detail.ui.DetailsActivity
 import com.example.to_dolistclone.feature.todo.adapter.CompletedTodosAdapter
 import com.example.to_dolistclone.feature.todo.adapter.CompletedTodosAdapterClickListener
 import com.example.to_dolistclone.feature.todo.viewmodel.CompletedTodoViewModel
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -20,6 +21,9 @@ class CompletedTodosActivity : AppCompatActivity(), CompletedTodosAdapterClickLi
 
     @Inject
     lateinit var dateUtil: DateUtil
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var binding: ActivityCompletedTodosBinding
 
@@ -50,6 +54,6 @@ class CompletedTodosActivity : AppCompatActivity(), CompletedTodosAdapterClickLi
     }
 
     override fun complete(todoId: String, isComplete: Boolean) {
-        viewModel.updateTodoCompletion(todoId, isComplete)
+        viewModel.updateTodoCompletion(firebaseAuth.currentUser!!.uid, todoId, isComplete)
     }
 }

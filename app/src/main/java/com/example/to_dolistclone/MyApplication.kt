@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.example.to_dolistclone.core.common.REMINDER_CHANNEL_ID
+import com.example.to_dolistclone.core.common.worker.WORKER_CHANNEL_ID
 
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -42,10 +43,14 @@ class MyApplication : Application(), Configuration.Provider {
             val todoChannel = NotificationChannel(REMINDER_CHANNEL_ID, name, importance).apply {
                 description = descriptionText
             }
+            val workerChannel = NotificationChannel(WORKER_CHANNEL_ID, "Worker monitor", importance).apply {
+                description = "Show work status"
+            }
 
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(todoChannel)
+            notificationManager.createNotificationChannel(workerChannel)
 
         }
     }

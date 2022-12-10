@@ -5,13 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.common.FileManager
-import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.feature.detail.domain.abstraction.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -34,6 +32,8 @@ class DetailsViewModel @Inject constructor(
 ) : ViewModel() {
     val todoId = detailTodoUseCase.getSelectedTodoId()
 
+    private val customScope = CoroutineScope(SupervisorJob())
+    private var customJob: Job? = null
     private val todoDetails = todoId.flatMapLatest { detailTodoUseCase.getTodoDetails(it) }
     private val todoCategories = todoCategoryUseCase.getTodoCategories().map { todos ->
         todos.map { todo -> todo.todoCategoryName }.toSet()
@@ -49,33 +49,43 @@ class DetailsViewModel @Inject constructor(
             todoDetails = todoDetails
         )
     }.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000), DetailsActivityUiState()
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = DetailsActivityUiState()
     )
 
-    fun insertTodoCategory(todoCategoryName: String) {
+    fun insertTodoCategory(userId: String, todoCategoryName: String) {
         viewModelScope.launch {
             if (todoCategoryName.isNotEmpty()) {
-                todoCategoryUseCase.insertTodoCategory(TEST_USER_ID_DOCUMENT,todoCategoryName)
+                todoCategoryUseCase.insertTodoCategory(
+                    userId = userId, todoCategoryName = todoCategoryName
+                )
             }
         }
     }
 
-    fun updateTodoCategory(todoId: String, category: String) {
+    fun updateTodoCategory(userId: String, todoId: String, category: String) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoCategory(todoId, category)
+            detailTodoUseCase.updateTodoCategory(
+                userId = userId, todoId = todoId, category = category
+            )
         }
     }
 
-    fun updateTaskPosition(tasks: List<Task>) {
-        viewModelScope.launch {
-            detailTaskUseCase.insertTasks(tasks)
-        }
-    }
+//    fun updateTaskPosition(tasks: List<Task>) {
+//        viewModelScope.launch {
+//            detailTaskUseCase.insertTasks(tasks)
+//        }
+//    }
 
-    fun insertTask(taskId: String? = null, title: String, position: Int, todoRefId: String) {
+    fun insertTask(
+        userId: String, taskId: String? = null, title: String, position: Int, todoRefId: String
+    ) {
         viewModelScope.launch {
-            val task = createTask(taskId, title, position, todoRefId)
-            detailTaskUseCase.insertTask(task)
+            val task = createTask(
+                taskId = taskId, title = title, position = position, todoRefId = todoRefId
+            )
+            detailTaskUseCase.insertTask(userId = userId, task = task)
         }
     }
 
@@ -87,63 +97,79 @@ class DetailsViewModel @Inject constructor(
         todoRefId = todoRefId
     )
 
-    fun deleteTask(taskId: String) {
+    fun deleteTask(userId: String, taskId: String) {
         viewModelScope.launch {
-            detailTaskUseCase.deleteTask(taskId)
+            detailTaskUseCase.deleteTask(userId = userId, taskId = taskId)
         }
     }
 
-    fun updateTaskPosition(taskId: String, position: Int) {
+    fun updateTaskPosition(userId: String, taskId: String, position: Int) {
         viewModelScope.launch {
-            detailTaskUseCase.updateTaskPosition(taskId, position)
+            detailTaskUseCase.updateTaskPosition(
+                userId = userId, taskId = taskId, position = position
+            )
         }
     }
 
-    fun restoreDeletedTaskProxy(task: Task) {
+    fun restoreDeletedTaskProxy(userId: String, task: Task) {
         viewModelScope.launch {
-            detailTaskUseCase.insertTask(task)
+            detailTaskUseCase.insertTask(userId = userId, task = task)
         }
     }
 
-    fun updateDeadline(todoId: String, deadline: Long?) {
+    fun updateDeadline(userId: String, todoId: String, deadline: Long?) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoDeadline(todoId, deadline)
+            detailTodoUseCase.updateTodoDeadline(
+                userId = userId, todoId = todoId, deadline = deadline
+            )
         }
     }
 
-    fun updateReminder(todoId: String, reminder: Long?) {
+    fun updateReminder(userId: String, todoId: String, reminder: Long?) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoReminder(todoId, reminder)
+            detailTodoUseCase.updateTodoReminder(
+                userId = userId, todoId = todoId, reminder = reminder
+            )
         }
     }
 
-    fun updateTaskTitle(taskId: String, title: String) {
+    fun updateTaskTitle(userId: String, taskId: String, title: String) {
         viewModelScope.launch {
-            detailTaskUseCase.updateTaskTitle(taskId, title)
+            detailTaskUseCase.updateTaskTitle(userId = userId, taskId = taskId, title = title)
         }
     }
 
-    fun updateTaskCompletion(taskId: String, isComplete: Boolean) {
+    fun updateTaskCompletion(userId: String, taskId: String, isComplete: Boolean) {
         viewModelScope.launch {
-            detailTaskUseCase.updateTaskCompletion(taskId, isComplete)
+            detailTaskUseCase.updateTaskCompletion(
+                userId = userId, taskId = taskId, isComplete = isComplete
+            )
         }
     }
 
-    fun updateTodoTitle(todoId: String, title: String) {
+    fun updateTodoTitle(userId: String, todoId: String, title: String) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoTitle(todoId, title)
+            detailTodoUseCase.updateTodoTitle(userId = userId, todoId = todoId, title = title)
         }
     }
 
-    fun deleteTodo(todoId: String) {
+    fun deleteTodo(userId: String, todoId: String) {
         viewModelScope.launch {
-            detailTodoUseCase.deleteTodo(todoId)
+            detailTodoUseCase.deleteTodo(userId = userId, todoId = todoId)
         }
     }
 
-    fun insertNote(note: Note) {
-        viewModelScope.launch {
-            detailNoteUseCase.insertNote(note)
+    fun upsertNote(userId: String, note: Note) {
+        customJob = customScope.launch {
+            try {
+                detailNoteUseCase.insertNote(userId = userId, note = note)
+            }catch (e: Exception){
+                Log.e("insertNote", e.message?:"Unknown Error")
+            }finally {
+//                customJob?.cancel()
+                Log.i("insertNote", "job: $customJob, is job active: ${customJob?.isActive} " +
+                        "coroutine: $customScope, is coroutineActive: ${customScope.isActive}")
+            }
         }
     }
 
@@ -160,17 +186,26 @@ class DetailsViewModel @Inject constructor(
         )
     }
 
-    fun deleteNote(noteId: String) {
-        viewModelScope.launch {
-            detailNoteUseCase.deleteNote(noteId)
+    fun deleteNote(userId: String, noteId: String) {
+        customJob = customScope.launch {
+            try {
+                detailNoteUseCase.deleteNote(userId = userId, noteId = noteId)
+            }catch (e: Exception){
+                Log.e("deleteNote", e.message?:"Unknown Error")
+            }finally {
+//                customJob?.cancel()
+                Log.i("deleteNote", "job: $customJob, is job active: ${customJob?.isActive} " +
+                        "coroutine: $customScope, is coroutineActive: ${customScope.isActive}")
+            }
         }
     }
 
-    fun updateTodoCompletion(todoId: String, isComplete: Boolean) {
+    fun updateTodoCompletion(userId: String, todoId: String, isComplete: Boolean) {
         viewModelScope.launch {
             val currentDateTimeLong = dateUtil.getCurrentDateTimeLong()
             detailTodoUseCase.updateTodoCompletion(
-                todoId,
+                userId = userId,
+                todoId = todoId,
                 isComplete = isComplete,
                 completedOn = if (isComplete) currentDateTimeLong else null
             )
@@ -178,33 +213,41 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun updateTodoTasksAvailability(
-        todoId: String, tasksAvailability: Boolean
+        userId: String, todoId: String, tasksAvailability: Boolean
     ) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoTasksAvailability(todoId, tasksAvailability)
+            detailTodoUseCase.updateTodoTasksAvailability(
+                userId = userId, todoId = todoId, tasksAvailability = tasksAvailability
+            )
         }
         Log.i("testing", "triggered")
     }
 
     fun updateTodoNotesAvailability(
-        todoId: String, notesAvailability: Boolean
+        userId: String, todoId: String, notesAvailability: Boolean
     ) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoNotesAvailability(todoId, notesAvailability)
+            detailTodoUseCase.updateTodoNotesAvailability(
+                userId = userId, todoId = todoId, notesAvailability = notesAvailability
+            )
         }
     }
 
     fun updateTodoAttachmentsAvailability(
-        todoId: String, attachmentsAvailability: Boolean
+        userId: String, todoId: String, attachmentsAvailability: Boolean
     ) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
+            detailTodoUseCase.updateTodoAttachmentsAvailability(
+                userId = userId, todoId = todoId, attachmentsAvailability = attachmentsAvailability
+            )
         }
     }
 
-    fun updateTodoAlarmRef(todoId: String, alarmRef: Int?) {
+    fun updateTodoAlarmRef(userId: String, todoId: String, alarmRef: Int?) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoAlarmRef(todoId, alarmRef)
+            detailTodoUseCase.updateTodoAlarmRef(
+                userId = userId, todoId = todoId, alarmRef = alarmRef
+            )
         }
     }
 
@@ -221,22 +264,24 @@ class DetailsViewModel @Inject constructor(
         )
     }
 
-    fun insertAttachment(attachment: Attachment) {
+    fun insertAttachment(userId: String, attachment: Attachment) {
         viewModelScope.launch {
-            detailAttachmentUseCase.insertAttachment(attachment)
+            detailAttachmentUseCase.insertAttachment(userId = userId, attachment = attachment)
         }
     }
 
-    fun deleteAttachment(attachment: Attachment) {
+    fun deleteAttachment(userId: String, attachment: Attachment) {
         viewModelScope.launch {
-            detailAttachmentUseCase.deleteAttachment(attachmentId = attachment.attachmentId)
+            detailAttachmentUseCase.deleteAttachment(
+                userId = userId, attachmentId = attachment.attachmentId
+            )
             deleteFileFromInternalStorage(attachment.uri)
         }
     }
 
     fun deleteFileFromInternalStorage(filePath: String) {
         viewModelScope.launch {
-            fileManager.deleteFileFromInternalStorage(filePath)
+            fileManager.deleteFileFromInternalStorage(filePath = filePath)
         }
     }
 

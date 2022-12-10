@@ -28,12 +28,11 @@ suspend fun <T> safeCacheCall(
             throwable.printStackTrace()
             Log.e("safeCacheCall", "${throwable.message}")
             when (throwable) {
-
                 is TimeoutCancellationException -> {
-                    CacheResult.Error("Cache timeout")
+                    CacheResult.Error("Cache timeout - ${throwable.message}")
                 }
                 else -> {
-                    CacheResult.Error("Unknown cache error")
+                    CacheResult.Error("Unknown cache error - ${throwable.message}")
                 }
             }
         }
@@ -59,15 +58,15 @@ abstract class CacheResponseHandler<Data>(private val cacheResult: CacheResult<D
     abstract suspend fun handleSuccess(resultObj: Data): Async<Data>
 }
 
-suspend fun <T, U> handleCacheResponse(
-    cacheResult: CacheResult<T?>, handleSuccess: suspend (resultObj: T) -> Async<U?>
-): Async<U?> {
+suspend fun <T> handleCacheResponse(
+    cacheResult: CacheResult<T?>, handleSuccess: suspend (resultObj: T) -> Async<T>
+): Async<T>{
     return when (cacheResult) {
         is CacheResult.Success -> {
             if (cacheResult.value == null) {
                 Async.Error(code = null, errorMsg = "Cache data is null")
             } else {
-                return handleSuccess(cacheResult.value)
+                handleSuccess(cacheResult.value)
             }
         }
         is CacheResult.Error -> {

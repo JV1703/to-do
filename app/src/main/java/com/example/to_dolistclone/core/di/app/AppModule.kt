@@ -10,6 +10,8 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.work.WorkManager
 import com.example.to_dolistclone.core.common.DateUtil
+import com.example.to_dolistclone.core.common.worker.JsonConverter
+import com.example.to_dolistclone.core.common.worker.WorkerManager
 import com.example.to_dolistclone.core.data.local.TodoDatabase
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
 import com.example.to_dolistclone.core.data.local.dao.TodoDao
@@ -88,7 +90,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTodoRepository(local: LocalDataSource, remote: RemoteDataSource): TodoRepository = TodoRepositoryImpl(local, remote)
+    fun provideTodoRepository(local: LocalDataSource, remote: RemoteDataSource): TodoRepository =
+        TodoRepositoryImpl(local, remote)
 
     @Provides
     @Singleton
@@ -108,6 +111,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager = WorkManager.getInstance(context)
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager =
+        WorkManager.getInstance(context)
 
+    @Provides
+    @Singleton
+    fun provideWorkerManager(workManager: WorkManager, jsonConverter: JsonConverter) = WorkerManager(workManager, jsonConverter)
+
+    @Provides
+    @Singleton
+    fun provideJsonConverter() = JsonConverter()
 }

@@ -10,4 +10,5 @@ interface NoteFirestore {
     suspend fun getNotes(userId: String): List<NoteNetwork>
 
     suspend fun deleteNote(userId: String, noteId: String)
+    suspend fun updateNote(userId: String, noteId: String, field: Map<String, Any>)
 }

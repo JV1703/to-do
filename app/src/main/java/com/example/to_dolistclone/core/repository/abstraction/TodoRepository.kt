@@ -27,64 +27,66 @@ interface TodoRepository {
 
     fun getShowCompletedToday(): Flow<Boolean>
 
-    suspend fun insertTodo(todo: Todo): Long
+    suspend fun insertTodo(todo: Todo): CacheResult<Long?>
 
     fun getTodo(todoId: String): Flow<Todo>
 
-    suspend fun updateTodoTitle(todoId: String, title: String): Int
+    suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?>
 
-    suspend fun updateTodoCategory(todoId: String, category: String): Int
+    suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?>
 
-    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int
+    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?>
 
-    suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int
+    suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?>
 
-    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): Int
+    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): CacheResult<Int?>
 
-    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): Int
+    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): CacheResult<Int?>
 
-    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
+    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): CacheResult<Int?>
 
     suspend fun updateTodoAttachmentsAvailability(
         todoId: String,
         attachmentsAvailability: Boolean
-    ): Int
+    ): CacheResult<Int?>
 
-    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?>
 
     fun getTodoDetails(todoId: String): Flow<TodoDetails?>
 
     fun getTodos(): Flow<List<Todo>>
 
-    suspend fun deleteTodo(todoId: String): Int
+    suspend fun deleteTodo(todoId: String): CacheResult<Int?>
 
-    suspend fun insertNote(note: Note): Long
+    suspend fun insertNote(note: Note): CacheResult<Long?>
+
+    suspend fun insertNoteNetwork(userId: String, note: Note): ApiResult<Unit?>
 
     fun getNotes(): Flow<List<Note>>
 
-    suspend fun deleteNote(noteId: String): Int
+    suspend fun deleteNote(noteId: String): CacheResult<Int?>
 
-    suspend fun insertTask(task: Task): Long
+    suspend fun insertTask(task: Task): CacheResult<Long?>
 
-    suspend fun updateTaskPosition(taskId: String, position: Int): Int
+    suspend fun updateTaskPosition(taskId: String, position: Int): CacheResult<Int?>
 
-    suspend fun updateTaskTitle(taskId: String, title: String): Int
+    suspend fun updateTaskTitle(taskId: String, title: String): CacheResult<Int?>
 
-    suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): Int
+    suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): CacheResult<Int?>
 
     suspend fun insertTasks(tasks: List<Task>): LongArray
 
     fun getTasks(): Flow<List<Task>>
 
-    suspend fun deleteTask(taskId: String): Int
+    suspend fun deleteTask(taskId: String): CacheResult<Int?>
 
-    suspend fun insertAttachment(attachment: Attachment): Long
+    suspend fun insertAttachment(attachment: Attachment): CacheResult<Long?>
 
-    suspend fun insertAttachments(attachments: List<Attachment>): LongArray
+    suspend fun insertAttachments(attachments: List<Attachment>): CacheResult<LongArray?>
 
     fun getAttachments(): Flow<List<Attachment>>
 
-    suspend fun deleteAttachment(attachmentId: String): Int
+    suspend fun deleteAttachment(attachmentId: String): CacheResult<Int?>
 
     suspend fun insertTodoCategory(todoCategory: TodoCategory): CacheResult<Long?>
 
@@ -113,4 +115,27 @@ interface TodoRepository {
         userId: String,
         todoCategory: TodoCategory
     ): ApiResult<Unit?>
+
+    suspend fun upsertTodoNetwork(userId: String, todo: Todo): ApiResult<Unit?>
+    suspend fun upsertTaskNetwork(userId: String, task: Task): ApiResult<Unit?>
+    fun getTask(taskId: String): Flow<Task?>
+    suspend fun updateTaskNetwork(
+        userId: String,
+        taskId: String,
+        field: Map<String, Any>
+    ): ApiResult<Unit?>
+
+    suspend fun deleteTaskNetwork(userId: String, taskId: String): ApiResult<Unit?>
+    suspend fun updateTodoNetwork(
+        userId: String,
+        todoId: String,
+        field: Map<String, Any?>
+    ): ApiResult<Unit?>
+
+    suspend fun deleteTodoNetwork(userId: String, todoId: String): ApiResult<Unit?>
+    suspend fun deleteNoteNetwork(userId: String, noteId: String): ApiResult<Unit?>
+    fun getNote(noteId: String): Flow<Note?>
+    suspend fun deleteAttachmentNetwork(userId: String, attachmentId: String): ApiResult<Unit?>
+    suspend fun upsertAttachmentNetwork(userId: String, attachment: Attachment): ApiResult<Unit?>
+    fun getAttachment(attachmentId: String): Flow<Attachment?>
 }

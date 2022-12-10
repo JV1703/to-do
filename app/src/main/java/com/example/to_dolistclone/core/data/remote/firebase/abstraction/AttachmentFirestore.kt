@@ -7,4 +7,5 @@ interface AttachmentFirestore {
     suspend fun getAttachment(userId: String, attachmentId: String): AttachmentNetwork?
     suspend fun getAttachments(userId: String): List<AttachmentNetwork>
     suspend fun deleteAttachment(userId: String, attachmentId: String)
+    suspend fun updateAttachment(userId: String, attachmentId: String, field: Map<String, Any>)
 }

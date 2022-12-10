@@ -11,13 +11,13 @@ import com.example.to_dolistclone.core.data.remote.firebase.implementation.TODO_
 import com.example.to_dolistclone.core.data.remote.firebase.implementation.TodoCategoryFirestoreImpl
 import com.example.to_dolistclone.core.data.remote.model.TodoCategoryNetwork
 import com.example.to_dolistclone.utils.TestDataGenerator
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +28,7 @@ import kotlin.random.Random
 @OptIn(ExperimentalCoroutinesApi::class)
 @SmallTest
 @HiltAndroidTest
-class TodoCategoryNetworkTest {
+class TodoCategoryFirestoreTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -43,6 +43,9 @@ class TodoCategoryNetworkTest {
     lateinit var firebaseFirestore: FirebaseFirestore
 
     @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+
+    @Inject
     lateinit var testDataGenerator: TestDataGenerator
 
     private lateinit var todoCategoryFirestore: TodoCategoryFirestore
@@ -54,6 +57,7 @@ class TodoCategoryNetworkTest {
         hiltRule.inject()
         todoCategoryFirestore = TodoCategoryFirestoreImpl(firebaseFirestore)
         insertAttachments()
+//        firebaseAuth.signInWithEmailAndPassword("test@testing.com", "123456")
     }
 
     private fun insertAttachments() {
@@ -67,13 +71,19 @@ class TodoCategoryNetworkTest {
     }
 
     @Test
+    fun isSignIn(){
+        assertNotNull(firebaseAuth.currentUser)
+        assertEquals("", firebaseAuth.currentUser?.email)
+    }
+
+    @Test
     fun insertTodoCategory() = runTest {
         val newTodoCategory = TodoCategoryNetwork("Banana")
-        todoCategoryFirestore.upsertTodoCategory(TEST_USER_ID_DOCUMENT, newTodoCategory)
-        val networkData = todoCategoryFirestore.getAttachments(TEST_USER_ID_DOCUMENT)
+        todoCategoryFirestore.upsertTodoCategory(firebaseAuth.currentUser!!.uid, newTodoCategory)
+        val networkData = todoCategoryFirestore.getTodoCategories(TEST_USER_ID_DOCUMENT)
         todoCategoryNetworkList.add(newTodoCategory)
         assertTrue(networkData.containsAll(todoCategoryNetworkList))
-        todoCategoryFirestore.deleteAttachment(
+        todoCategoryFirestore.deleteTodoCategory(
             TEST_USER_ID_DOCUMENT, newTodoCategory.todoCategoryName
         )
     }
@@ -86,7 +96,7 @@ class TodoCategoryNetworkTest {
             )
         todoCategoryFirestore.upsertTodoCategory(TEST_USER_ID_DOCUMENT, noteToUpdate)
 
-        val networkData = todoCategoryFirestore.getAttachments(TEST_USER_ID_DOCUMENT)
+        val networkData = todoCategoryFirestore.getTodoCategories(TEST_USER_ID_DOCUMENT)
         assertTrue(networkData.contains(noteToUpdate))
     }
 
@@ -102,7 +112,7 @@ class TodoCategoryNetworkTest {
 
     @Test
     fun getTodoCategories() = runTest {
-        val networkData = todoCategoryFirestore.getAttachments(TEST_USER_ID_DOCUMENT)
+        val networkData = todoCategoryFirestore.getTodoCategories(TEST_USER_ID_DOCUMENT)
         assertTrue(networkData.containsAll(todoCategoryNetworkList))
     }
 
@@ -110,10 +120,10 @@ class TodoCategoryNetworkTest {
     fun deleteTodoCategory() = runTest {
         val todoCategoryToDelete =
             todoCategoryNetworkList[Random.nextInt(todoCategoryNetworkList.size - 1)]
-        todoCategoryFirestore.deleteAttachment(
+        todoCategoryFirestore.deleteTodoCategory(
             TEST_USER_ID_DOCUMENT, todoCategoryToDelete.todoCategoryName
         )
-        val networkData = todoCategoryFirestore.getAttachments(TEST_USER_ID_DOCUMENT)
+        val networkData = todoCategoryFirestore.getTodoCategories(TEST_USER_ID_DOCUMENT)
         assertTrue(!networkData.contains(todoCategoryToDelete))
     }
 }

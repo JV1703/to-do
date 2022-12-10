@@ -27,64 +27,64 @@ interface LocalDataSource {
 
     fun getShowCompletedToday(): Flow<Boolean>
 
-    suspend fun insertTodo(todo: TodoEntity): Long
+    suspend fun insertTodo(todo: TodoEntity): CacheResult<Long?>
 
-    suspend fun updateTodoTitle(todoId: String, title: String): Int
+    suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?>
 
-    suspend fun updateTodoCategory(todoId: String, category: String): Int
+    suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?>
 
     fun getTodo(todoId: String): Flow<TodoEntity>
 
-    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int
+    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?>
 
-    suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int
+    suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?>
 
-    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): Int
+    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): CacheResult<Int?>
 
-    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): Int
+    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): CacheResult<Int?>
 
-    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
+    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): CacheResult<Int?>
 
     suspend fun updateTodoAttachmentsAvailability(
         todoId: String,
         attachmentsAvailability: Boolean
-    ): Int
+    ): CacheResult<Int?>
 
-    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?>
 
     fun getTodoDetails(todoId: String): Flow<TodoDetailsEntity?>
 
     fun getTodos(): Flow<List<TodoEntity>>
 
-    suspend fun deleteTodo(todoId: String): Int
+    suspend fun deleteTodo(todoId: String): CacheResult<Int?>
 
-    suspend fun insertNote(note: NoteEntity): Long
+    suspend fun insertNote(note: NoteEntity): CacheResult<Long?>
 
     fun getNotes(): Flow<List<NoteEntity>>
 
-    suspend fun deleteNote(noteId: String): Int
+    suspend fun deleteNote(noteId: String): CacheResult<Int?>
 
-    suspend fun insertTask(task: TaskEntity): Long
+    suspend fun insertTask(task: TaskEntity): CacheResult<Long?>
 
-    suspend fun updateTaskPosition(taskId: String, position: Int): Int
+    suspend fun updateTaskPosition(taskId: String, position: Int): CacheResult<Int?>
 
-    suspend fun updateTaskTitle(taskId: String, title: String): Int
+    suspend fun updateTaskTitle(taskId: String, title: String): CacheResult<Int?>
 
-    suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): Int
+    suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): CacheResult<Int?>
 
     suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
 
     fun getTasks(): Flow<List<TaskEntity>>
 
-    suspend fun deleteTask(taskId: String): Int
+    suspend fun deleteTask(taskId: String): CacheResult<Int?>
 
-    suspend fun insertAttachment(attachment: AttachmentEntity): Long
+    suspend fun insertAttachment(attachment: AttachmentEntity): CacheResult<Long?>
 
-    suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray
+    suspend fun insertAttachments(attachments: List<AttachmentEntity>): CacheResult<LongArray?>
 
     fun getAttachments(): Flow<List<AttachmentEntity>>
 
-    suspend fun deleteAttachment(attachmentId: String): Int
+    suspend fun deleteAttachment(attachmentId: String): CacheResult<Int?>
 
     suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): CacheResult<Long?>
 
@@ -109,4 +109,7 @@ interface LocalDataSource {
     fun getSelectedPieGraphOption(): Flow<Int>
 
     suspend fun saveSelectedPieGraphOption(selectedOption: Int)
+    fun getTask(taskId: String): Flow<TaskEntity?>
+    fun getNote(noteId: String): Flow<NoteEntity?>
+    fun getAttachment(attachmentId: String): Flow<AttachmentEntity?>
 }

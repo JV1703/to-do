@@ -85,7 +85,7 @@ class TodoFirestoreTest {
     fun upsertTodo_andGetTodos() = runTest {
         val todoId = UUID.randomUUID().toString()
         val newTodo = generateSingleTodoNetwork(todoId)
-        todoFirestore.insertTodo(TEST_USER_ID_DOCUMENT, newTodo)
+        todoFirestore.upsertTodo(TEST_USER_ID_DOCUMENT, newTodo)
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
         todoNetworkList.toMutableList().add(newTodo)
         assertTrue(networkData.containsAll(todoNetworkList))
@@ -96,7 +96,7 @@ class TodoFirestoreTest {
     fun deleteTodo() = runTest {
         val todoId = UUID.randomUUID().toString()
         val newTodo = generateSingleTodoNetwork(todoId)
-        todoFirestore.insertTodo(TEST_USER_ID_DOCUMENT, newTodo)
+        todoFirestore.upsertTodo(TEST_USER_ID_DOCUMENT, newTodo)
         val networkData = todoFirestore.getTodos(TEST_USER_ID_DOCUMENT)
         assertTrue(networkData.contains(newTodo))
         todoFirestore.deleteTodo(TEST_USER_ID_DOCUMENT, newTodo.todoId)

@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import com.example.to_dolistclone.core.data.local.TodoDatabase
 import com.example.to_dolistclone.core.di.app.ProductionModule
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -46,6 +49,13 @@ object TestModule {
         val firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = firestoreSettings
         return firestore
+    }
+
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth{
+        val auth = FirebaseAuth.getInstance()
+        auth.useEmulator("10.0.2.2", 9099)
+        return auth
     }
 
 }

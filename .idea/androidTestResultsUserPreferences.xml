@@ -175,6 +175,19 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
+        <entry key="-1552248945">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_6_Pro_API_33" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
         <entry key="-1497563569">
           <value>
             <AndroidTestResultsTableState>
@@ -229,6 +242,19 @@
           </value>
         </entry>
         <entry key="-1325370625">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_6_Pro_API_33" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="-1211003605">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
@@ -606,6 +632,19 @@
           </value>
         </entry>
         <entry key="214970374">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_6_Pro_API_33" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="298383520">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">

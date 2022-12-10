@@ -9,6 +9,7 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.to
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithAttachments
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithTasks
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.toTodoAndNote
+import com.example.to_dolistclone.core.data.remote.ApiResult
 import com.example.to_dolistclone.core.data.remote.abstraction.RemoteDataSource
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
@@ -21,7 +22,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource, private val remote: RemoteDataSource) : TodoRepository {
+class TodoRepositoryImpl @Inject constructor(
+    private val local: LocalDataSource, private val remote: RemoteDataSource
+) : TodoRepository {
 
     override suspend fun saveShowPrevious(isShow: Boolean) {
         local.saveShowPrevious(isShow)
@@ -47,37 +50,45 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource,
 
     override fun getShowCompletedToday(): Flow<Boolean> = local.getShowCompletedToday()
 
-    override suspend fun insertTodo(todo: Todo): Long = local.insertTodo(todo.toTodoEntity())
+    override suspend fun insertTodo(todo: Todo): CacheResult<Long?> =
+        local.insertTodo(todo.toTodoEntity())
 
-    override suspend fun updateTodoTitle(todoId: String, title: String): Int =
+    override suspend fun upsertTodoNetwork(userId: String, todo: Todo) =
+        remote.upsertTodo(userId, todo.toTodoNetwork())
+
+    override suspend fun updateTodoNetwork(
+        userId: String, todoId: String, field: Map<String, Any?>
+    ) = remote.updateTodo(userId, todoId, field)
+
+    override suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?> =
         local.updateTodoTitle(todoId, title)
 
-    override suspend fun updateTodoCategory(todoId: String, category: String): Int =
+    override suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?> =
         local.updateTodoCategory(todoId, category)
 
-    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int =
+    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?> =
         local.updateTodoDeadline(todoId, deadline)
 
-    override suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int =
+    override suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?> =
         local.updateTodoReminder(todoId, reminder)
 
     override suspend fun updateTodoCompletion(
         todoId: String, isComplete: Boolean, completedOn: Long?
-    ): Int = local.updateTodoCompletion(todoId, isComplete, completedOn)
+    ): CacheResult<Int?> = local.updateTodoCompletion(todoId, isComplete, completedOn)
 
     override suspend fun updateTodoTasksAvailability(
         todoId: String, tasksAvailability: Boolean
-    ): Int = local.updateTodoTasksAvailability(todoId, tasksAvailability)
+    ): CacheResult<Int?> = local.updateTodoTasksAvailability(todoId, tasksAvailability)
 
     override suspend fun updateTodoNotesAvailability(
         todoId: String, notesAvailability: Boolean
-    ): Int = local.updateTodoNotesAvailability(todoId, notesAvailability)
+    ): CacheResult<Int?> = local.updateTodoNotesAvailability(todoId, notesAvailability)
 
     override suspend fun updateTodoAttachmentsAvailability(
         todoId: String, attachmentsAvailability: Boolean
-    ): Int = local.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
+    ): CacheResult<Int?> = local.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
 
-    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int =
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?> =
         local.updateTodoAlarmRef(todoId, alarmRef)
 
     override fun getTodo(todoId: String): Flow<Todo> = local.getTodo(todoId).map { it.toTodo() }
@@ -95,28 +106,54 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource,
             Log.e("todoRepository", "getTodoDetails errorMsg: ${e.message}")
         }
 
-    override suspend fun deleteTodo(todoId: String): Int = local.deleteTodo(todoId)
+    override suspend fun deleteTodo(todoId: String): CacheResult<Int?> = local.deleteTodo(todoId)
 
-    override suspend fun insertNote(note: Note): Long = local.insertNote(note.toNoteEntity())
+    override suspend fun deleteTodoNetwork(userId: String, todoId: String) = remote.deleteTodo(
+        userId = userId, todoId = todoId
+    )
+
+    override suspend fun insertNote(note: Note): CacheResult<Long?> =
+        local.insertNote(note.toNoteEntity())
+
+    override suspend fun deleteNoteNetwork(userId: String, noteId: String) = remote.deleteNote(
+        userId = userId, noteId = noteId
+    )
+
+    override suspend fun insertNoteNetwork(userId: String, note: Note): ApiResult<Unit?> =
+        remote.insertNote(userId, note.toNoteNetwork())
+
+    override fun getNote(noteId: String): Flow<Note?> =
+        local.getNote(noteId).map { entityModel -> entityModel?.toNote() }
 
     override fun getNotes(): Flow<List<Note>> = local.getNotes()
         .map { listEntityModel -> listEntityModel.map { entityModel -> entityModel.toNote() } }
 
-    override suspend fun deleteNote(noteId: String): Int = local.deleteNote(noteId)
+    override suspend fun deleteNote(noteId: String): CacheResult<Int?> = local.deleteNote(noteId)
 
-    override suspend fun insertTask(task: Task): Long = local.insertTask(task.toTaskEntity())
+    override suspend fun insertTask(task: Task): CacheResult<Long?> =
+        local.insertTask(task.toTaskEntity())
 
-    override suspend fun updateTaskPosition(taskId: String, position: Int): Int =
+    override suspend fun upsertTaskNetwork(userId: String, task: Task) =
+        remote.insertTask(userId, task.toTaskNetwork())
+
+    override suspend fun updateTaskPosition(taskId: String, position: Int): CacheResult<Int?> =
         local.updateTaskPosition(taskId, position)
 
-    override suspend fun updateTaskTitle(taskId: String, title: String): Int =
+    override suspend fun updateTaskTitle(taskId: String, title: String): CacheResult<Int?> =
         local.updateTaskTitle(taskId, title)
 
-    override suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): Int =
-        local.updateTaskCompletion(taskId, isComplete)
+    override suspend fun updateTaskNetwork(
+        userId: String, taskId: String, field: Map<String, Any>
+    ) = remote.updateTask(userId, taskId, field)
+
+    override suspend fun updateTaskCompletion(
+        taskId: String, isComplete: Boolean
+    ): CacheResult<Int?> = local.updateTaskCompletion(taskId, isComplete)
 
     override suspend fun insertTasks(tasks: List<Task>): LongArray =
         local.insertTasks(tasks.map { it.toTaskEntity() })
+
+    override fun getTask(taskId: String): Flow<Task?> = local.getTask(taskId).map { it?.toTask() }
 
     override fun getTasks(): Flow<List<Task>> = local.getTasks().map { listEntityModel ->
         listEntityModel.map { entityModel ->
@@ -124,13 +161,23 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource,
         }
     }
 
-    override suspend fun deleteTask(taskId: String): Int = local.deleteTask(taskId)
+    override suspend fun deleteTask(taskId: String): CacheResult<Int?> = local.deleteTask(taskId)
 
-    override suspend fun insertAttachment(attachment: Attachment): Long =
+    override suspend fun deleteTaskNetwork(userId: String, taskId: String) =
+        remote.deleteTask(userId, taskId)
+
+    override suspend fun insertAttachment(attachment: Attachment): CacheResult<Long?> =
         local.insertAttachment(attachment.toAttachmentEntity())
 
-    override suspend fun insertAttachments(attachments: List<Attachment>): LongArray =
+    override suspend fun upsertAttachmentNetwork(userId: String, attachment: Attachment) =
+        remote.insertAttachment(
+            userId = userId, attachment = attachment.toAttachmentNetwork()
+        )
+
+    override suspend fun insertAttachments(attachments: List<Attachment>): CacheResult<LongArray?> =
         local.insertAttachments(attachments.map { it.toAttachmentEntity() })
+
+    override fun getAttachment(attachmentId: String): Flow<Attachment?> = local.getAttachment(attachmentId).map { it?.toAttachment() }
 
     override fun getAttachments(): Flow<List<Attachment>> =
         local.getAttachments().map { listEntityModel ->
@@ -139,16 +186,21 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource,
             }
         }
 
-    override suspend fun deleteAttachment(attachmentId: String): Int =
+    override suspend fun deleteAttachment(attachmentId: String): CacheResult<Int?> =
         local.deleteAttachment(attachmentId)
+
+    override suspend fun deleteAttachmentNetwork(userId: String, attachmentId: String) =
+        remote.deleteAttachment(
+            userId = userId, attachmentId = attachmentId
+        )
 
     override suspend fun insertTodoCategory(todoCategory: TodoCategory): CacheResult<Long?> =
         local.insertTodoCategory(todoCategory.toTodoCategoryEntity())
 
-    override suspend fun upsertTodoCategoryNetwork(userId: String, todoCategory: TodoCategory) = remote.upsertTodoCategory(
-        userId = userId,
-        todoCategory = todoCategory.toTodoCategoryNetwork()
-    )
+    override suspend fun upsertTodoCategoryNetwork(userId: String, todoCategory: TodoCategory) =
+        remote.upsertTodoCategory(
+            userId = userId, todoCategory = todoCategory.toTodoCategoryNetwork()
+        )
 
     override fun getTodoCategories(): Flow<List<TodoCategory>> =
         local.getTodoCategories().map { listEntityModel ->

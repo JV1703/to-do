@@ -47,15 +47,6 @@ class DetailTaskUseCaseTest {
     }
 
     @Test
-    fun insertTasks() = runTest {
-        useCase.insertTasks(fakeTaskEntityList.map { it.toTask() })
-
-        val actual = fakeTodoRepository.getTasks().first()
-
-        assertTrue(actual.none { it.task.trim().isEmpty() })
-    }
-
-    @Test
     fun insertTask() = runTest {
         fakeTaskEntityList.forEach { useCase.insertTask(it.toTask()) }
         val actual = fakeTodoRepository.getTasks().first()

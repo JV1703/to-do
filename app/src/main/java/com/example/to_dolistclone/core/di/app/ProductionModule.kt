@@ -23,7 +23,8 @@ object ProductionModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context,
-    ): TodoDatabase = Room.databaseBuilder(context, TodoDatabase::class.java, DATABASE_NAME).build()
+    ): TodoDatabase = Room.databaseBuilder(context, TodoDatabase::class.java, DATABASE_NAME)
+        .fallbackToDestructiveMigration().build()
 
 
     @Singleton
