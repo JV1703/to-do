@@ -119,54 +119,58 @@ class LocalDataSourceImpl @Inject constructor(
         return safeCacheCall(dispatcherIO) { todoDao.insertTodo(todo) }
     }
 
-    override suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?> =
+    override suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long) = safeCacheCall(dispatcherIO){
+        todoDao.updateTodoUpdatedOn(todoId = todoId, updatedOn = updatedOn)
+    }
+
+    override suspend fun updateTodoTitle(todoId: String, title: String, updatedOn: Long): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
-            todoDao.updateTodoTitle(todoId, title)
+            todoDao.updateTodoTitle(todoId, title, updatedOn)
         }
 
-    override suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?> =
+    override suspend fun updateTodoCategory(todoId: String, category: String, updatedOn: Long): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
-            todoDao.updateTodoCategory(todoId, category)
+            todoDao.updateTodoCategory(todoId, category, updatedOn)
         }
 
-    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?> =
+    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?, updatedOn: Long): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
-            todoDao.updateTodoDeadline(todoId, deadline)
+            todoDao.updateTodoDeadline(todoId, deadline, updatedOn)
         }
 
-    override suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?> =
+    override suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
-            todoDao.updateTodoReminder(todoId, reminder)
+            todoDao.updateTodoReminder(todoId, reminder, updatedOn)
         }
 
     override suspend fun updateTodoCompletion(
-        todoId: String, isComplete: Boolean, completedOn: Long?
+        todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long
     ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
-        todoDao.updateTodoCompletion(todoId, isComplete, completedOn)
+        todoDao.updateTodoCompletion(todoId, isComplete, completedOn, updatedOn)
     }
 
     override suspend fun updateTodoTasksAvailability(
-        todoId: String, tasksAvailability: Boolean
+        todoId: String, tasksAvailability: Boolean, updatedOn: Long
     ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
-        todoDao.updateTodoTasksAvailability(todoId, tasksAvailability)
+        todoDao.updateTodoTasksAvailability(todoId, tasksAvailability, updatedOn)
     }
 
     override suspend fun updateTodoNotesAvailability(
-        todoId: String, notesAvailability: Boolean
+        todoId: String, notesAvailability: Boolean, updatedOn: Long
     ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
-        todoDao.updateTodoNotesAvailability(todoId, notesAvailability)
+        todoDao.updateTodoNotesAvailability(todoId, notesAvailability, updatedOn)
     }
 
 
     override suspend fun updateTodoAttachmentsAvailability(
-        todoId: String, attachmentsAvailability: Boolean
+        todoId: String, attachmentsAvailability: Boolean, updatedOn: Long
     ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
-        todoDao.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
+        todoDao.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability, updatedOn)
     }
 
-    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?> =
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?, updatedOn: Long): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
-            todoDao.updateTodoAlarmRef(todoId, alarmRef)
+            todoDao.updateTodoAlarmRef(todoId, alarmRef, updatedOn)
         }
 
     override fun getTodo(todoId: String): Flow<TodoEntity> =

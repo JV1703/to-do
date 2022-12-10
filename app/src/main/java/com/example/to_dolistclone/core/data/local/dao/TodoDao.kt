@@ -15,11 +15,11 @@ interface TodoDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTodo(todo: TodoEntity): Long
 
-    @Query("UPDATE todo SET title = :title WHERE todoId = :todoId")
-    suspend fun updateTodoTitle(todoId: String, title: String): Int
+    @Query("UPDATE todo SET title = :title, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoTitle(todoId: String, title: String, updatedOn: Long): Int
 
-    @Query("UPDATE todo SET todoCategoryRefName = :category WHERE todoId = :todoId")
-    suspend fun updateTodoCategory(todoId: String, category: String): Int
+    @Query("UPDATE todo SET todoCategoryRefName = :category, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoCategory(todoId: String, category: String, updatedOn: Long): Int
 
     @Query("SELECT * FROM todo WHERE todoId = :todoId")
     fun getTodo(todoId: String): Flow<TodoEntity>
@@ -39,28 +39,31 @@ interface TodoDao {
     @Query("SELECT * FROM note")
     fun getNotes(): Flow<List<NoteEntity>>
 
-    @Query("UPDATE todo SET deadline = :deadline WHERE todoId = :todoId")
-    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): Int
+    @Query("UPDATE todo SET updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long): Int
 
-    @Query("UPDATE todo SET reminder = :reminder WHERE todoId = :todoId")
-    suspend fun updateTodoReminder(todoId: String, reminder: Long?): Int
+    @Query("UPDATE todo SET deadline = :deadline, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoDeadline(todoId: String, deadline: Long?, updatedOn: Long): Int
 
-    @Query("UPDATE todo SET isComplete = :isComplete, completedOn = :completedOn WHERE todoId = :todoId")
-    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): Int
+    @Query("UPDATE todo SET reminder = :reminder, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): Int
 
-    @Query("UPDATE todo SET tasks = :tasksAvailability WHERE todoId = :todoId")
-    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): Int
+    @Query("UPDATE todo SET isComplete = :isComplete, completedOn = :completedOn, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long): Int
 
-    @Query("UPDATE todo SET notes = :notesAvailability WHERE todoId = :todoId")
-    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): Int
+    @Query("UPDATE todo SET tasks = :tasksAvailability, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean, updatedOn: Long): Int
 
-    @Query("UPDATE todo SET attachments = :attachmentsAvailability WHERE todoId = :todoId")
+    @Query("UPDATE todo SET notes = :notesAvailability, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean, updatedOn: Long): Int
+
+    @Query("UPDATE todo SET attachments = :attachmentsAvailability , updatedOn = :updatedOn WHERE todoId = :todoId")
     suspend fun updateTodoAttachmentsAvailability(
-        todoId: String, attachmentsAvailability: Boolean
+        todoId: String, attachmentsAvailability: Boolean, updatedOn: Long
     ): Int
 
-    @Query("UPDATE todo SET alarmRef = :alarmRef WHERE todoId = :todoId")
-    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): Int
+    @Query("UPDATE todo SET alarmRef = :alarmRef, updatedOn = :updatedOn WHERE todoId = :todoId")
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?, updatedOn: Long): Int
 
     @Query("DELETE FROM note WHERE noteId = :noteId")
     suspend fun deleteNote(noteId: String): Int

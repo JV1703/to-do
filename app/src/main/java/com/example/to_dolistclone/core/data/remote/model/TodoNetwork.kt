@@ -1,7 +1,10 @@
 package com.example.to_dolistclone.core.data.remote.model
 
+import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.data.local.model.TodoEntity
 import com.google.firebase.firestore.PropertyName
+
+val dateUtil = DateUtil()
 
 data class TodoNetwork(
     val todoId: String = "",
@@ -12,6 +15,7 @@ data class TodoNetwork(
     @get:PropertyName("isComplete") //Firebase will automatically remove name with "get", "has" and "is"
     val isComplete: Boolean = false,
     val createdOn: Long? = null,
+    val updatedOn: Long = dateUtil.getCurrentDateTimeLong(),
     val completedOn: Long? = null,
     val tasks: Boolean = false,
     val notes: Boolean = false,
@@ -28,6 +32,7 @@ fun TodoNetwork.toTodoEntity() = TodoEntity(
     repeat = repeat,
     isComplete = isComplete,
     createdOn = createdOn,
+    updatedOn = updatedOn,
     completedOn = completedOn,
     tasks = tasks,
     notes = notes,

@@ -59,7 +59,7 @@ class AlarmReceiver : BroadcastReceiver() {
                     if (!todo.isComplete) {
                         val currentTime = dateUtil.getCurrentDateTimeLong()
                         todoRepository.updateTodoCompletion(
-                            todoId, true, currentTime
+                            todoId, true, currentTime, dateUtil.getCurrentDateTimeLong()
                         )
                     }
                 } catch (e: Exception) {

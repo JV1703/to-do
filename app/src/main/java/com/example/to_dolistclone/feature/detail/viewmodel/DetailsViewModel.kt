@@ -64,10 +64,15 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun updateTodoCategory(userId: String, todoId: String, category: String) {
+    fun updateTodoCategory(
+        userId: String,
+        todoId: String,
+        category: String,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoCategory(
-                userId = userId, todoId = todoId, category = category
+                userId = userId, todoId = todoId, category = category, updatedOn = updatedOn
             )
         }
     }
@@ -85,7 +90,9 @@ class DetailsViewModel @Inject constructor(
             val task = createTask(
                 taskId = taskId, title = title, position = position, todoRefId = todoRefId
             )
-            detailTaskUseCase.insertTask(userId = userId, task = task)
+            detailTaskUseCase.insertTask(
+                userId = userId, task = task, todoUpdatedOn = dateUtil.getCurrentDateTimeLong()
+            )
         }
     }
 
@@ -97,59 +104,119 @@ class DetailsViewModel @Inject constructor(
         todoRefId = todoRefId
     )
 
-    fun deleteTask(userId: String, taskId: String) {
+    fun deleteTask(
+        userId: String,
+        taskId: String,
+        todoId: String,
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
-            detailTaskUseCase.deleteTask(userId = userId, taskId = taskId)
+            detailTaskUseCase.deleteTask(
+                userId = userId, taskId = taskId, todoId = todoId, todoUpdatedOn = todoUpdatedOn
+            )
         }
     }
 
-    fun updateTaskPosition(userId: String, taskId: String, position: Int) {
+    fun updateTaskPosition(
+        userId: String,
+        taskId: String,
+        position: Int,
+        todoId: String,
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             detailTaskUseCase.updateTaskPosition(
-                userId = userId, taskId = taskId, position = position
+                userId = userId,
+                taskId = taskId,
+                position = position,
+                todoId = todoId,
+                todoUpdatedOn = todoUpdatedOn
             )
         }
     }
 
-    fun restoreDeletedTaskProxy(userId: String, task: Task) {
+    fun restoreDeletedTask(
+        userId: String, task: Task, todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
-            detailTaskUseCase.insertTask(userId = userId, task = task)
+            detailTaskUseCase.insertTask(
+                userId = userId, task = task, todoUpdatedOn = todoUpdatedOn
+            )
         }
     }
 
-    fun updateDeadline(userId: String, todoId: String, deadline: Long?) {
+    fun updateDeadline(
+        userId: String,
+        todoId: String,
+        deadline: Long?,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoDeadline(
-                userId = userId, todoId = todoId, deadline = deadline
+                userId = userId, todoId = todoId, deadline = deadline, updatedOn = updatedOn
             )
         }
     }
 
-    fun updateReminder(userId: String, todoId: String, reminder: Long?) {
+    fun updateReminder(
+        userId: String,
+        todoId: String,
+        reminder: Long?,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoReminder(
-                userId = userId, todoId = todoId, reminder = reminder
+                userId = userId, todoId = todoId, reminder = reminder, updatedOn = updatedOn
             )
         }
     }
 
-    fun updateTaskTitle(userId: String, taskId: String, title: String) {
+    fun updateTaskTitle(
+        userId: String,
+        taskId: String,
+        title: String,
+        todoId: String,
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
-            detailTaskUseCase.updateTaskTitle(userId = userId, taskId = taskId, title = title)
+            detailTaskUseCase.updateTaskTitle(
+                userId = userId,
+                taskId = taskId,
+                title = title,
+                todoId = todoId,
+                todoUpdatedOn = todoUpdatedOn
+            )
         }
     }
 
-    fun updateTaskCompletion(userId: String, taskId: String, isComplete: Boolean) {
+    fun updateTaskCompletion(
+        userId: String,
+        taskId: String,
+        isComplete: Boolean,
+        todoId: String,
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             detailTaskUseCase.updateTaskCompletion(
-                userId = userId, taskId = taskId, isComplete = isComplete
+                userId = userId,
+                taskId = taskId,
+                isComplete = isComplete,
+                todoId = todoId,
+                todoUpdatedOn = todoUpdatedOn
             )
         }
     }
 
-    fun updateTodoTitle(userId: String, todoId: String, title: String) {
+    fun updateTodoTitle(
+        userId: String,
+        todoId: String,
+        title: String,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
-            detailTodoUseCase.updateTodoTitle(userId = userId, todoId = todoId, title = title)
+            detailTodoUseCase.updateTodoTitle(
+                userId = userId, todoId = todoId, title = title, updatedOn = updatedOn
+            )
         }
     }
 
@@ -159,16 +226,22 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun upsertNote(userId: String, note: Note) {
+    fun upsertNote(
+        userId: String, note: Note, todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         customJob = customScope.launch {
             try {
-                detailNoteUseCase.insertNote(userId = userId, note = note)
-            }catch (e: Exception){
-                Log.e("insertNote", e.message?:"Unknown Error")
-            }finally {
+                detailNoteUseCase.insertNote(
+                    userId = userId, note = note, todoUpdatedOn = todoUpdatedOn
+                )
+            } catch (e: Exception) {
+                Log.e("insertNote", e.message ?: "Unknown Error")
+            } finally {
 //                customJob?.cancel()
-                Log.i("insertNote", "job: $customJob, is job active: ${customJob?.isActive} " +
-                        "coroutine: $customScope, is coroutineActive: ${customScope.isActive}")
+                Log.i(
+                    "insertNote",
+                    "job: $customJob, is job active: ${customJob?.isActive} " + "coroutine: $customScope, is coroutineActive: ${customScope.isActive}"
+                )
             }
         }
     }
@@ -186,67 +259,108 @@ class DetailsViewModel @Inject constructor(
         )
     }
 
-    fun deleteNote(userId: String, noteId: String) {
+    fun deleteNote(
+        userId: String, noteId: String, todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         customJob = customScope.launch {
             try {
-                detailNoteUseCase.deleteNote(userId = userId, noteId = noteId)
-            }catch (e: Exception){
-                Log.e("deleteNote", e.message?:"Unknown Error")
-            }finally {
+                detailNoteUseCase.deleteNote(
+                    userId = userId, noteId = noteId, todoUpdatedOn = todoUpdatedOn
+                )
+                detailTodoUseCase.updateTodoNotesAvailability(
+                    userId = userId,
+                    todoId = noteId,
+                    notesAvailability = false,
+                    updatedOn = todoUpdatedOn
+                )
+            } catch (e: Exception) {
+                Log.e("deleteNote", e.message ?: "Unknown Error")
+            } finally {
 //                customJob?.cancel()
-                Log.i("deleteNote", "job: $customJob, is job active: ${customJob?.isActive} " +
-                        "coroutine: $customScope, is coroutineActive: ${customScope.isActive}")
+                Log.i(
+                    "deleteNote",
+                    "job: $customJob, is job active: ${customJob?.isActive} " + "coroutine: $customScope, is coroutineActive: ${customScope.isActive}"
+                )
             }
         }
     }
 
-    fun updateTodoCompletion(userId: String, todoId: String, isComplete: Boolean) {
+    fun updateTodoCompletion(
+        userId: String,
+        todoId: String,
+        isComplete: Boolean,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             val currentDateTimeLong = dateUtil.getCurrentDateTimeLong()
             detailTodoUseCase.updateTodoCompletion(
                 userId = userId,
                 todoId = todoId,
                 isComplete = isComplete,
-                completedOn = if (isComplete) currentDateTimeLong else null
+                completedOn = if (isComplete) currentDateTimeLong else null,
+                updatedOn = updatedOn
             )
         }
     }
 
     fun updateTodoTasksAvailability(
-        userId: String, todoId: String, tasksAvailability: Boolean
+        userId: String,
+        todoId: String,
+        tasksAvailability: Boolean,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
     ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoTasksAvailability(
-                userId = userId, todoId = todoId, tasksAvailability = tasksAvailability
+                userId = userId,
+                todoId = todoId,
+                tasksAvailability = tasksAvailability,
+                updatedOn = updatedOn
             )
         }
         Log.i("testing", "triggered")
     }
 
     fun updateTodoNotesAvailability(
-        userId: String, todoId: String, notesAvailability: Boolean
+        userId: String,
+        todoId: String,
+        notesAvailability: Boolean,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
     ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoNotesAvailability(
-                userId = userId, todoId = todoId, notesAvailability = notesAvailability
+                userId = userId,
+                todoId = todoId,
+                notesAvailability = notesAvailability,
+                updatedOn = updatedOn
             )
         }
     }
 
     fun updateTodoAttachmentsAvailability(
-        userId: String, todoId: String, attachmentsAvailability: Boolean
+        userId: String,
+        todoId: String,
+        attachmentsAvailability: Boolean,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
     ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoAttachmentsAvailability(
-                userId = userId, todoId = todoId, attachmentsAvailability = attachmentsAvailability
+                userId = userId,
+                todoId = todoId,
+                attachmentsAvailability = attachmentsAvailability,
+                updatedOn
             )
         }
     }
 
-    fun updateTodoAlarmRef(userId: String, todoId: String, alarmRef: Int?) {
+    fun updateTodoAlarmRef(
+        userId: String,
+        todoId: String,
+        alarmRef: Int?,
+        updatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             detailTodoUseCase.updateTodoAlarmRef(
-                userId = userId, todoId = todoId, alarmRef = alarmRef
+                userId = userId, todoId = todoId, alarmRef = alarmRef, updatedOn = updatedOn
             )
         }
     }
@@ -264,16 +378,30 @@ class DetailsViewModel @Inject constructor(
         )
     }
 
-    fun insertAttachment(userId: String, attachment: Attachment) {
+    fun insertAttachment(
+        userId: String,
+        attachment: Attachment,
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
-            detailAttachmentUseCase.insertAttachment(userId = userId, attachment = attachment)
+            detailAttachmentUseCase.insertAttachment(
+                userId = userId, attachment = attachment, todoUpdatedOn = todoUpdatedOn
+            )
         }
     }
 
-    fun deleteAttachment(userId: String, attachment: Attachment) {
+    fun deleteAttachment(
+        userId: String,
+        attachment: Attachment,
+        todoId: String,
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
         viewModelScope.launch {
             detailAttachmentUseCase.deleteAttachment(
-                userId = userId, attachmentId = attachment.attachmentId
+                userId = userId,
+                attachmentId = attachment.attachmentId,
+                todoId = todoId,
+                todoUpdatedOn = todoUpdatedOn
             )
             deleteFileFromInternalStorage(attachment.uri)
         }

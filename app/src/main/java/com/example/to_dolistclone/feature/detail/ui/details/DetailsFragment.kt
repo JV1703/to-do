@@ -365,7 +365,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                         )
                     }
                 }
-                viewModel.deleteTask(userId = firebaseAuth.currentUser!!.uid, taskId = task.taskId)
+                viewModel.deleteTask(
+                    userId = firebaseAuth.currentUser!!.uid,
+                    taskId = task.taskId,
+                    todoId = task.todoRefId!!
+                )
                 undoDeleteTask(task)
             }
         }
@@ -377,7 +381,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     private fun undoDeleteTask(task: Task) {
         Snackbar.make(binding.root, "Todo is deleted", Snackbar.LENGTH_SHORT).apply {
             setAction("Undo") {
-                viewModel.restoreDeletedTaskProxy(userId = firebaseAuth.currentUser!!.uid, task)
+                viewModel.restoreDeletedTask(userId = firebaseAuth.currentUser!!.uid, task)
                 task.todoRefId?.let {
                     viewModel.updateTodoTasksAvailability(
                         userId = firebaseAuth.currentUser!!.uid,
@@ -426,23 +430,36 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     override fun updateDb() {
         val list = taskAdapter.currentList
         list.forEachIndexed { index, task ->
-            viewModel.updateTaskPosition(firebaseAuth.currentUser!!.uid, task.taskId, index)
+            viewModel.updateTaskPosition(
+                userId = firebaseAuth.currentUser!!.uid,
+                taskId = task.taskId,
+                position = index,
+                todoId = todoId!!
+            )
         }
     }
 
     override fun updateTaskTitle(taskId: String?, title: String) {
         viewModel.updateTaskTitle(
-            userId = firebaseAuth.currentUser!!.uid, taskId = taskId!!, title = title
+            userId = firebaseAuth.currentUser!!.uid,
+            taskId = taskId!!,
+            title = title,
+            todoId = todoId!!
         )
     }
 
     override fun deleteTask(taskId: String) {
-        viewModel.deleteTask(userId = firebaseAuth.currentUser!!.uid, taskId = taskId)
+        viewModel.deleteTask(
+            userId = firebaseAuth.currentUser!!.uid, taskId = taskId, todoId = todoId!!
+        )
     }
 
     override fun updateTaskCompletion(taskId: String?, isComplete: Boolean) {
         viewModel.updateTaskCompletion(
-            userId = firebaseAuth.currentUser!!.uid, taskId = taskId!!, isComplete = isComplete
+            userId = firebaseAuth.currentUser!!.uid,
+            taskId = taskId!!,
+            isComplete = isComplete,
+            todoId = todoId!!
         )
     }
 
@@ -607,7 +624,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 attachmentsAvailability = false
             )
         }
-        viewModel.deleteAttachment(userId = firebaseAuth.currentUser!!.uid, attachment = attachment)
+        viewModel.deleteAttachment(userId = firebaseAuth.currentUser!!.uid, attachment = attachment, todoId = todoId!!)
     }
 
 }

@@ -5,7 +5,7 @@ import com.example.to_dolistclone.core.domain.model.Note
 
 interface DetailNoteUseCase {
 
-    suspend fun insertNote(userId: String, note: Note): Async<Long>
-    suspend fun deleteNote(userId: String, noteId: String): Async<Int>
+    suspend fun insertNote(userId: String, note: Note, todoUpdatedOn: Long): Async<Long>
+    suspend fun deleteNote(userId: String, noteId: String, todoUpdatedOn: Long): Async<Int>
 
 }

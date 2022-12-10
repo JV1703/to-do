@@ -40,9 +40,9 @@ class TodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoCompletion(
-        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?
+        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoCompletion(todoId, isComplete, completedOn)
+        val cacheResult = todoRepository.updateTodoCompletion(todoId, isComplete, completedOn, updatedOn)
         return handleCacheResponse(cacheResult){resultObj ->
             if(resultObj>0){
                 workerManager.upsertTodo(userId, todoId)

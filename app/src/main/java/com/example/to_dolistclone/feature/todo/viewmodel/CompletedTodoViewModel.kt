@@ -51,14 +51,15 @@ class CompletedTodoViewModel @Inject constructor(
         }
     }
 
-    fun updateTodoCompletion(userId: String, todoId: String, isComplete: Boolean) {
+    fun updateTodoCompletion(userId: String, todoId: String, isComplete: Boolean, updatedOn: Long = dateUtil.getCurrentDateTimeLong()) {
         viewModelScope.launch {
             val currentDateTimeLong = dateUtil.getCurrentDateTimeLong()
             todoUseCase.updateTodoCompletion(
                 userId = userId,
                 todoId = todoId,
                 isComplete = isComplete,
-                completedOn = if (isComplete) currentDateTimeLong else null
+                completedOn = if (isComplete) currentDateTimeLong else null,
+                updatedOn = updatedOn
             )
         }
     }

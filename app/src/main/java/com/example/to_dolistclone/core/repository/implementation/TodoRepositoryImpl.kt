@@ -9,6 +9,7 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.to
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithAttachments
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithTasks
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.toTodoAndNote
+import com.example.to_dolistclone.core.data.local.safeCacheCall
 import com.example.to_dolistclone.core.data.remote.ApiResult
 import com.example.to_dolistclone.core.data.remote.abstraction.RemoteDataSource
 import com.example.to_dolistclone.core.domain.model.*
@@ -56,40 +57,45 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun upsertTodoNetwork(userId: String, todo: Todo) =
         remote.upsertTodo(userId, todo.toTodoNetwork())
 
+    override suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long) = local.updateTodoUpdatedOn(
+        todoId = todoId,
+        updatedOn = updatedOn
+    )
+
     override suspend fun updateTodoNetwork(
         userId: String, todoId: String, field: Map<String, Any?>
     ) = remote.updateTodo(userId, todoId, field)
 
-    override suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?> =
-        local.updateTodoTitle(todoId, title)
+    override suspend fun updateTodoTitle(todoId: String, title: String, updatedOn: Long): CacheResult<Int?> =
+        local.updateTodoTitle(todoId, title, updatedOn)
 
-    override suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?> =
-        local.updateTodoCategory(todoId, category)
+    override suspend fun updateTodoCategory(todoId: String, category: String, updatedOn: Long): CacheResult<Int?> =
+        local.updateTodoCategory(todoId, category, updatedOn)
 
-    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?> =
-        local.updateTodoDeadline(todoId, deadline)
+    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?, updatedOn: Long): CacheResult<Int?> =
+        local.updateTodoDeadline(todoId, deadline, updatedOn)
 
-    override suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?> =
-        local.updateTodoReminder(todoId, reminder)
+    override suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): CacheResult<Int?> =
+        local.updateTodoReminder(todoId, reminder, updatedOn)
 
     override suspend fun updateTodoCompletion(
-        todoId: String, isComplete: Boolean, completedOn: Long?
-    ): CacheResult<Int?> = local.updateTodoCompletion(todoId, isComplete, completedOn)
+        todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoCompletion(todoId, isComplete, completedOn, updatedOn)
 
     override suspend fun updateTodoTasksAvailability(
-        todoId: String, tasksAvailability: Boolean
-    ): CacheResult<Int?> = local.updateTodoTasksAvailability(todoId, tasksAvailability)
+        todoId: String, tasksAvailability: Boolean, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoTasksAvailability(todoId, tasksAvailability, updatedOn)
 
     override suspend fun updateTodoNotesAvailability(
-        todoId: String, notesAvailability: Boolean
-    ): CacheResult<Int?> = local.updateTodoNotesAvailability(todoId, notesAvailability)
+        todoId: String, notesAvailability: Boolean, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoNotesAvailability(todoId, notesAvailability, updatedOn)
 
     override suspend fun updateTodoAttachmentsAvailability(
-        todoId: String, attachmentsAvailability: Boolean
-    ): CacheResult<Int?> = local.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
+        todoId: String, attachmentsAvailability: Boolean, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability, updatedOn)
 
-    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?> =
-        local.updateTodoAlarmRef(todoId, alarmRef)
+    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?, updatedOn: Long): CacheResult<Int?> =
+        local.updateTodoAlarmRef(todoId, alarmRef, updatedOn)
 
     override fun getTodo(todoId: String): Flow<Todo> = local.getTodo(todoId).map { it.toTodo() }
 

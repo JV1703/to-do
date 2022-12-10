@@ -31,26 +31,26 @@ interface TodoRepository {
 
     fun getTodo(todoId: String): Flow<Todo>
 
-    suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?>
+    suspend fun updateTodoTitle(todoId: String, title: String, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?>
+    suspend fun updateTodoCategory(todoId: String, category: String, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?>
+    suspend fun updateTodoDeadline(todoId: String, deadline: Long?, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?>
+    suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): CacheResult<Int?>
+    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): CacheResult<Int?>
+    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): CacheResult<Int?>
+    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean, updatedOn: Long): CacheResult<Int?>
 
     suspend fun updateTodoAttachmentsAvailability(
         todoId: String,
-        attachmentsAvailability: Boolean
+        attachmentsAvailability: Boolean, updatedOn: Long
     ): CacheResult<Int?>
 
-    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?>
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?, updatedOn: Long): CacheResult<Int?>
 
     fun getTodoDetails(todoId: String): Flow<TodoDetails?>
 
@@ -138,4 +138,5 @@ interface TodoRepository {
     suspend fun deleteAttachmentNetwork(userId: String, attachmentId: String): ApiResult<Unit?>
     suspend fun upsertAttachmentNetwork(userId: String, attachment: Attachment): ApiResult<Unit?>
     fun getAttachment(attachmentId: String): Flow<Attachment?>
+    suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long): CacheResult<Int?>
 }

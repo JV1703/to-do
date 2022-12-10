@@ -227,6 +227,7 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
                 repeat = null,
                 isComplete = false,
                 createdOn = dateUtil.getCurrentDateTimeLong(),
+                updatedOn = dateUtil.getCurrentDateTimeLong(),
                 completedOn = null,
                 tasks = !isTaskEmpty,
                 notes = false,

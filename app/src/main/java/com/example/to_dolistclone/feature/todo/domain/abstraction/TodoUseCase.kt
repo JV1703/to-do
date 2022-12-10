@@ -10,7 +10,7 @@ interface TodoUseCase {
     suspend fun insertTodo(userId: String, todo: Todo): Async<Long?>
 
     suspend fun updateTodoCompletion(
-        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?
+        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long
     ): Async<Int>
 
 //    fun getTodos(): Flow<List<Todo>>

@@ -76,11 +76,6 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>(FragmentNoteBinding::infl
                     )
                 } else {
                     viewModel.deleteNote(userId = firebaseAuth.currentUser!!.uid, noteId = todoId)
-                    viewModel.updateTodoNotesAvailability(
-                        userId = firebaseAuth.currentUser!!.uid,
-                        todoId = todoId,
-                        notesAvailability = false
-                    )
                 }
 
                 isEnabled = false

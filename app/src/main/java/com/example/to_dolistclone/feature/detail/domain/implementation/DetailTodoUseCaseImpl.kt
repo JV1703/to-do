@@ -21,10 +21,26 @@ class DetailTodoUseCaseImpl @Inject constructor(
         return todoRepository.getTodoDetails(todoId)
     }
 
+    override suspend fun updateTodoUpdatedOn(userId: String, todoId: String, updatedOn: Long): Async<Int> {
+        val cacheResult = todoRepository.updateTodoUpdatedOn(todoId = todoId, updatedOn = updatedOn)
+        return handleCacheResponse(cacheResult){resultObj ->
+            if(resultObj > 0){
+                workerManager.upsertTodo(userId, todoId)
+                Async.Success(resultObj)
+            } else {
+                Async.Error(errorMsg = GENERIC_CACHE_ERROR)
+            }
+        }
+    }
+
     override suspend fun updateTodoDeadline(
-        userId: String, todoId: String, deadline: Long?
+        userId: String, todoId: String, deadline: Long?, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoDeadline(todoId, deadline)
+        val cacheResult = todoRepository.updateTodoDeadline(
+            todoId = todoId,
+            deadline = deadline,
+            updatedOn = updatedOn
+        )
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -37,9 +53,9 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoReminder(
-        userId: String, todoId: String, reminder: Long?
+        userId: String, todoId: String, reminder: Long?, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoReminder(todoId, reminder)
+        val cacheResult = todoRepository.updateTodoReminder(todoId, reminder, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -51,9 +67,9 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoTitle(
-        userId: String, todoId: String, title: String
+        userId: String, todoId: String, title: String, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoCategory(todoId, title)
+        val cacheResult = todoRepository.updateTodoCategory(todoId, title, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -65,9 +81,9 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoCategory(
-        userId: String, todoId: String, category: String
+        userId: String, todoId: String, category: String, updatedOn: Long
     ): Async<Int?> {
-        val cacheResult = todoRepository.updateTodoCategory(todoId, category)
+        val cacheResult = todoRepository.updateTodoCategory(todoId, category, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -79,9 +95,9 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoCompletion(
-        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?
+        userId: String, todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoCompletion(todoId, isComplete, completedOn)
+        val cacheResult = todoRepository.updateTodoCompletion(todoId, isComplete, completedOn, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -93,9 +109,9 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoTasksAvailability(
-        userId: String, todoId: String, tasksAvailability: Boolean
+        userId: String, todoId: String, tasksAvailability: Boolean, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoTasksAvailability(todoId, tasksAvailability)
+        val cacheResult = todoRepository.updateTodoTasksAvailability(todoId, tasksAvailability, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -107,9 +123,9 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoNotesAvailability(
-        userId: String, todoId: String, notesAvailability: Boolean
+        userId: String, todoId: String, notesAvailability: Boolean, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoNotesAvailability(todoId, notesAvailability)
+        val cacheResult = todoRepository.updateTodoNotesAvailability(todoId, notesAvailability, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -121,10 +137,10 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoAttachmentsAvailability(
-        userId: String, todoId: String, attachmentsAvailability: Boolean
+        userId: String, todoId: String, attachmentsAvailability: Boolean, updatedOn: Long
     ): Async<Int> {
         val cacheResult =
-            todoRepository.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability)
+            todoRepository.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
@@ -136,9 +152,9 @@ class DetailTodoUseCaseImpl @Inject constructor(
     }
 
     override suspend fun updateTodoAlarmRef(
-        userId: String, todoId: String, alarmRef: Int?
+        userId: String, todoId: String, alarmRef: Int?, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoAlarmRef(todoId, alarmRef)
+        val cacheResult = todoRepository.updateTodoAlarmRef(todoId, alarmRef, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)

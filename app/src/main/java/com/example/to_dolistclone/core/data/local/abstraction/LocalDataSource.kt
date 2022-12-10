@@ -29,28 +29,28 @@ interface LocalDataSource {
 
     suspend fun insertTodo(todo: TodoEntity): CacheResult<Long?>
 
-    suspend fun updateTodoTitle(todoId: String, title: String): CacheResult<Int?>
+    suspend fun updateTodoTitle(todoId: String, title: String, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoCategory(todoId: String, category: String): CacheResult<Int?>
+    suspend fun updateTodoCategory(todoId: String, category: String, updatedOn: Long): CacheResult<Int?>
 
     fun getTodo(todoId: String): Flow<TodoEntity>
 
-    suspend fun updateTodoDeadline(todoId: String, deadline: Long?): CacheResult<Int?>
+    suspend fun updateTodoDeadline(todoId: String, deadline: Long?, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoReminder(todoId: String, reminder: Long?): CacheResult<Int?>
+    suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?): CacheResult<Int?>
+    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean): CacheResult<Int?>
+    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean, updatedOn: Long): CacheResult<Int?>
 
-    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean): CacheResult<Int?>
+    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean, updatedOn: Long): CacheResult<Int?>
 
     suspend fun updateTodoAttachmentsAvailability(
         todoId: String,
-        attachmentsAvailability: Boolean
+        attachmentsAvailability: Boolean, updatedOn: Long
     ): CacheResult<Int?>
 
-    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?): CacheResult<Int?>
+    suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?, updatedOn: Long): CacheResult<Int?>
 
     fun getTodoDetails(todoId: String): Flow<TodoDetailsEntity?>
 
@@ -112,4 +112,5 @@ interface LocalDataSource {
     fun getTask(taskId: String): Flow<TaskEntity?>
     fun getNote(noteId: String): Flow<NoteEntity?>
     fun getAttachment(attachmentId: String): Flow<AttachmentEntity?>
+    suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long): CacheResult<Int?>
 }
