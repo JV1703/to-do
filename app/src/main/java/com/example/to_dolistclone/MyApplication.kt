@@ -51,7 +51,6 @@ class MyApplication : Application(), Configuration.Provider {
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(todoChannel)
             notificationManager.createNotificationChannel(workerChannel)
-
         }
     }
 

@@ -16,7 +16,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.FileProvider
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
@@ -594,11 +593,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     }
 
     override fun openFile(attachment: Attachment) {
-        val filePath = File(requireContext().filesDir, "attachments/${attachment.type}")
-        val newFile = File(filePath, attachment.name)
+        val file = File(attachment.localUri)
         val contentUri = try {
             FileProvider.getUriForFile(
-                requireContext(), "com.example.to_dolistclone.fileprovider", newFile
+                requireContext(), "com.example.to_dolistclone.fileprovider", file
             )
         } catch (e: Exception) {
             Log.e("DetailsFragment", "openFile FileProvider: ${e.message}")

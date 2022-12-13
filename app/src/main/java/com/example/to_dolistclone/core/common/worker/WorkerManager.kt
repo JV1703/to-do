@@ -259,6 +259,7 @@ class WorkerManager @Inject constructor(
                 ).setInputData(
                     workDataOf(
                         USER_ID_WORKER_DATA to userId,
+                        ATTACHMENT_ID_WORKER_DATA to attachmentId,
                         ATTACHMENT_INITIAL_FILE_PATH_WORKER_DATA to initialFilePath,
                         ATTACHMENT_INTERNAL_STORAGE_PATH_WORKER_DATA to internalStoragePath
                     )
@@ -294,7 +295,7 @@ class WorkerManager @Inject constructor(
 
         workManager.beginUniqueWork(
             "test uploadAttachment, upsertAttachmentToCache, upsertAttachmentToNetwork",
-            ExistingWorkPolicy.APPEND_OR_REPLACE,
+            ExistingWorkPolicy.APPEND,
             uploadRequest
         ).then(listOf(upsertToCacheRequest, upsertToNetworkRequest)).enqueue()
 
