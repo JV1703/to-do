@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.FileProvider
 import androidx.core.view.isGone
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -39,6 +41,10 @@ import com.example.to_dolistclone.feature.detail.viewmodel.DetailsViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.time.LocalDateTime
 import java.util.*
@@ -85,16 +91,16 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         setupTaskRv()
         setupAttachmentRv()
 
-        binding.titleTv.onKeyboardEnter(false) { input ->
+        binding.titleEt.onKeyboardEnter(false) { input ->
             todoId?.let {
-                if (it.trim().toString().isEmpty()) {
+                if (input.isEmpty()) {
+                    makeToast("Please set title.")
+                }else{
+                    Log.i("DetailsFragment", "title enter key pressed")
                     viewModel.updateTodoTitle(
                         userId = firebaseAuth.currentUser!!.uid, title = input, todoId = it
                     )
                 }
-            }
-            if (input.isEmpty()) {
-                makeToast("Please set title.")
             }
         }
 
@@ -171,7 +177,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 attachmentAdapter.submitList(it)
             }
 
-            binding.titleTv.setText(uiState.todoDetails?.todo?.title)
+            binding.titleEt.setText(uiState.todoDetails?.todo?.title)
 
             binding.categoryTv.text = uiState.todoDetails?.todo?.todoCategoryRefName
 

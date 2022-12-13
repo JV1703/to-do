@@ -13,7 +13,9 @@ import android.provider.OpenableColumns
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
@@ -31,7 +33,6 @@ import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -250,7 +251,32 @@ fun TextView.transformIntoTimePicker(
 //    }
 //}
 
+//fun AppCompatEditText.onKeyboardEnter(clearText: Boolean, callback: (String) -> Unit) {
+//    this.setOnEditorActionListener { textView, actionId, _ ->
+//        if (actionId == EditorInfo.IME_ACTION_DONE) {
+//            if ((textView as AppCompatEditText).text.toString().trim().isNotEmpty()) {
+//                callback(textView.text.toString().trim())
+//            }
+//
+//            if (clearText) {
+//                this.text?.clear()
+//            }
+//
+//            true
+//        } else false
+//    }
+//}
+
 fun AppCompatEditText.onKeyboardEnter(clearText: Boolean, callback: (String) -> Unit) {
+
+//    this.setOnKeyListener { _, keyCode, keyEvent ->
+//        if (keyEvent.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+//            callback(this.text.toString().trim())
+//            true
+//        }
+//        false
+//    }
+
     this.setOnEditorActionListener { textView, actionId, _ ->
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             if ((textView as AppCompatEditText).text.toString().trim().isNotEmpty()) {

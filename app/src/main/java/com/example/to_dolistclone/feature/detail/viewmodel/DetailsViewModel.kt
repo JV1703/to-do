@@ -2,6 +2,7 @@ package com.example.to_dolistclone.feature.detail.viewmodel
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.to_dolistclone.core.common.DateUtil
@@ -24,14 +25,14 @@ data class DetailsActivityUiState(
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
+    private val savedState: SavedStateHandle,
     private val detailTodoUseCase: DetailTodoUseCase,
     private val todoCategoryUseCase: TodoCategoryUseCase,
     private val detailTaskUseCase: DetailTaskUseCase,
     private val detailNoteUseCase: DetailNoteUseCase,
     private val detailAttachmentUseCase: DetailAttachmentUseCase,
     private val dateUtil: DateUtil,
-    private val fileManager: FileManager,
-    private val firebaseStorage: FirebaseStorage
+    private val fileManager: FileManager
 ) : ViewModel() {
     val todoId = detailTodoUseCase.getSelectedTodoId()
 
@@ -79,12 +80,6 @@ class DetailsViewModel @Inject constructor(
             )
         }
     }
-
-//    fun updateTaskPosition(tasks: List<Task>) {
-//        viewModelScope.launch {
-//            detailTaskUseCase.insertTasks(tasks)
-//        }
-//    }
 
     fun insertTask(
         userId: String, taskId: String? = null, title: String, position: Int, todoRefId: String
@@ -216,6 +211,7 @@ class DetailsViewModel @Inject constructor(
         title: String,
         updatedOn: Long = dateUtil.getCurrentDateTimeLong()
     ) {
+        Log.i("DetailsViewModel", "updateTodoTitle triggered")
         viewModelScope.launch {
             detailTodoUseCase.updateTodoTitle(
                 userId = userId, todoId = todoId, title = title, updatedOn = updatedOn

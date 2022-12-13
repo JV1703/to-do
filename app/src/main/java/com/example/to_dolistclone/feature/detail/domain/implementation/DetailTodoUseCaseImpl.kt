@@ -69,7 +69,7 @@ class DetailTodoUseCaseImpl @Inject constructor(
     override suspend fun updateTodoTitle(
         userId: String, todoId: String, title: String, updatedOn: Long
     ): Async<Int> {
-        val cacheResult = todoRepository.updateTodoCategory(todoId, title, updatedOn)
+        val cacheResult = todoRepository.updateTodoTitle(todoId, title, updatedOn)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
                 workerManager.upsertTodo(userId, todoId)
