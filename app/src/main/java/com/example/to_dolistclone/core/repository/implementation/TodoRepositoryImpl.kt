@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.core.repository.implementation
 
+import android.net.Uri
 import android.util.Log
 import com.example.to_dolistclone.core.data.local.CacheResult
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
@@ -9,9 +10,9 @@ import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.to
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithAttachments
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoWithTasks
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_one.toTodoAndNote
-import com.example.to_dolistclone.core.data.local.safeCacheCall
 import com.example.to_dolistclone.core.data.remote.ApiResult
 import com.example.to_dolistclone.core.data.remote.abstraction.RemoteDataSource
+import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
@@ -57,26 +58,62 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun upsertTodoNetwork(userId: String, todo: Todo) =
         remote.upsertTodo(userId, todo.toTodoNetwork())
 
-    override suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long) = local.updateTodoUpdatedOn(
-        todoId = todoId,
-        updatedOn = updatedOn
+    override suspend fun updateTodo(
+        todoId: String,
+        title: String,
+        deadline: Long?,
+        reminder: Long?,
+        repeat: String?,
+        isComplete: Boolean,
+        createdOn: Long?,
+        updatedOn: Long,
+        completedOn: Long?,
+        tasksAvailability: Boolean,
+        notesAvailability: Boolean,
+        attachmentsAvailability: Boolean,
+        alarmRef: Int?,
+        todoCategoryRefName: String
+    ) = local.updateTodo(
+        todoId,
+        title,
+        deadline,
+        reminder,
+        repeat,
+        isComplete,
+        createdOn,
+        updatedOn,
+        completedOn,
+        tasksAvailability,
+        notesAvailability,
+        attachmentsAvailability,
+        alarmRef,
+        todoCategoryRefName
     )
+
+    override suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long) =
+        local.updateTodoUpdatedOn(
+            todoId = todoId, updatedOn = updatedOn
+        )
 
     override suspend fun updateTodoNetwork(
         userId: String, todoId: String, field: Map<String, Any?>
     ) = remote.updateTodo(userId, todoId, field)
 
-    override suspend fun updateTodoTitle(todoId: String, title: String, updatedOn: Long): CacheResult<Int?> =
-        local.updateTodoTitle(todoId, title, updatedOn)
+    override suspend fun updateTodoTitle(
+        todoId: String, title: String, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoTitle(todoId, title, updatedOn)
 
-    override suspend fun updateTodoCategory(todoId: String, category: String, updatedOn: Long): CacheResult<Int?> =
-        local.updateTodoCategory(todoId, category, updatedOn)
+    override suspend fun updateTodoCategory(
+        todoId: String, category: String, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoCategory(todoId, category, updatedOn)
 
-    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?, updatedOn: Long): CacheResult<Int?> =
-        local.updateTodoDeadline(todoId, deadline, updatedOn)
+    override suspend fun updateTodoDeadline(
+        todoId: String, deadline: Long?, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoDeadline(todoId, deadline, updatedOn)
 
-    override suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): CacheResult<Int?> =
-        local.updateTodoReminder(todoId, reminder, updatedOn)
+    override suspend fun updateTodoReminder(
+        todoId: String, reminder: Long?, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoReminder(todoId, reminder, updatedOn)
 
     override suspend fun updateTodoCompletion(
         todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long
@@ -92,10 +129,12 @@ class TodoRepositoryImpl @Inject constructor(
 
     override suspend fun updateTodoAttachmentsAvailability(
         todoId: String, attachmentsAvailability: Boolean, updatedOn: Long
-    ): CacheResult<Int?> = local.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability, updatedOn)
+    ): CacheResult<Int?> =
+        local.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability, updatedOn)
 
-    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?, updatedOn: Long): CacheResult<Int?> =
-        local.updateTodoAlarmRef(todoId, alarmRef, updatedOn)
+    override suspend fun updateTodoAlarmRef(
+        todoId: String, alarmRef: Int?, updatedOn: Long
+    ): CacheResult<Int?> = local.updateTodoAlarmRef(todoId, alarmRef, updatedOn)
 
     override fun getTodo(todoId: String): Flow<Todo> = local.getTodo(todoId).map { it.toTodo() }
 
@@ -106,6 +145,9 @@ class TodoRepositoryImpl @Inject constructor(
     }.catch { e ->
         Log.e("todoRepository", "getTodos errorMsg: ${e.message}")
     }
+
+    override suspend fun getTodosNetwork(userId: String): ApiResult<List<TodoNetwork>?> =
+        remote.getTodos(userId)
 
     override fun getTodoDetails(todoId: String): Flow<TodoDetails?> =
         local.getTodoDetails(todoId).map { it?.toTodoDetails() }.catch { e ->
@@ -125,8 +167,8 @@ class TodoRepositoryImpl @Inject constructor(
         userId = userId, noteId = noteId
     )
 
-    override suspend fun insertNoteNetwork(userId: String, note: Note): ApiResult<Unit?> =
-        remote.insertNote(userId, note.toNoteNetwork())
+    override suspend fun upsertNoteNetwork(userId: String, note: Note): ApiResult<Unit?> =
+        remote.upsertNote(userId, note.toNoteNetwork())
 
     override fun getNote(noteId: String): Flow<Note?> =
         local.getNote(noteId).map { entityModel -> entityModel?.toNote() }
@@ -180,10 +222,22 @@ class TodoRepositoryImpl @Inject constructor(
             userId = userId, attachment = attachment.toAttachmentNetwork()
         )
 
+    override suspend fun uploadAttachment(
+        userId: String, attachmentPath: String
+    ): ApiResult<Unit?> = remote.uploadAttachment(
+        userId = userId, attachmentPath = attachmentPath
+    )
+
+    override suspend fun uploadAttachment(userId: String, attachmentUri: Uri) = remote.uploadAttachment(
+        userId = userId,
+        attachmentUri = attachmentUri
+    )
+
     override suspend fun insertAttachments(attachments: List<Attachment>): CacheResult<LongArray?> =
         local.insertAttachments(attachments.map { it.toAttachmentEntity() })
 
-    override fun getAttachment(attachmentId: String): Flow<Attachment?> = local.getAttachment(attachmentId).map { it?.toAttachment() }
+    override fun getAttachment(attachmentId: String): Flow<Attachment?> =
+        local.getAttachment(attachmentId).map { it?.toAttachment() }
 
     override fun getAttachments(): Flow<List<Attachment>> =
         local.getAttachments().map { listEntityModel ->
@@ -192,6 +246,9 @@ class TodoRepositoryImpl @Inject constructor(
             }
         }
 
+    override suspend fun downloadAttachment(path: String): ApiResult<Unit?> =
+        remote.downloadAttachment(path)
+
     override suspend fun deleteAttachment(attachmentId: String): CacheResult<Int?> =
         local.deleteAttachment(attachmentId)
 
@@ -199,6 +256,9 @@ class TodoRepositoryImpl @Inject constructor(
         remote.deleteAttachment(
             userId = userId, attachmentId = attachmentId
         )
+
+    override suspend fun deleteAttachmentFromFirebaseStorage(path: String) =
+        remote.deleteAttachmentFromFirebaseStorage(path)
 
     override suspend fun insertTodoCategory(todoCategory: TodoCategory): CacheResult<Long?> =
         local.insertTodoCategory(todoCategory.toTodoCategoryEntity())

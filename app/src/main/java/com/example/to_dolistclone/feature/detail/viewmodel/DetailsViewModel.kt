@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.feature.detail.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.common.FileManager
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.feature.detail.domain.abstraction.*
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -28,7 +30,8 @@ class DetailsViewModel @Inject constructor(
     private val detailNoteUseCase: DetailNoteUseCase,
     private val detailAttachmentUseCase: DetailAttachmentUseCase,
     private val dateUtil: DateUtil,
-    private val fileManager: FileManager
+    private val fileManager: FileManager,
+    private val firebaseStorage: FirebaseStorage
 ) : ViewModel() {
     val todoId = detailTodoUseCase.getSelectedTodoId()
 
@@ -366,13 +369,26 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun createAttachment(
-        fileName: String, filePath: String, type: String, size: Long, todoRefId: String
+        userId: String,
+        originalFileUri: Uri,
+        size: Long,
+        todoRefId: String
     ): Attachment {
+
+        val storageRef = firebaseStorage.reference
+        val fileName = fileManager.queryName(originalFileUri)
+        val localUri = fileManager.generateInternalStorageDestination(originalFileUri)
+        val fileType = fileManager.getExtension(originalFileUri)!!
+        val networkUri = fileManager.generateNetworkStorageDestination(
+            userId = userId, storageRef = storageRef, uri = originalFileUri
+        )
+
         return Attachment(
             attachmentId = UUID.randomUUID().toString(),
             name = fileName,
-            uri = filePath,
-            type = type,
+            localUri = localUri,
+            networkUri = networkUri,
+            type = fileType,
             size = size,
             todoRefId = todoRefId
         )
@@ -390,6 +406,30 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
+    fun uploadAttachment(
+        userId: String,
+        initialFileUri: Uri,
+        internalStoragePath: String,
+        todoRefId: String,
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+    ) {
+        viewModelScope.launch {
+            detailAttachmentUseCase.uploadAttachment(
+                userId = userId,
+                initialFileUri = initialFileUri,
+                internalStoragePath = internalStoragePath,
+                todoRefId = todoRefId,
+                todoUpdatedOn = todoUpdatedOn
+            )
+        }
+    }
+
+    fun uploadAttachment(userId: String, attachmentUri: Uri) {
+        viewModelScope.launch {
+            detailAttachmentUseCase.uploadAttachment(userId, attachmentUri)
+        }
+    }
+
     fun deleteAttachment(
         userId: String,
         attachment: Attachment,
@@ -403,7 +443,7 @@ class DetailsViewModel @Inject constructor(
                 todoId = todoId,
                 todoUpdatedOn = todoUpdatedOn
             )
-            deleteFileFromInternalStorage(attachment.uri)
+            deleteFileFromInternalStorage(attachment.localUri)
         }
     }
 

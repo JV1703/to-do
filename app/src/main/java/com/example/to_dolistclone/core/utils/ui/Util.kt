@@ -3,9 +3,16 @@ package com.example.to_dolistclone.core.utils.ui
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ContentResolver
 import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.database.Cursor
+import android.net.Uri
+import android.os.ParcelFileDescriptor
+import android.provider.OpenableColumns
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
@@ -20,9 +27,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -271,4 +280,86 @@ fun generateAlarmRef(exclude: List<Long>): Long {
         output = Random.nextLong()
     }
     return output
+}
+
+inline fun <reified T> Gson.fromJson(json: String): T = fromJson<T>(json, T::class.java)
+inline fun <reified T> Gson.toJson(data: T): String = toJson(data)
+
+fun Uri.length(context: Context): Long {
+    val fromContentProviderColumn = fun(): Long {
+        // Try to get content length from the content provider column OpenableColumns.SIZE
+        // which is recommended to implement by all the content providers
+        var cursor: Cursor? = null
+        return try {
+            cursor = context.contentResolver.query(
+                this,
+                arrayOf(OpenableColumns.SIZE),
+                null,
+                null,
+                null
+            ) ?: throw Exception("Content provider returned null or crashed")
+            val sizeColumnIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+            if (sizeColumnIndex != -1 && cursor.count > 0) {
+                cursor.moveToFirst()
+                cursor.getLong(sizeColumnIndex)
+            } else {
+                -1
+            }
+        } catch (e: Exception) {
+            Log.d("getFileSize", e.message ?: e.javaClass.simpleName)
+            -1
+        } finally {
+            cursor?.close()
+        }
+    }
+
+    val fromFileDescriptor = fun(): Long {
+        // Try to get content length from content scheme uri or file scheme uri
+        var fileDescriptor: ParcelFileDescriptor? = null
+        return try {
+            fileDescriptor = context.contentResolver.openFileDescriptor(this, "r")
+                ?: throw Exception("Content provider recently crashed")
+            fileDescriptor.statSize
+        } catch (e: Exception) {
+            Log.d("getFileSize", e.message ?: e.javaClass.simpleName)
+            -1
+        } finally {
+            fileDescriptor?.close()
+        }
+    }
+
+    val fromAssetFileDescriptor = fun(): Long {
+        // Try to get content length from content scheme uri, file scheme uri or android resource scheme uri
+        var assetFileDescriptor: AssetFileDescriptor? = null
+        return try {
+            assetFileDescriptor = context.contentResolver.openAssetFileDescriptor(this, "r")
+                ?: throw Exception("Content provider recently crashed")
+            assetFileDescriptor.length
+        } catch (e: Exception) {
+            Log.d("getFileSize", e.message ?: e.javaClass.simpleName)
+            -1
+        } finally {
+            assetFileDescriptor?.close()
+        }
+    }
+
+    return when (scheme) {
+        ContentResolver.SCHEME_FILE -> {
+            fromFileDescriptor()
+        }
+        ContentResolver.SCHEME_CONTENT -> {
+            val length = fromContentProviderColumn()
+            if (length >= 0) {
+                length
+            } else {
+                fromFileDescriptor()
+            }
+        }
+        ContentResolver.SCHEME_ANDROID_RESOURCE -> {
+            fromAssetFileDescriptor()
+        }
+        else -> {
+            -1
+        }
+    }
 }

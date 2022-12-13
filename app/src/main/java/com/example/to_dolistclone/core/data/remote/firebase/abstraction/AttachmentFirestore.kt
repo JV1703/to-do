@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.core.data.remote.firebase.abstraction
 
+import android.net.Uri
 import com.example.to_dolistclone.core.data.remote.model.AttachmentNetwork
 
 interface AttachmentFirestore {
@@ -8,4 +9,8 @@ interface AttachmentFirestore {
     suspend fun getAttachments(userId: String): List<AttachmentNetwork>
     suspend fun deleteAttachment(userId: String, attachmentId: String)
     suspend fun updateAttachment(userId: String, attachmentId: String, field: Map<String, Any>)
+    suspend fun uploadAttachment(userId: String, attachmentPath: String)
+    suspend fun downloadAttachment(path: String)
+    suspend fun deleteAttachmentFromFirebaseStorage(path: String)
+    suspend fun uploadAttachment(userId: String, attachmentUri: Uri)
 }

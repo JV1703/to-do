@@ -113,4 +113,20 @@ interface LocalDataSource {
     fun getNote(noteId: String): Flow<NoteEntity?>
     fun getAttachment(attachmentId: String): Flow<AttachmentEntity?>
     suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long): CacheResult<Int?>
+    suspend fun updateTodo(
+        todoId: String,
+        title: String,
+        deadline: Long?,
+        reminder: Long?,
+        repeat: String?,
+        isComplete: Boolean,
+        createdOn: Long?,
+        updatedOn: Long,
+        completedOn: Long?,
+        tasksAvailability: Boolean,
+        notesAvailability: Boolean,
+        attachmentsAvailability: Boolean,
+        alarmRef: Int?,
+        todoCategoryRefName: String
+    ): CacheResult<Int?>
 }

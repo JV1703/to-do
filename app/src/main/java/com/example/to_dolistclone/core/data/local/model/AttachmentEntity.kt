@@ -19,7 +19,8 @@ data class AttachmentEntity(
     @PrimaryKey(autoGenerate = false)
     val attachmentId: String,
     val name: String,
-    val uri: String,
+    val localUri: String,
+    val networkUri: String,
     val type: String,
     val size: Long,
     val todoRefId: String
@@ -28,7 +29,8 @@ data class AttachmentEntity(
 fun AttachmentEntity.toAttachment() = Attachment(
     attachmentId = attachmentId,
     name = name,
-    uri = uri,
+    localUri = localUri,
+    networkUri = networkUri,
     type = type,
     size = size,
     todoRefId = todoRefId

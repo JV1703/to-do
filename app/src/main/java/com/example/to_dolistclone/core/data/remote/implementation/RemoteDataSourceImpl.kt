@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.core.data.remote.implementation
 
+import android.net.Uri
 import com.example.to_dolistclone.core.data.remote.ApiResult
 import com.example.to_dolistclone.core.data.remote.abstraction.RemoteDataSource
 import com.example.to_dolistclone.core.data.remote.firebase.abstraction.*
@@ -7,6 +8,7 @@ import com.example.to_dolistclone.core.data.remote.model.*
 import com.example.to_dolistclone.core.data.remote.safeApiCall
 import com.example.to_dolistclone.core.di.coroutine_dispatchers.CoroutinesQualifiers
 import kotlinx.coroutines.CoroutineDispatcher
+import java.io.File
 import javax.inject.Inject
 
 class RemoteDataSourceImpl @Inject constructor(
@@ -74,7 +76,7 @@ class RemoteDataSourceImpl @Inject constructor(
         taskFs.deleteTask(userId, taskId)
     }
 
-    override suspend fun insertNote(userId: String, note: NoteNetwork) = safeApiCall(dispatcherIO) {
+    override suspend fun upsertNote(userId: String, note: NoteNetwork) = safeApiCall(dispatcherIO) {
         noteFs.upsertNote(userId = userId, note = note)
     }
 
@@ -87,9 +89,28 @@ class RemoteDataSourceImpl @Inject constructor(
             attachmentFs.upsertAttachment(userId = userId, attachment = attachment)
         }
 
+    override suspend fun uploadAttachment(userId: String, attachmentPath: String): ApiResult<Unit?> =
+        safeApiCall(dispatcherIO) {
+            attachmentFs.uploadAttachment(userId = userId, attachmentPath = attachmentPath)
+        }
+
+    override suspend fun uploadAttachment(userId: String, attachmentUri: Uri) = safeApiCall(dispatcherIO){
+        attachmentFs.uploadAttachment(userId, attachmentUri)
+    }
+
+    override suspend fun downloadAttachment(path: String) =
+        safeApiCall(dispatcherIO) {
+            attachmentFs.downloadAttachment(path = path)
+        }
+
     override suspend fun deleteAttachment(userId: String, attachmentId: String) =
         safeApiCall(dispatcherIO) {
             attachmentFs.deleteAttachment(userId = userId, attachmentId = attachmentId)
         }
 
+    override suspend fun deleteAttachmentFromFirebaseStorage(path: String) = safeApiCall(dispatcherIO){
+        safeApiCall(dispatcherIO){
+            attachmentFs.deleteAttachmentFromFirebaseStorage(path)
+        }
+    }
 }

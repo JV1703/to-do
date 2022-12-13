@@ -69,7 +69,7 @@ class AttachmentFirestoreTest {
     private fun generateSingleAttachmentNetwork(todoRefId: String) = AttachmentNetwork(
         attachmentId = UUID.randomUUID().toString(),
         name = "attachment name",
-        uri = "uri $1",
+        localUri = "uri $1",
         type = "jpg",
         size = 1024,
         todoRefId = todoRefId

@@ -119,26 +119,77 @@ class LocalDataSourceImpl @Inject constructor(
         return safeCacheCall(dispatcherIO) { todoDao.insertTodo(todo) }
     }
 
-    override suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long) = safeCacheCall(dispatcherIO){
-        todoDao.updateTodoUpdatedOn(todoId = todoId, updatedOn = updatedOn)
+    override suspend fun updateTodo(
+        todoId: String,
+        title: String,
+        deadline: Long?,
+        reminder: Long?,
+        repeat: String?,
+        isComplete: Boolean,
+        createdOn: Long?,
+        updatedOn: Long,
+        completedOn: Long?,
+        tasksAvailability: Boolean,
+        notesAvailability: Boolean,
+        attachmentsAvailability: Boolean,
+        alarmRef: Int?,
+        todoCategoryRefName: String
+    ): CacheResult<Int?> = safeCacheCall(dispatcherIO) {
+        todoDao.updateTodo(
+            todoId = todoId,
+            title = title,
+            deadline = deadline,
+            reminder = reminder,
+            repeat = repeat,
+            isComplete = isComplete,
+            createdOn = createdOn,
+            updatedOn = updatedOn,
+            completedOn = completedOn,
+            tasksAvailability = tasksAvailability,
+            notesAvailability = notesAvailability,
+            attachmentsAvailability = attachmentsAvailability,
+            alarmRef = alarmRef,
+            todoCategoryRefName = todoCategoryRefName
+        )
     }
 
-    override suspend fun updateTodoTitle(todoId: String, title: String, updatedOn: Long): CacheResult<Int?> =
+    override suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long) =
+        safeCacheCall(dispatcherIO) {
+            todoDao.updateTodoUpdatedOn(todoId = todoId, updatedOn = updatedOn)
+        }
+
+    override suspend fun updateTodoTitle(
+        todoId: String,
+        title: String,
+        updatedOn: Long
+    ): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
             todoDao.updateTodoTitle(todoId, title, updatedOn)
         }
 
-    override suspend fun updateTodoCategory(todoId: String, category: String, updatedOn: Long): CacheResult<Int?> =
+    override suspend fun updateTodoCategory(
+        todoId: String,
+        category: String,
+        updatedOn: Long
+    ): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
             todoDao.updateTodoCategory(todoId, category, updatedOn)
         }
 
-    override suspend fun updateTodoDeadline(todoId: String, deadline: Long?, updatedOn: Long): CacheResult<Int?> =
+    override suspend fun updateTodoDeadline(
+        todoId: String,
+        deadline: Long?,
+        updatedOn: Long
+    ): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
             todoDao.updateTodoDeadline(todoId, deadline, updatedOn)
         }
 
-    override suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): CacheResult<Int?> =
+    override suspend fun updateTodoReminder(
+        todoId: String,
+        reminder: Long?,
+        updatedOn: Long
+    ): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
             todoDao.updateTodoReminder(todoId, reminder, updatedOn)
         }
@@ -168,7 +219,11 @@ class LocalDataSourceImpl @Inject constructor(
         todoDao.updateTodoAttachmentsAvailability(todoId, attachmentsAvailability, updatedOn)
     }
 
-    override suspend fun updateTodoAlarmRef(todoId: String, alarmRef: Int?, updatedOn: Long): CacheResult<Int?> =
+    override suspend fun updateTodoAlarmRef(
+        todoId: String,
+        alarmRef: Int?,
+        updatedOn: Long
+    ): CacheResult<Int?> =
         safeCacheCall(dispatcherIO) {
             todoDao.updateTodoAlarmRef(todoId, alarmRef, updatedOn)
         }
@@ -192,7 +247,8 @@ class LocalDataSourceImpl @Inject constructor(
             todoDao.insertNote(note)
         }
 
-    override fun getNote(noteId: String): Flow<NoteEntity?> = todoDao.getNote(noteId).flowOn(dispatcherIO)
+    override fun getNote(noteId: String): Flow<NoteEntity?> =
+        todoDao.getNote(noteId).flowOn(dispatcherIO)
 
     override fun getNotes(): Flow<List<NoteEntity>> = todoDao.getNotes().flowOn(dispatcherIO)
 
@@ -235,22 +291,23 @@ class LocalDataSourceImpl @Inject constructor(
         safeCacheCall(dispatcherIO) { todoDao.deleteTask(taskId) }
 
     override suspend fun insertAttachment(attachment: AttachmentEntity): CacheResult<Long?> =
-        safeCacheCall(dispatcherIO){
+        safeCacheCall(dispatcherIO) {
             todoDao.insertAttachment(attachment)
         }
 
     override suspend fun insertAttachments(attachments: List<AttachmentEntity>): CacheResult<LongArray?> =
-        safeCacheCall(dispatcherIO){
+        safeCacheCall(dispatcherIO) {
             todoDao.insertAttachments(attachments)
         }
 
-    override fun getAttachment(attachmentId: String) = todoDao.getAttachment(attachmentId).flowOn(dispatcherIO)
+    override fun getAttachment(attachmentId: String) =
+        todoDao.getAttachment(attachmentId).flowOn(dispatcherIO)
 
     override fun getAttachments(): Flow<List<AttachmentEntity>> =
         todoDao.getAttachments().flowOn(dispatcherIO)
 
     override suspend fun deleteAttachment(attachmentId: String): CacheResult<Int?> =
-        safeCacheCall(dispatcherIO){
+        safeCacheCall(dispatcherIO) {
             todoDao.deleteAttachment(attachmentId)
         }
 

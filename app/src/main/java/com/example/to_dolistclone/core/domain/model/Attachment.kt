@@ -6,7 +6,8 @@ import com.example.to_dolistclone.core.data.remote.model.AttachmentNetwork
 data class Attachment(
     val attachmentId: String,
     val name: String,
-    val uri: String,
+    val localUri: String,
+    val networkUri: String,
     val type: String,
     val size: Long,
     val todoRefId: String
@@ -15,7 +16,8 @@ data class Attachment(
 fun Attachment.toAttachmentEntity() = AttachmentEntity(
     attachmentId = attachmentId,
     name = name,
-    uri = uri,
+    localUri = localUri,
+    networkUri = networkUri,
     type = type,
     size = size,
     todoRefId = todoRefId
@@ -24,7 +26,8 @@ fun Attachment.toAttachmentEntity() = AttachmentEntity(
 fun Attachment.toAttachmentNetwork() = AttachmentNetwork(
     attachmentId = attachmentId,
     name = name,
-    uri = uri,
+    localUri = localUri,
+    networkUri = networkUri,
     type = type,
     size = size,
     todoRefId = todoRefId

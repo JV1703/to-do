@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.FileProvider
 import androidx.core.view.isGone
 import androidx.fragment.app.viewModels
@@ -268,7 +269,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                         cancelAlarm(it)
                     }
                     uiState.todoDetails.attachments.forEach {
-                        viewModel.deleteFileFromInternalStorage(it.uri)
+                        viewModel.deleteFileFromInternalStorage(it.localUri)
                     }
                     requireActivity().finish()
                 }
@@ -530,40 +531,45 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                         val count = clipData.itemCount
                         for (i in 0 until count) {
                             val uri = clipData.getItemAt(i)?.uri
-                            val file = uri?.let {
-                                fileManager.getFile(it)
-                            }
-                            file?.let {
+                            uri?.let {
+                                val fileName = fileManager.queryName(uri)
+                                Log.i("DetailFragment", "uri: $uri, name: $fileName")
                                 val attachment = viewModel.createAttachment(
-                                    fileName = it.name,
-                                    filePath = it.path,
-                                    type = it.extension,
-                                    size = it.length(),
+                                    userId = firebaseAuth.currentUser!!.uid,
+                                    originalFileUri = it,
+                                    size = uri.length(requireContext()),
                                     todoRefId = todoId!!
                                 )
-                                viewModel.insertAttachment(
-                                    userId = firebaseAuth.currentUser!!.uid, attachment = attachment
+
+                                viewModel.insertAttachment(firebaseAuth.currentUser!!.uid, attachment)
+
+                                viewModel.uploadAttachment(
+                                    userId = firebaseAuth.currentUser!!.uid,
+                                    initialFileUri = it,
+                                    internalStoragePath = attachment.localUri,
+                                    todoRefId = todoId!!
                                 )
                             }
                         }
                     } else {
                         val uri = data.data
-                        uri?.let {
-                            fileManager.getFile(it)
-                        }
-                        val file = uri?.let {
-                            fileManager.getFile(it)
-                        }
-                        file?.let {
+                        uri?.let{
+                            val fileName = fileManager.queryName(uri)
+                            Log.i("DetailFragment", "uri: $uri, name: $fileName")
                             val attachment = viewModel.createAttachment(
-                                fileName = it.name,
-                                filePath = it.path,
-                                type = it.extension,
-                                size = it.length(),
+                                userId = firebaseAuth.currentUser!!.uid,
+                                originalFileUri = it,
+                                size = uri.length(requireContext()),
                                 todoRefId = todoId!!
                             )
-                            viewModel.insertAttachment(
-                                userId = firebaseAuth.currentUser!!.uid, attachment = attachment
+
+                            viewModel.insertAttachment(firebaseAuth.currentUser!!.uid, attachment)
+
+                            viewModel.uploadAttachment(
+                                userId = firebaseAuth.currentUser!!.uid,
+                                initialFileUri = it,
+                                internalStoragePath = attachment.localUri,
+                                todoRefId = todoId!!
                             )
                         }
                     }
@@ -624,7 +630,11 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                 attachmentsAvailability = false
             )
         }
-        viewModel.deleteAttachment(userId = firebaseAuth.currentUser!!.uid, attachment = attachment, todoId = todoId!!)
+        viewModel.deleteAttachment(
+            userId = firebaseAuth.currentUser!!.uid,
+            attachment = attachment,
+            todoId = todoId!!
+        )
     }
 
 }

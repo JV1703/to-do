@@ -1,13 +1,16 @@
 package com.example.to_dolistclone.core.repository.abstraction
 
+import android.net.Uri
 import com.example.to_dolistclone.core.data.local.CacheResult
 import com.example.to_dolistclone.core.data.remote.ApiResult
+import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithTasks
 import com.example.to_dolistclone.core.domain.model.relation.one_to_one.TodoAndNote
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface TodoRepository {
 
@@ -60,7 +63,7 @@ interface TodoRepository {
 
     suspend fun insertNote(note: Note): CacheResult<Long?>
 
-    suspend fun insertNoteNetwork(userId: String, note: Note): ApiResult<Unit?>
+    suspend fun upsertNoteNetwork(userId: String, note: Note): ApiResult<Unit?>
 
     fun getNotes(): Flow<List<Note>>
 
@@ -139,4 +142,26 @@ interface TodoRepository {
     suspend fun upsertAttachmentNetwork(userId: String, attachment: Attachment): ApiResult<Unit?>
     fun getAttachment(attachmentId: String): Flow<Attachment?>
     suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long): CacheResult<Int?>
+    suspend fun getTodosNetwork(userId: String): ApiResult<List<TodoNetwork>?>
+    suspend fun updateTodo(
+        todoId: String,
+        title: String,
+        deadline: Long?,
+        reminder: Long?,
+        repeat: String?,
+        isComplete: Boolean,
+        createdOn: Long?,
+        updatedOn: Long,
+        completedOn: Long?,
+        tasksAvailability: Boolean,
+        notesAvailability: Boolean,
+        attachmentsAvailability: Boolean,
+        alarmRef: Int?,
+        todoCategoryRefName: String
+    ): CacheResult<Int?>
+
+    suspend fun uploadAttachment(userId: String, attachmentPath: String): ApiResult<Unit?>
+    suspend fun downloadAttachment(path: String): ApiResult<Unit?>
+    suspend fun deleteAttachmentFromFirebaseStorage(path: String): ApiResult<ApiResult<Unit?>?>
+    suspend fun uploadAttachment(userId: String, attachmentUri: Uri): Any
 }

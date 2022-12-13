@@ -26,7 +26,7 @@ class UpsertTodoWorker @AssistedInject constructor(
         val userId = workerParams.inputData.getString(USER_ID_WORKER_DATA)
         val todoId = workerParams.inputData.getString(TODO_ID_WORKER_DATA)
         val todo = todoId?.let { todoRepository.getTodo(todoId).first() }
-        Log.e("Worker", "UpsertTodoWorker - data - userId: $userId, todoId: $todoId")
+        Log.i("Worker", "UpsertTodoWorker - data - userId: $userId, todoId: $todoId")
         return if (todo == null || userId == null) {
             Log.e("Worker", "UpsertTodoWorker - failed - null data passed")
             Result.failure()

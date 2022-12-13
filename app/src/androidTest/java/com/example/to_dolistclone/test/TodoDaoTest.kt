@@ -155,7 +155,7 @@ class TodoDaoTest {
             val attachmentEntity = AttachmentEntity(
                 attachmentId = UUID.randomUUID().toString(),
                 name = "attachment $i",
-                uri = "uri $1",
+                localUri = "uri $1",
                 type = "jpg",
                 size = 1024,
                 todoRefId = UUID.randomUUID().toString()
@@ -168,7 +168,7 @@ class TodoDaoTest {
     private fun generateSingleAttachmentEntity(todoRefId: String) = AttachmentEntity(
         attachmentId = UUID.randomUUID().toString(),
         name = "attachment name",
-        uri = "uri $1",
+        localUri = "uri $1",
         type = "jpg",
         size = 1024,
         todoRefId = todoRefId

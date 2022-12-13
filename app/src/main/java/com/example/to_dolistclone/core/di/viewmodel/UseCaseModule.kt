@@ -1,6 +1,7 @@
 package com.example.to_dolistclone.core.di.viewmodel
 
 
+import androidx.work.WorkManager
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.common.worker.WorkerManager
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
@@ -29,9 +30,10 @@ object UseCaseModule {
     fun provideAttachment(
         todoRepository: TodoRepository,
         detailTodoUseCase: DetailTodoUseCase,
-        workerManager: WorkerManager
+        workerManager: WorkerManager,
+        workManager: WorkManager
     ): DetailAttachmentUseCase =
-        DetailAttachmentUseCaseImpl(todoRepository, detailTodoUseCase, workerManager)
+        DetailAttachmentUseCaseImpl(todoRepository, detailTodoUseCase, workerManager, workManager)
 
     @Provides
     @ViewModelScoped

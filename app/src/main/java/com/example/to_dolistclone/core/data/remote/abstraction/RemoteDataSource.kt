@@ -1,7 +1,9 @@
 package com.example.to_dolistclone.core.data.remote.abstraction
 
+import android.net.Uri
 import com.example.to_dolistclone.core.data.remote.ApiResult
 import com.example.to_dolistclone.core.data.remote.model.*
+import java.io.File
 
 interface RemoteDataSource {
     suspend fun upsertTodo(userId: String, todo: TodoNetwork): ApiResult<Unit?>
@@ -37,8 +39,12 @@ interface RemoteDataSource {
     ): ApiResult<Unit?>
 
     suspend fun deleteTask(userId: String, taskId: String): ApiResult<Unit?>
-    suspend fun insertNote(userId: String, note: NoteNetwork): ApiResult<Unit?>
+    suspend fun upsertNote(userId: String, note: NoteNetwork): ApiResult<Unit?>
     suspend fun deleteNote(userId: String, noteId: String): ApiResult<Unit?>
     suspend fun insertAttachment(userId: String, attachment: AttachmentNetwork): ApiResult<Unit?>
     suspend fun deleteAttachment(userId: String, attachmentId: String): ApiResult<Unit?>
+    suspend fun uploadAttachment(userId: String, attachmentPath: String): ApiResult<Unit?>
+    suspend fun downloadAttachment(path: String): ApiResult<Unit?>
+    suspend fun deleteAttachmentFromFirebaseStorage(path: String): ApiResult<ApiResult<Unit?>?>
+    suspend fun uploadAttachment(userId: String, attachmentUri: Uri): Any
 }

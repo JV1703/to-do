@@ -39,6 +39,24 @@ interface TodoDao {
     @Query("SELECT * FROM note")
     fun getNotes(): Flow<List<NoteEntity>>
 
+    @Query("UPDATE todo SET todoId = :todoId, title = :title, deadline = :deadline, reminder = :reminder, repeat = :repeat, isComplete = :isComplete, createdOn = :createdOn, updatedOn = :updatedOn, completedOn = :completedOn, tasks = :tasksAvailability, notes = :notesAvailability, attachments = :attachmentsAvailability, alarmRef = :alarmRef, todoCategoryRefName = :todoCategoryRefName WHERE todoId = :todoId")
+    suspend fun updateTodo(
+        todoId: String,
+        title: String,
+        deadline: Long?,
+        reminder: Long?,
+        repeat: String?,
+        isComplete: Boolean,
+        createdOn: Long?,
+        updatedOn: Long,
+        completedOn: Long?,
+        tasksAvailability: Boolean,
+        notesAvailability: Boolean,
+        attachmentsAvailability: Boolean,
+        alarmRef: Int?,
+        todoCategoryRefName: String
+    ): Int
+
     @Query("UPDATE todo SET updatedOn = :updatedOn WHERE todoId = :todoId")
     suspend fun updateTodoUpdatedOn(todoId: String, updatedOn: Long): Int
 
@@ -49,13 +67,19 @@ interface TodoDao {
     suspend fun updateTodoReminder(todoId: String, reminder: Long?, updatedOn: Long): Int
 
     @Query("UPDATE todo SET isComplete = :isComplete, completedOn = :completedOn, updatedOn = :updatedOn WHERE todoId = :todoId")
-    suspend fun updateTodoCompletion(todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long): Int
+    suspend fun updateTodoCompletion(
+        todoId: String, isComplete: Boolean, completedOn: Long?, updatedOn: Long
+    ): Int
 
     @Query("UPDATE todo SET tasks = :tasksAvailability, updatedOn = :updatedOn WHERE todoId = :todoId")
-    suspend fun updateTodoTasksAvailability(todoId: String, tasksAvailability: Boolean, updatedOn: Long): Int
+    suspend fun updateTodoTasksAvailability(
+        todoId: String, tasksAvailability: Boolean, updatedOn: Long
+    ): Int
 
     @Query("UPDATE todo SET notes = :notesAvailability, updatedOn = :updatedOn WHERE todoId = :todoId")
-    suspend fun updateTodoNotesAvailability(todoId: String, notesAvailability: Boolean, updatedOn: Long): Int
+    suspend fun updateTodoNotesAvailability(
+        todoId: String, notesAvailability: Boolean, updatedOn: Long
+    ): Int
 
     @Query("UPDATE todo SET attachments = :attachmentsAvailability , updatedOn = :updatedOn WHERE todoId = :todoId")
     suspend fun updateTodoAttachmentsAvailability(
@@ -68,7 +92,7 @@ interface TodoDao {
     @Query("DELETE FROM note WHERE noteId = :noteId")
     suspend fun deleteNote(noteId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: TaskEntity): Long
 
     @Query("UPDATE task SET position = :position WHERE taskId = :taskId")
@@ -80,7 +104,7 @@ interface TodoDao {
     @Query("UPDATE task SET isComplete = :isComplete WHERE taskId = :taskId")
     suspend fun updateTaskCompletion(taskId: String, isComplete: Boolean): Int
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(tasks: List<TaskEntity>): LongArray
 
     @Query("SELECT * FROM task WHERE taskId= :taskId ")
@@ -92,10 +116,10 @@ interface TodoDao {
     @Query("DELETE FROM task WHERE  taskId= :taskId")
     suspend fun deleteTask(taskId: String): Int
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAttachment(attachment: AttachmentEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAttachments(attachments: List<AttachmentEntity>): LongArray
 
     @Query("SELECT * FROM attachment WHERE attachmentId = :attachmentId")

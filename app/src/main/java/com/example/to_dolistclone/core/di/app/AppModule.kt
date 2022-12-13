@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.work.WorkManager
 import com.example.to_dolistclone.core.common.DateUtil
+import com.example.to_dolistclone.core.common.FileManager
 import com.example.to_dolistclone.core.common.worker.JsonConverter
 import com.example.to_dolistclone.core.common.worker.WorkerManager
 import com.example.to_dolistclone.core.data.local.TodoDatabase
@@ -24,6 +25,7 @@ import com.example.to_dolistclone.core.di.coroutine_dispatchers.CoroutinesQualif
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.core.repository.implementation.TodoRepositoryImpl
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,8 +62,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAttachmentFirestore(firestore: FirebaseFirestore): AttachmentFirestore =
-        AttachmentFirestoreImpl(firestore)
+    fun provideAttachmentFirestore(firestore: FirebaseFirestore, storage: FirebaseStorage, fileManager: FileManager): AttachmentFirestore =
+        AttachmentFirestoreImpl(firestore, storage, fileManager)
 
     @Provides
     @Singleton
