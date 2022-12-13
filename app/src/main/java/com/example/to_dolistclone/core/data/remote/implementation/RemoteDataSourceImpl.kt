@@ -89,12 +89,7 @@ class RemoteDataSourceImpl @Inject constructor(
             attachmentFs.upsertAttachment(userId = userId, attachment = attachment)
         }
 
-    override suspend fun uploadAttachment(userId: String, attachmentPath: String): ApiResult<Unit?> =
-        safeApiCall(dispatcherIO) {
-            attachmentFs.uploadAttachment(userId = userId, attachmentPath = attachmentPath)
-        }
-
-    override suspend fun uploadAttachment(userId: String, attachmentUri: Uri) = safeApiCall(dispatcherIO){
+    override suspend fun uploadAttachment(userId: String, attachmentUri: Uri): ApiResult<Unit?> = safeApiCall(dispatcherIO){
         attachmentFs.uploadAttachment(userId, attachmentUri)
     }
 

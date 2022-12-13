@@ -1,6 +1,7 @@
 package com.example.to_dolistclone.feature.detail.domain.implementation
 
 import android.net.Uri
+import android.util.Log
 import androidx.work.WorkManager
 import com.example.to_dolistclone.core.common.worker.WorkerManager
 import com.example.to_dolistclone.core.data.local.GenericCacheError.GENERIC_CACHE_ERROR
@@ -40,34 +41,32 @@ class DetailAttachmentUseCaseImpl @Inject constructor(
         todoRepository.insertAttachment(attachment)
     }
 
-    override suspend fun uploadAttachment(userId: String, attachmentUri: Uri){
-        todoRepository.uploadAttachment(userId, attachmentUri = attachmentUri)
-    }
-
     override suspend fun uploadAttachment(
         userId: String,
         initialFileUri: Uri,
         internalStoragePath: String,
-        todoRefId: String,
+        attachmentId: String,
         todoUpdatedOn: Long
     ) {
+
+        Log.i("attachmentPath", "DetailAttachmentUseCaseImpl - $initialFileUri")
         workerManager.uploadAttachment(
             userId = userId,
             initialFileUri = initialFileUri,
             internalStoragePath = internalStoragePath,
-            todoRefId = todoRefId
+            attachmentId = attachmentId
         )
-        detailTodoUseCase.updateTodoUpdatedOn(userId, todoRefId, todoUpdatedOn)
+        detailTodoUseCase.updateTodoUpdatedOn(userId, attachmentId, todoUpdatedOn)
     }
 
     override suspend fun deleteAttachment(
-        userId: String, attachmentId: String, todoId: String, todoUpdatedOn: Long
+        userId: String, attachmentId: String, todoId: String, todoUpdatedOn: Long, networkPath: String
     ): Async<Int> {
         val cacheResult = todoRepository.deleteAttachment(attachmentId)
         return handleCacheResponse(cacheResult) { resultObj ->
             if (resultObj > 0) {
+                workerManager.deleteAttachment(userId = userId, attachmentId = attachmentId, networkPath = networkPath)
                 detailTodoUseCase.updateTodoUpdatedOn(userId, todoId, todoUpdatedOn)
-                workerManager.deleteAttachment(userId = userId, attachmentId = attachmentId)
                 Async.Success(resultObj)
             } else {
                 Async.Error(errorMsg = GENERIC_CACHE_ERROR)

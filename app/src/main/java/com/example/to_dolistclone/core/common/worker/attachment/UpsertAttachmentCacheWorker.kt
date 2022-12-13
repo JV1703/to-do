@@ -35,8 +35,10 @@ class UpsertAttachmentCacheWorker @AssistedInject constructor(
         val originalFilePath =
             workerParams.inputData.getString(ATTACHMENT_INITIAL_FILE_PATH_WORKER_DATA)
 
+        Log.i("attachmentPath", "UpsertAttachmentCacheWorker - originalFilePath: $originalFilePath")
+
         return if (userId == null || originalFilePath == null) {
-            Log.e("Worker", "UpsertAttachmentCacheWorker - failed - null data passed")
+            Log.e("Worker", "UpsertAttachmentCacheWorker - failed - null data passed - userId: $userId, originalFilePath: $originalFilePath")
             Result.failure()
         } else if (runAttemptCount > WorkTag.MAX_RETRY_ATTEMPT) {
             Log.i("Worker", "UpsertAttachmentCacheWorker - failed - exceed retry count")

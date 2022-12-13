@@ -45,13 +45,13 @@ class FileManager @Inject constructor(
     }
 
     fun generateNetworkStorageDestination(
-        userId: String, storageRef: StorageReference, uri: Uri
+        userId: String, uri: Uri
     ): String {
         val fileName = queryName(uri)
         val extension = getExtension(uri)
         val mimeType = extension?.let { getMime(it) }
         val subFolder = mimeType?.substringBefore('/') ?: "misc"
-        return storageRef.child("$userId/attachments/${subFolder}/${fileName}").path
+        return "$userId/attachments/${subFolder}/${fileName}"
     }
 
     fun copyToInternalStorage(originalFileUri: Uri) {

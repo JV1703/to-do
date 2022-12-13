@@ -369,18 +369,14 @@ class DetailsViewModel @Inject constructor(
     }
 
     fun createAttachment(
-        userId: String,
-        originalFileUri: Uri,
-        size: Long,
-        todoRefId: String
+        userId: String, originalFileUri: Uri, size: Long, todoRefId: String
     ): Attachment {
 
-        val storageRef = firebaseStorage.reference
         val fileName = fileManager.queryName(originalFileUri)
         val localUri = fileManager.generateInternalStorageDestination(originalFileUri)
         val fileType = fileManager.getExtension(originalFileUri)!!
         val networkUri = fileManager.generateNetworkStorageDestination(
-            userId = userId, storageRef = storageRef, uri = originalFileUri
+            userId = userId, uri = originalFileUri
         )
 
         return Attachment(
@@ -410,23 +406,19 @@ class DetailsViewModel @Inject constructor(
         userId: String,
         initialFileUri: Uri,
         internalStoragePath: String,
-        todoRefId: String,
+        attachmentId: String,
         todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
     ) {
+
+        Log.i("attachmentPath", "DetailsViewModel - $initialFileUri")
         viewModelScope.launch {
             detailAttachmentUseCase.uploadAttachment(
                 userId = userId,
                 initialFileUri = initialFileUri,
                 internalStoragePath = internalStoragePath,
-                todoRefId = todoRefId,
+                attachmentId = attachmentId,
                 todoUpdatedOn = todoUpdatedOn
             )
-        }
-    }
-
-    fun uploadAttachment(userId: String, attachmentUri: Uri) {
-        viewModelScope.launch {
-            detailAttachmentUseCase.uploadAttachment(userId, attachmentUri)
         }
     }
 
@@ -434,14 +426,16 @@ class DetailsViewModel @Inject constructor(
         userId: String,
         attachment: Attachment,
         todoId: String,
-        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong()
+        todoUpdatedOn: Long = dateUtil.getCurrentDateTimeLong(),
+        networkPath: String
     ) {
         viewModelScope.launch {
             detailAttachmentUseCase.deleteAttachment(
                 userId = userId,
                 attachmentId = attachment.attachmentId,
                 todoId = todoId,
-                todoUpdatedOn = todoUpdatedOn
+                todoUpdatedOn = todoUpdatedOn,
+                networkPath = networkPath
             )
             deleteFileFromInternalStorage(attachment.localUri)
         }

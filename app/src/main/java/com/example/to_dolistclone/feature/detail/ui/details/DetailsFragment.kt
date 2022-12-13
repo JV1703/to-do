@@ -543,11 +543,12 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
                                 viewModel.insertAttachment(firebaseAuth.currentUser!!.uid, attachment)
 
+                                Log.i("attachmentPath", "DetailsFragment - $it")
                                 viewModel.uploadAttachment(
                                     userId = firebaseAuth.currentUser!!.uid,
                                     initialFileUri = it,
                                     internalStoragePath = attachment.localUri,
-                                    todoRefId = todoId!!
+                                    attachmentId = attachment.attachmentId
                                 )
                             }
                         }
@@ -555,7 +556,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                         val uri = data.data
                         uri?.let{
                             val fileName = fileManager.queryName(uri)
-                            Log.i("DetailFragment", "uri: $uri, name: $fileName")
+
                             val attachment = viewModel.createAttachment(
                                 userId = firebaseAuth.currentUser!!.uid,
                                 originalFileUri = it,
@@ -565,11 +566,13 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
 
                             viewModel.insertAttachment(firebaseAuth.currentUser!!.uid, attachment)
 
+                            Log.i("attachmentPath", "DetailsFragment - $it")
+
                             viewModel.uploadAttachment(
                                 userId = firebaseAuth.currentUser!!.uid,
                                 initialFileUri = it,
                                 internalStoragePath = attachment.localUri,
-                                todoRefId = todoId!!
+                                attachmentId = attachment.attachmentId
                             )
                         }
                     }
@@ -633,7 +636,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         viewModel.deleteAttachment(
             userId = firebaseAuth.currentUser!!.uid,
             attachment = attachment,
-            todoId = todoId!!
+            todoId = todoId!!,
+            networkPath = attachment.networkUri
         )
     }
 

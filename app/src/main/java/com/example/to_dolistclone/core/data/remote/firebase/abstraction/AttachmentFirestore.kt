@@ -9,8 +9,7 @@ interface AttachmentFirestore {
     suspend fun getAttachments(userId: String): List<AttachmentNetwork>
     suspend fun deleteAttachment(userId: String, attachmentId: String)
     suspend fun updateAttachment(userId: String, attachmentId: String, field: Map<String, Any>)
-    suspend fun uploadAttachment(userId: String, attachmentPath: String)
+    suspend fun uploadAttachment(userId: String, attachmentUri: Uri)
     suspend fun downloadAttachment(path: String)
     suspend fun deleteAttachmentFromFirebaseStorage(path: String)
-    suspend fun uploadAttachment(userId: String, attachmentUri: Uri)
 }

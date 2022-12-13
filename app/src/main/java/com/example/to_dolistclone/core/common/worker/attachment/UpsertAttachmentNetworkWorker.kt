@@ -30,6 +30,7 @@ class UpsertAttachmentNetworkWorker @AssistedInject constructor(
         val userId = workerParams.inputData.getString(USER_ID_WORKER_DATA)
         val attachmentId = workerParams.inputData.getString(ATTACHMENT_ID_WORKER_DATA)
         val attachment = attachmentId?.let { todoRepository.getAttachment(it).first() }
+        Log.i("Worker", "UpsertAttachmentNetworkWorker - failed - attachmentId: $attachmentId, attachment: $attachment")
 
         return if (userId == null || attachment == null) {
             Log.e("Worker", "UpsertAttachmentNetworkWorker - failed - null data passed")

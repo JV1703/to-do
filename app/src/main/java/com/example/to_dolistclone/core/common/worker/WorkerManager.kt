@@ -1,14 +1,15 @@
 package com.example.to_dolistclone.core.common.worker
 
 import android.net.Uri
+import android.util.Log
 import androidx.work.*
 import com.example.to_dolistclone.core.common.worker.WorkTag.ATTACHMENT_ID_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.NOTE_ID_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.TASK_ID_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.TODO_ID_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.ATTACHMENT_INTERNAL_STORAGE_PATH_WORKER_DATA
-import com.example.to_dolistclone.core.common.worker.WorkTag.ATTACHMENT_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.ATTACHMENT_INITIAL_FILE_PATH_WORKER_DATA
+import com.example.to_dolistclone.core.common.worker.WorkTag.ATTACHMENT_NETWORK_FILE_PATH_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.UPSERT_TASK_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.UPSERT_TODO_CATEGORY_WORKER_DATA
 import com.example.to_dolistclone.core.common.worker.WorkTag.USER_ID_WORKER_DATA
@@ -24,8 +25,6 @@ import com.example.to_dolistclone.core.common.worker.task.UpsertTasksWorker
 import com.example.to_dolistclone.core.common.worker.todo.DeleteTodoWorker
 import com.example.to_dolistclone.core.common.worker.todo.UpsertTodoWorker
 import com.example.to_dolistclone.core.common.worker.todo_category.UpsertTodoCategoryWorker
-import com.example.to_dolistclone.core.domain.model.Attachment
-import com.google.gson.Gson
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -249,9 +248,10 @@ class WorkerManager @Inject constructor(
         )
     }
 
-    fun uploadAttachment(userId: String, initialFileUri: Uri, internalStoragePath: String, todoRefId: String) {
+    fun uploadAttachment(userId: String, initialFileUri: Uri, internalStoragePath: String, attachmentId: String) {
         val initialFilePath = initialFileUri.toString()
-
+        Log.i("attachmentPath", "WorkerManager - initialFileUri: $initialFileUri")
+        Log.i("attachmentPath", "WorkerManager - initialFilePath: $initialFilePath")
         val uploadRequest =
             OneTimeWorkRequestBuilder<UploadAttachmentWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .setConstraints(
@@ -286,7 +286,7 @@ class WorkerManager @Inject constructor(
                 ).setInputData(
                     workDataOf(
                         USER_ID_WORKER_DATA to userId,
-                        ATTACHMENT_ID_WORKER_DATA to todoRefId
+                        ATTACHMENT_ID_WORKER_DATA to attachmentId
                     )
                 ).setBackoffCriteria(
                     BackoffPolicy.LINEAR, OneTimeWorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.SECONDS
@@ -300,14 +300,14 @@ class WorkerManager @Inject constructor(
 
     }
 
-    fun deleteAttachment(userId: String, attachmentId: String) {
+    fun deleteAttachment(userId: String, attachmentId: String, networkPath: String) {
         val request =
             OneTimeWorkRequestBuilder<DeleteAttachmentWorker>().setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                 .setConstraints(
                     Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
                 ).setInputData(
                     workDataOf(
-                        USER_ID_WORKER_DATA to userId, ATTACHMENT_ID_WORKER_DATA to attachmentId
+                        USER_ID_WORKER_DATA to userId, ATTACHMENT_ID_WORKER_DATA to attachmentId, ATTACHMENT_NETWORK_FILE_PATH_WORKER_DATA to networkPath
                     )
                 ).setBackoffCriteria(
                     BackoffPolicy.LINEAR, OneTimeWorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.SECONDS

@@ -49,27 +49,14 @@ class AttachmentFirestoreImpl @Inject constructor(
             .document(attachmentId).set(field).await()
     }
 
-    override suspend fun uploadAttachment(userId: String, attachmentPath: String) {
-        val storageRef = storage.reference
-        val uri = Uri.parse(attachmentPath)
-        val fileName = attachmentPath.substringAfterLast('/')
-        val extension = fileManager.getExtension(uri)
-        val mimeType = fileManager.getMime(extension!!)
-        val subFolder = mimeType?.substringBefore('/') ?: "misc"
-        Log.i("subFolder", subFolder)
-        val attachmentRef = storageRef.child("$userId/attachments/${subFolder}/${fileName}")
-        Log.i("uploadAttachment", "$uri")
-        attachmentRef.putFile(uri).await()
-    }
-
     override suspend fun uploadAttachment(userId: String, attachmentUri: Uri){
         val storageRef = storage.reference
-        val fileName = attachmentUri.path?.substringAfterLast('/')
+        val fileName = fileManager.queryName(attachmentUri)
         val extension = fileManager.getExtension(attachmentUri)
         val mimeType = extension?.let { fileManager.getMime(it) }
         val subFolder = mimeType?.substringBeforeLast('/')?:"misc"
+        val destination = fileManager.generateNetworkStorageDestination(userId, attachmentUri)
         val attachmentRef = storageRef.child("$userId/attachments/${subFolder}/${fileName}")
-        Log.i("uploadAttachment", "$attachmentUri")
         attachmentRef.putFile(attachmentUri).await()
 
     }

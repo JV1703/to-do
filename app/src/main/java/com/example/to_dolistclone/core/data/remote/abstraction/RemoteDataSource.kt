@@ -43,8 +43,7 @@ interface RemoteDataSource {
     suspend fun deleteNote(userId: String, noteId: String): ApiResult<Unit?>
     suspend fun insertAttachment(userId: String, attachment: AttachmentNetwork): ApiResult<Unit?>
     suspend fun deleteAttachment(userId: String, attachmentId: String): ApiResult<Unit?>
-    suspend fun uploadAttachment(userId: String, attachmentPath: String): ApiResult<Unit?>
+    suspend fun uploadAttachment(userId: String, attachmentUri: Uri): ApiResult<Unit?>
     suspend fun downloadAttachment(path: String): ApiResult<Unit?>
     suspend fun deleteAttachmentFromFirebaseStorage(path: String): ApiResult<ApiResult<Unit?>?>
-    suspend fun uploadAttachment(userId: String, attachmentUri: Uri): Any
 }

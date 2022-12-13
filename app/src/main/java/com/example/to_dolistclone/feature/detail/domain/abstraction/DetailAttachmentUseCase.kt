@@ -11,17 +11,16 @@ interface DetailAttachmentUseCase {
     ): Async<Long>
 
     suspend fun deleteAttachment(
-        userId: String, attachmentId: String, todoId: String, todoUpdatedOn: Long
+        userId: String, attachmentId: String, todoId: String, todoUpdatedOn: Long, networkPath: String
     ): Async<Int>
 
     suspend fun uploadAttachment(
         userId: String,
         initialFileUri: Uri,
         internalStoragePath: String,
-        todoRefId: String,
+        attachmentId: String,
         todoUpdatedOn: Long
     )
 
-    suspend fun uploadAttachment(userId: String, attachmentUri: Uri)
     suspend fun insertAttachmentToCache(userId: String, attachment: Attachment, todoUpdatedOn: Long)
 }

@@ -217,18 +217,14 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun insertAttachment(attachment: Attachment): CacheResult<Long?> =
         local.insertAttachment(attachment.toAttachmentEntity())
 
-    override suspend fun upsertAttachmentNetwork(userId: String, attachment: Attachment) =
-        remote.insertAttachment(
+    override suspend fun upsertAttachmentNetwork(userId: String, attachment: Attachment): ApiResult<Unit?> {
+        Log.i("TodoRepository", "attachment: $attachment")
+        return remote.insertAttachment(
             userId = userId, attachment = attachment.toAttachmentNetwork()
         )
+    }
 
-    override suspend fun uploadAttachment(
-        userId: String, attachmentPath: String
-    ): ApiResult<Unit?> = remote.uploadAttachment(
-        userId = userId, attachmentPath = attachmentPath
-    )
-
-    override suspend fun uploadAttachment(userId: String, attachmentUri: Uri) = remote.uploadAttachment(
+    override suspend fun uploadAttachment(userId: String, attachmentUri: Uri): ApiResult<Unit?> = remote.uploadAttachment(
         userId = userId,
         attachmentUri = attachmentUri
     )

@@ -13,7 +13,8 @@ object WorkTag {
     const val ATTACHMENT_INTERNAL_STORAGE_PATH_WORKER_DATA = "uploadAttachment attachment path worker"
     const val UPLOAD_ATTACHMENT_SUCCESS_WORK_DATA = "uploadAttachment success"
     const val ATTACHMENT_WORKER_DATA = "upsertAttachmentCache data"
-    const val ATTACHMENT_INITIAL_FILE_PATH_WORKER_DATA = "upsertAttachmentCache data"
+    const val ATTACHMENT_INITIAL_FILE_PATH_WORKER_DATA = "attachment initial file path data"
+    const val ATTACHMENT_NETWORK_FILE_PATH_WORKER_DATA = "attachment network file path data"
     const val FIELD_WORKER_DATA = "updateTask field data"
     const val MAX_RETRY_ATTEMPT = 5
 

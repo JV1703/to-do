@@ -160,8 +160,7 @@ interface TodoRepository {
         todoCategoryRefName: String
     ): CacheResult<Int?>
 
-    suspend fun uploadAttachment(userId: String, attachmentPath: String): ApiResult<Unit?>
+    suspend fun uploadAttachment(userId: String, attachmentUri: Uri): ApiResult<Unit?>
     suspend fun downloadAttachment(path: String): ApiResult<Unit?>
     suspend fun deleteAttachmentFromFirebaseStorage(path: String): ApiResult<ApiResult<Unit?>?>
-    suspend fun uploadAttachment(userId: String, attachmentUri: Uri): Any
 }
