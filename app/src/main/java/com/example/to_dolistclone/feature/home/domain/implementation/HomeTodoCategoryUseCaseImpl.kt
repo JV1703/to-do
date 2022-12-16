@@ -18,15 +18,5 @@ class HomeTodoCategoryUseCaseImpl @Inject constructor(private val todoRepository
     override fun getTodoCategoriesName(): Flow<List<String>> =
         todoCategories.map { it.map { it.todoCategoryName } }
 
-    override suspend fun insertTodoCategory(userId: String, todoCategoryName: String): Async<Unit?> {
-        val todoCategory = TodoCategory(todoCategoryName)
-        val cacheResult = todoRepository.insertTodoCategory(todoCategory)
-        return handleCacheResponse(cacheResult) { resultObj ->
-            if(resultObj > 0){
-                handleApiResponse(todoRepository.upsertTodoCategoryNetwork(userId, todoCategory))
-            }else{
-                Async.Error(errorMsg = "Caching failed")
-            }
-        }
-    }
+    override suspend fun insertTodoCategory(userId: String, todoCategoryName: String): Long = todoRepository.insertTodoCategory(TodoCategory(todoCategoryName))
 }

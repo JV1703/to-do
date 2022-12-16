@@ -86,7 +86,7 @@ interface LocalDataSource {
 
     suspend fun deleteAttachment(attachmentId: String): Int
 
-    suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): CacheResult<Long?>
+    suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long
 
     fun getTodoCategories(): Flow<List<TodoCategoryEntity>>
 

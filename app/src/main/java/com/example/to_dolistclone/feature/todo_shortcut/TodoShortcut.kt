@@ -181,7 +181,6 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
                     dialogsManager.showAddCategoryDialogFragment { categoryName ->
                         if (categoryName.isNotEmpty()) {
                             viewModel.insertTodoCategory(
-                                userId = TEST_USER_ID_DOCUMENT,
                                 categoryName = categoryName
                             )
                             viewModel.updateSelectedCategory(categoryName)

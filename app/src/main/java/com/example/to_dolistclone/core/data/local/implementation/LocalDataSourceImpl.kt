@@ -250,10 +250,8 @@ class LocalDataSourceImpl @Inject constructor(
     override suspend fun deleteAttachment(attachmentId: String): Int =
         withContext(dispatcherIO) { todoDao.deleteAttachment(attachmentId) }
 
-    override suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): CacheResult<Long?> =
-        safeCacheCall(dispatcherIO){
-            todoDao.insertTodoCategory(todoCategory)
-        }
+    override suspend fun insertTodoCategory(todoCategory: TodoCategoryEntity): Long =
+        todoDao.insertTodoCategory(todoCategory)
 
     override fun getTodoCategories(): Flow<List<TodoCategoryEntity>> =
         todoDao.getTodoCategories().flowOn(dispatcherIO)

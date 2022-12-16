@@ -86,7 +86,7 @@ interface TodoRepository {
 
     suspend fun deleteAttachment(attachmentId: String): Int
 
-    suspend fun insertTodoCategory(todoCategory: TodoCategory): CacheResult<Long?>
+    suspend fun insertTodoCategory(todoCategory: TodoCategory): Long
 
     fun getTodoCategories(): Flow<List<TodoCategory>>
 
@@ -109,8 +109,5 @@ interface TodoRepository {
     fun getSelectedPieGraphOption(): Flow<Int>
 
     suspend fun saveSelectedPieGraphOption(selectedOption: Int)
-    suspend fun upsertTodoCategoryNetwork(
-        userId: String,
-        todoCategory: TodoCategory
-    ): ApiResult<Unit?>
+
 }

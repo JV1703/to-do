@@ -12,13 +12,8 @@ import javax.inject.Inject
 class TodoCategoryUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) :
     TodoCategoryUseCase {
 
-    override suspend fun insertTodoCategory(userId: String, todoCategoryName: String): Async<Unit?> {
-        val todoCategory = TodoCategory(todoCategoryName)
-        val cacheResult = todoRepository.insertTodoCategory(todoCategory)
-        return handleCacheResponse(cacheResult) { resultObj ->
-            handleApiResponse(todoRepository.upsertTodoCategoryNetwork(userId, todoCategory))
-        }
-    }
+    override suspend fun insertTodoCategory(todoCategoryName: String): Long = todoRepository.insertTodoCategory(
+        TodoCategory(todoCategoryName))
 
     override fun getTodoCategories(): Flow<List<TodoCategory>> = todoRepository.getTodoCategories()
 

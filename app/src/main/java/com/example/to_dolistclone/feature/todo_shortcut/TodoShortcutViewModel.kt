@@ -54,17 +54,11 @@ class TodoShortcutViewModel @Inject constructor(
         }
     }
 
-    fun insertTodoCategory(userId: String, categoryName: String) {
+    fun insertTodoCategory(categoryName: String) {
         viewModelScope.launch {
             val response = useCase.insertTodoCategory(
-                userId = userId,
                 todoCategoryName = categoryName
             )
-            if(response is Async.Error){
-                response.errorMsg?.let {
-                    showErrorMessage(response.errorMsg)
-                }
-            }
         }
     }
 

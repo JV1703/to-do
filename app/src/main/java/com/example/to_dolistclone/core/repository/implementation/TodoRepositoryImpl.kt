@@ -142,13 +142,8 @@ class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource,
     override suspend fun deleteAttachment(attachmentId: String): Int =
         local.deleteAttachment(attachmentId)
 
-    override suspend fun insertTodoCategory(todoCategory: TodoCategory): CacheResult<Long?> =
+    override suspend fun insertTodoCategory(todoCategory: TodoCategory): Long =
         local.insertTodoCategory(todoCategory.toTodoCategoryEntity())
-
-    override suspend fun upsertTodoCategoryNetwork(userId: String, todoCategory: TodoCategory) = remote.upsertTodoCategory(
-        userId = userId,
-        todoCategory = todoCategory.toTodoCategoryNetwork()
-    )
 
     override fun getTodoCategories(): Flow<List<TodoCategory>> =
         local.getTodoCategories().map { listEntityModel ->

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.core.common.FileManager
-import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.feature.detail.domain.abstraction.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,7 +54,7 @@ class DetailsViewModel @Inject constructor(
     fun insertTodoCategory(todoCategoryName: String) {
         viewModelScope.launch {
             if (todoCategoryName.isNotEmpty()) {
-                todoCategoryUseCase.insertTodoCategory(TEST_USER_ID_DOCUMENT,todoCategoryName)
+                todoCategoryUseCase.insertTodoCategory(todoCategoryName)
             }
         }
     }
