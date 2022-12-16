@@ -1,7 +1,5 @@
 package com.example.to_dolistclone.core.repository.abstraction
 
-import com.example.to_dolistclone.core.data.local.CacheResult
-import com.example.to_dolistclone.core.data.remote.ApiResult
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoWithAttachments

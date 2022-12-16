@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import com.example.to_dolistclone.core.common.*
-import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.core.utils.ui.makeToast
 import com.example.to_dolistclone.core.utils.ui.setStringSpanColor

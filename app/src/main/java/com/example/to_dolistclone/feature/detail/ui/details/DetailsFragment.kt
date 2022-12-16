@@ -453,8 +453,10 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                         for (i in 0 until count) {
                             val uri = clipData.getItemAt(i)?.uri
                             val file = uri?.let {
-                                fileManager.getFile(it)
+                                fileManager.copyToInternalStorage(it)
                             }
+
+
                             file?.let {
                                 val attachment = viewModel.createAttachment(
                                     fileName = it.name,
@@ -468,11 +470,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                         }
                     } else {
                         val uri = data.data
-                        uri?.let {
-                            fileManager.getFile(it)
-                        }
                         val file = uri?.let {
-                            fileManager.getFile(it)
+                            fileManager.copyToInternalStorage(it)
                         }
                         file?.let {
                             val attachment = viewModel.createAttachment(

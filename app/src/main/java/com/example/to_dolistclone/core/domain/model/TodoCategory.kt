@@ -2,7 +2,6 @@ package com.example.to_dolistclone.core.domain.model
 
 import com.example.to_dolistclone.core.data.local.model.TodoCategoryEntity
 import com.example.to_dolistclone.core.data.remote.model.TodoCategoryNetwork
-import com.example.to_dolistclone.core.data.remote.model.TodoNetwork
 
 data class TodoCategory(
     val todoCategoryName: String

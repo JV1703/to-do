@@ -18,7 +18,7 @@ class CategoryPopupMenu @Inject constructor(@ActivityContext private val context
 
     private lateinit var popup: PopupMenu
 
-    fun showCategoryPopupMenu(){
+    fun showCategoryPopupMenu() {
         popup.show()
     }
 

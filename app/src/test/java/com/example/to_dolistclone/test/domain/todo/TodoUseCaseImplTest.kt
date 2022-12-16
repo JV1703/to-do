@@ -164,9 +164,7 @@ class TodoUseCaseImplTest {
             todoUseCase.insertTodo(it.toTodo())
         }
 
-        val expected = fakeTodoEntityList
-            .map { todo -> todo.toTodo() }
-            .groupBy { todo ->
+        val expected = fakeTodoEntityList.map { todo -> todo.toTodo() }.groupBy { todo ->
                 todo.deadline?.let { deadline ->
                     dateUtil.toLocalDate(deadline)
                 }

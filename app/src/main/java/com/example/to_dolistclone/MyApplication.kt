@@ -50,7 +50,7 @@ class MyApplication : Application(), Configuration.Provider {
         }
     }
 
-    private fun login(){
+    private fun login() {
         val auth = Firebase.auth
         auth.signInWithEmailAndPassword("test@testing.com", "123456")
     }

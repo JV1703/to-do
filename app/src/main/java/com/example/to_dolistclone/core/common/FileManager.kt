@@ -12,8 +12,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 import java.net.URLConnection
 import javax.inject.Inject
 
@@ -24,61 +22,26 @@ class FileManager @Inject constructor(
 ) {
 
     init {
-        if (!isDirectoryAvailable(context.filesDir.path + File.separatorChar + "attachments")) {
-            createDirectory(context.filesDir.path + File.separatorChar + "attachments")
-        }
-        Log.i("FileManager", "external path my_images:${context.getExternalFilesDir("my_images")}")
-        Log.i("FileManager", "external path images:${context.getExternalFilesDir("images")}")
+        createDefaultDirectory()
     }
 
-    fun getFile(uri: Uri): File {
-
-        val fileName = queryName(uri)
-        val extension = getExtension(uri)
-        val targetDestination = if (extension != null) {
-            context.filesDir.path + File.separatorChar + "attachments" + File.separatorChar + extension
-        } else {
-            context.filesDir.path + File.separatorChar + "attachments" + File.separatorChar + "misc"
-        }
-
-        if (!isDirectoryAvailable(targetDestination)) {
-            createDirectory(targetDestination)
-        }
-
-        val destinationFilename = File(targetDestination + File.separatorChar + fileName)
-
+    fun copyToInternalStorage(originalFileUri: Uri): File {
+        val fileName = queryName(originalFileUri)
+        val directory = createExtensionDirectory(originalFileUri)
+        val file = File(directory, fileName)
         try {
-            context.contentResolver.openInputStream(uri).use { ins ->
-                ins?.let {
-                    createFileFromStream(
-                        ins, destinationFilename
-                    )
+            context.contentResolver.openInputStream(originalFileUri).use { inputStream ->
+                file.outputStream().use { outputStream ->
+                    inputStream?.copyTo(outputStream)
                 }
             }
         } catch (e: Exception) {
-            Log.e("FileManager", "saveFile - errorMsg: ${e.message}")
-            e.printStackTrace()
+            Log.e("FileManager", "copyToInternalStorage - ${e.message}")
         }
-        return destinationFilename
+        return file
     }
 
-    fun createFileFromStream(ins: InputStream, destination: File?) {
-        try {
-            FileOutputStream(destination).use { os ->
-                val buffer = ByteArray(4096)
-                var length: Int
-                while (ins.read(buffer).also { length = it } > 0) {
-                    os.write(buffer, 0, length)
-                }
-                os.flush()
-            }
-        } catch (e: Exception) {
-            Log.e("FileManager", "createFileFromStream - errorMsg: ${e.message}")
-            e.printStackTrace()
-        }
-    }
-
-    private fun queryName(uri: Uri): String {
+    fun queryName(uri: Uri): String {
         val returnCursor: Cursor = context.contentResolver.query(uri, null, null, null, null)!!
         val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
         returnCursor.moveToFirst()
@@ -106,21 +69,32 @@ class FileManager @Inject constructor(
         return mime.getMimeTypeFromExtension(extension)
     }
 
-    private fun createDirectory(filePath: String): Boolean {
-        return try {
-            val file = File(filePath)
-            file.mkdir()
-            Log.i("FileManager", "createDirectory - dirName: $filePath")
-            true
-        } catch (e: Exception) {
-            Log.e("FileManager", "createDirectory - errorMsg: ${e.message}")
-            false
-        }
+    fun getMime(uri: Uri): String? {
+        return context.contentResolver.getType(uri)
     }
 
-    private fun isDirectoryAvailable(path: String): Boolean {
-        val directory = File(path)
-        return directory.exists()
+    private fun createDefaultDirectory(): String {
+        val defaultDirectoryPath = context.filesDir.path + File.separatorChar + "attachments"
+        val defaultDirectory = File(defaultDirectoryPath)
+        if (defaultDirectory.exists().not()) {
+            defaultDirectory.mkdir()
+        }
+        return defaultDirectoryPath
+    }
+
+    private fun createExtensionDirectory(uri: Uri): String {
+        val fileExtension = getExtension(uri)
+        val mimeType = fileExtension?.let { getMime(it) } ?: "misc"
+        val subFolder = mimeType.substringBefore('/')
+        val extDirectoryPath =
+            context.filesDir.path + File.separatorChar + "attachments" + File.separatorChar + subFolder
+        val extensionDirectory = File(extDirectoryPath)
+
+        if (extensionDirectory.exists().not()) {
+            extensionDirectory.mkdir()
+        }
+
+        return extDirectoryPath
     }
 
     suspend fun deleteFileFromInternalStorage(filePath: String): Boolean {

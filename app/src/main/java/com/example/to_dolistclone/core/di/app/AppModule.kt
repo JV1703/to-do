@@ -88,7 +88,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTodoRepository(local: LocalDataSource, remote: RemoteDataSource): TodoRepository = TodoRepositoryImpl(local, remote)
+    fun provideTodoRepository(local: LocalDataSource, remote: RemoteDataSource): TodoRepository =
+        TodoRepositoryImpl(local, remote)
 
     @Provides
     @Singleton
@@ -108,6 +109,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager = WorkManager.getInstance(context)
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager =
+        WorkManager.getInstance(context)
 
 }

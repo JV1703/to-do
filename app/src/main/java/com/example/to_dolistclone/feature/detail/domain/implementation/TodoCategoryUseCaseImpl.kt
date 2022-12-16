@@ -1,8 +1,5 @@
 package com.example.to_dolistclone.feature.detail.domain.implementation
 
-import com.example.to_dolistclone.core.data.local.handleCacheResponse
-import com.example.to_dolistclone.core.data.remote.handleApiResponse
-import com.example.to_dolistclone.core.domain.Async
 import com.example.to_dolistclone.core.domain.model.TodoCategory
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.feature.detail.domain.abstraction.TodoCategoryUseCase
@@ -12,8 +9,10 @@ import javax.inject.Inject
 class TodoCategoryUseCaseImpl @Inject constructor(private val todoRepository: TodoRepository) :
     TodoCategoryUseCase {
 
-    override suspend fun insertTodoCategory(todoCategoryName: String): Long = todoRepository.insertTodoCategory(
-        TodoCategory(todoCategoryName))
+    override suspend fun insertTodoCategory(todoCategoryName: String): Long =
+        todoRepository.insertTodoCategory(
+            TodoCategory(todoCategoryName)
+        )
 
     override fun getTodoCategories(): Flow<List<TodoCategory>> = todoRepository.getTodoCategories()
 

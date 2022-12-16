@@ -23,9 +23,10 @@ class RemoteDataSourceImpl @Inject constructor(
         todoFs.insertTodo(userId, todo)
     }
 
-    override suspend fun upsertTodoCategory(userId: String, todoCategory: TodoCategoryNetwork) = safeApiCall(dispatcherIO){
-        todoCategoryFs.upsertTodoCategory(userId, todoCategory)
-    }
+    override suspend fun upsertTodoCategory(userId: String, todoCategory: TodoCategoryNetwork) =
+        safeApiCall(dispatcherIO) {
+            todoCategoryFs.upsertTodoCategory(userId, todoCategory)
+        }
 
     override suspend fun getTodos(userId: String): ApiResult<List<TodoNetwork>?> {
         return safeApiCall(dispatcherIO) {

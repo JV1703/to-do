@@ -1,6 +1,5 @@
 package com.example.to_dolistclone.core.data.local.abstraction
 
-import com.example.to_dolistclone.core.data.local.CacheResult
 import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoCategoryWithTodosEntity
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.TodoDetailsEntity

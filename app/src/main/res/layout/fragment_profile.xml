@@ -56,7 +56,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/profile_bg"
+                android:background="@color/profile_item_bg"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -96,7 +96,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/profile_bg"
+                android:background="@color/profile_item_bg"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -134,7 +134,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/profile_bg"
+                android:background="@color/profile_item_bg"
                 android:padding="8dp">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -202,7 +202,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/profile_bg"
+                android:background="@color/profile_item_bg"
                 android:padding="8dp">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -238,7 +238,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/profile_bg"
+                android:background="@color/profile_item_bg"
                 android:padding="8dp">
 
                 <androidx.appcompat.widget.AppCompatTextView

@@ -1,7 +1,6 @@
 package com.example.to_dolistclone.core.repository.implementation
 
 import android.util.Log
-import com.example.to_dolistclone.core.data.local.CacheResult
 import com.example.to_dolistclone.core.data.local.abstraction.LocalDataSource
 import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.data.local.model.relations.one_to_many.toTodoCategoryWithTodos
@@ -21,7 +20,10 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TodoRepositoryImpl @Inject constructor(private val local: LocalDataSource, private val remote: RemoteDataSource) : TodoRepository {
+class TodoRepositoryImpl @Inject constructor(
+    private val local: LocalDataSource,
+    private val remote: RemoteDataSource
+) : TodoRepository {
 
     override suspend fun saveShowPrevious(isShow: Boolean) {
         local.saveShowPrevious(isShow)
