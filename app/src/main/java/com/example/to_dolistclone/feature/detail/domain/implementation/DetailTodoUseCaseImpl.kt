@@ -24,7 +24,7 @@ class DetailTodoUseCaseImpl @Inject constructor(private val todoRepository: Todo
         todoRepository.updateTodoReminder(todoId, reminder)
 
     override suspend fun updateTodoTitle(todoId: String, title: String): Int =
-        todoRepository.updateTodoCategory(todoId, title)
+        todoRepository.updateTodoTitle(todoId, title)
 
     override suspend fun updateTodoCategory(todoId: String, category: String): Int =
         todoRepository.updateTodoCategory(todoId, category)
