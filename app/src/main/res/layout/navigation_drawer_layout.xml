@@ -27,6 +27,7 @@
             android:drawablePadding="12dp"
             android:gravity="center|start"
             android:text="Star Tasks"
+            android:textColor="@color/text_color"
             app:layout_constraintEnd_toEndOf="@id/header_iv"
             app:layout_constraintStart_toStartOf="@id/header_iv"
             app:layout_constraintTop_toBottomOf="@id/header_iv" />
@@ -40,6 +41,7 @@
             android:drawablePadding="12dp"
             android:gravity="center|start"
             android:text="Category"
+            android:textColor="@color/text_color"
             app:layout_constraintEnd_toStartOf="@id/category_hide_toggle"
             app:layout_constraintStart_toStartOf="@id/star_tasks"
             app:layout_constraintTop_toBottomOf="@id/star_tasks" />
@@ -49,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:src="@drawable/ic_arrow_drop_down"
+            android:tint="@color/text_color"
             app:layout_constraintBottom_toBottomOf="@id/category_tv"
             app:layout_constraintEnd_toEndOf="@id/star_tasks"
             app:layout_constraintStart_toEndOf="@id/category_tv"
@@ -74,6 +77,7 @@
             android:drawablePadding="12dp"
             android:ellipsize="end"
             android:hint="Create New"
+            android:textColor="@color/text_color"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@id/drawer_rv"
             app:layout_constraintStart_toStartOf="@id/drawer_rv"
@@ -96,6 +100,7 @@
             android:drawableStart="@drawable/ic_settings"
             android:drawablePadding="12dp"
             android:text="Settings"
+            android:textColor="@color/text_color"
             app:layout_constraintEnd_toEndOf="@id/category_tv"
             app:layout_constraintStart_toStartOf="@id/category_tv"
             app:layout_constraintTop_toBottomOf="@id/separator" />

@@ -21,6 +21,7 @@
         android:hint="Input sub-task"
         android:inputType="text"
         android:maxLines="1"
+        android:textColor="@color/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/delete"
         app:layout_constraintStart_toEndOf="@id/checkbox"

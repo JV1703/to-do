@@ -37,6 +37,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="Previous"
+                        android:textColor="@color/text_color"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,6 +47,7 @@
                         android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_arrow_drop_down"
+                        android:tint="@color/text_color"
                         app:layout_constraintBottom_toBottomOf="@id/previous"
                         app:layout_constraintStart_toEndOf="@id/previous"
                         app:layout_constraintTop_toTopOf="@id/previous" />
@@ -87,6 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Today"
+                        android:textColor="@color/text_color"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,6 +97,7 @@
                         android:id="@+id/today_toggle"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
+                        android:tint="@color/text_color"
                         app:layout_constraintBottom_toBottomOf="@id/today"
                         app:layout_constraintStart_toEndOf="@id/today"
                         app:layout_constraintTop_toTopOf="@id/today"
@@ -136,6 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Future"
+                        android:textColor="@color/text_color"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -143,6 +148,7 @@
                         android:id="@+id/future_toggle"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
+                        android:tint="@color/text_color"
                         app:layout_constraintBottom_toBottomOf="@id/future"
                         app:layout_constraintStart_toEndOf="@id/future"
                         app:layout_constraintTop_toTopOf="@id/future"
@@ -185,6 +191,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Completed Today"
+                        android:textColor="@color/text_color"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -192,6 +199,7 @@
                         android:id="@+id/completed_today_toggle"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
+                        android:tint="@color/text_color"
                         app:layout_constraintBottom_toBottomOf="@id/completed_today"
                         app:layout_constraintStart_toEndOf="@id/completed_today"
                         app:layout_constraintTop_toTopOf="@id/completed_today"
@@ -218,6 +226,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="@string/check_completed_tasks"
+                android:textColor="@color/text_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/completed_today_container" />

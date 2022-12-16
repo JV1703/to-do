@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.view.*
 import androidx.fragment.app.viewModels
 import com.example.to_dolistclone.R
@@ -138,6 +139,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(FragmentCalendarB
         calendarDay: CalendarDay
     ) {
         textView.text = date.dayOfMonth.toString()
+        textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_color))
         when (date) {
             today -> {
                 textView.setBackgroundResource(R.drawable.calendar_today_bg)

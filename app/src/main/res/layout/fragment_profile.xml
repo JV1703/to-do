@@ -25,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:textColor="@color/text_color"
             android:text="Joevincent"
             app:layout_constraintBottom_toBottomOf="@id/profile_iv"
             app:layout_constraintStart_toEndOf="@id/profile_iv"
@@ -34,6 +35,7 @@
             android:id="@+id/todos_overview_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_color"
             android:layout_marginTop="20dp"
             android:text="Todos Overview"
             android:textStyle="bold"
@@ -65,6 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:textColor="@color/text_color"
                     android:layout_marginVertical="12dp"
                     android:text="100"
                     android:textStyle="bold" />
@@ -75,6 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="12dp"
+                    android:textColor="@color/text_color"
                     android:text="Completed Todos" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -105,6 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:textColor="@color/text_color"
                     android:layout_marginVertical="12dp"
                     android:text="100"
                     android:textStyle="bold" />
@@ -113,6 +118,7 @@
                     android:id="@+id/pending_todos_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="12dp"
                     android:text="Pending Todos" />
@@ -142,6 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Completion of Daily Todos"
+                    android:textColor="@color/text_color"
                     app:layout_constraintBottom_toBottomOf="@id/next_week"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/prev_week" />
@@ -152,6 +159,7 @@
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:rotation="-90"
+                    android:tint="@color/text_color"
                     android:src="@drawable/ic_arrow_drop_down"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -160,6 +168,7 @@
                     android:id="@+id/date_range_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
                     app:layout_constraintBottom_toBottomOf="@id/next_week"
                     app:layout_constraintEnd_toStartOf="@id/next_week"
                     app:layout_constraintTop_toTopOf="@id/next_week"
@@ -171,6 +180,7 @@
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     android:rotation="90"
+                    android:tint="@color/text_color"
                     android:src="@drawable/ic_arrow_drop_down"
                     app:layout_constraintBottom_toBottomOf="@id/date_range_tv"
                     app:layout_constraintEnd_toStartOf="@id/date_range_tv"
@@ -208,6 +218,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/upcoming_todos_tv"
                     android:layout_width="wrap_content"
+                    android:textColor="@color/text_color"
                     android:layout_height="wrap_content"
                     android:text="Todos in Next 7 Days"
                     app:layout_constraintStart_toStartOf="parent"
@@ -245,6 +256,7 @@
                     android:id="@+id/pie_chart_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
                     android:text="Pending Todos in Categories"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -254,6 +266,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_arrow_drop_down"
+                    android:textColor="@color/text_color"
                     app:layout_constraintBottom_toBottomOf="@id/pie_chart_title_tv"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/pie_chart_title_tv"
