@@ -20,7 +20,7 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="12dp"
-        android:background="@color/black"
+        android:background="@color/text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timeline_dot" />
@@ -29,6 +29,7 @@
         android:id="@+id/completed_date_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/text_color"
         android:layout_marginStart="12dp"
         app:layout_constraintBottom_toBottomOf="@id/timeline_dot"
         app:layout_constraintStart_toEndOf="@id/timeline_dot"

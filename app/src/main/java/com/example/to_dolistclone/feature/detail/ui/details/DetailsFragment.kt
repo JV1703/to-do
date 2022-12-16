@@ -90,6 +90,17 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             }
         }
 
+        binding.titleTv.setOnFocusChangeListener { _, hasFocus ->
+            if(!hasFocus){
+                if (todoId != null && binding.titleTv.text != null){
+                    viewModel.updateTodoTitle(title = binding.titleTv.text?.trim().toString(), todoId = todoId!!)
+                }
+                if (binding.titleTv.text?.trim().toString().isEmpty()) {
+                    makeToast("Please set title.")
+                }
+            }
+        }
+
         binding.taskEt.onKeyboardEnter(true) { input ->
             todoId?.let {
                 viewModel.insertTask(
@@ -133,12 +144,18 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             getFiles()
         }
 
+        binding.categoryContainer.setOnClickListener {
+            categoryPopupMenu.showCategoryPopupMenu()
+        }
+
         collectLifecycleFlow(viewModel.todoId) {
             todoId = it
         }
 
         collectLatestLifecycleFlow(viewModel.uiState) { uiState ->
-
+            setupCategoryPopupMenu(
+                binding.categoryContainer, uiState.categories, uiState.todoDetails?.todo?.todoCategoryRefName
+            )
             taskAdapter.submitList(uiState.todoDetails?.tasks)
             uiState.todoDetails?.attachments?.let {
                 attachmentAdapter.submitList(it)
@@ -147,11 +164,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
             binding.titleTv.setText(uiState.todoDetails?.todo?.title)
 
             binding.categoryTv.text = uiState.todoDetails?.todo?.todoCategoryRefName
-            binding.categoryContainer.setOnClickListener {
-                showCategoryPopupMenu(
-                    it, uiState.categories, uiState.todoDetails?.todo?.todoCategoryRefName
-                )
-            }
 
             binding.dueDateTvClear.isGone = uiState.todoDetails?.todo?.deadline == null
 
@@ -258,7 +270,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         }
     }
 
-    private fun showCategoryPopupMenu(
+    private fun setupCategoryPopupMenu(
         view: View, categories: Set<String>, selectedCategory: String?
     ) {
         categoryPopupMenu.build(

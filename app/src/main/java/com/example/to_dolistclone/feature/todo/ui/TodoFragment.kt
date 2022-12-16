@@ -69,30 +69,34 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
                 completedTodayContainer.isGone = uiState.completedTodayTodos.isEmpty()
             }
 
-            binding.previousToggleContainer.setOnClickListener {
-                toggle(binding.previousToggle, binding.previousRv, uiState.showPrevious) {
+
+            toggle(binding.previousToggle, binding.previousRv, uiState.showPrevious) {
+                binding.previousToggleContainer.setOnClickListener {
                     viewModel.saveShowPrevious(!uiState.showPrevious)
                 }
             }
 
-            binding.todayToggleContainer.setOnClickListener {
-                toggle(binding.todayToggle, binding.todayRv, uiState.showToday) {
+
+            toggle(binding.todayToggle, binding.todayRv, uiState.showToday) {
+                binding.todayToggleContainer.setOnClickListener {
                     viewModel.saveShowToday(!uiState.showToday)
                 }
             }
 
-            binding.futureToggleContainer.setOnClickListener {
-                toggle(binding.futureToggle, binding.futureRv, uiState.showFuture) {
+
+            toggle(binding.futureToggle, binding.futureRv, uiState.showFuture) {
+                binding.futureToggleContainer.setOnClickListener {
                     viewModel.saveShowFuture(!uiState.showFuture)
                 }
             }
 
-            binding.completedTodayToggleContainer.setOnClickListener {
-                toggle(
-                    binding.completedTodayToggle,
-                    binding.completedTodayRv,
-                    uiState.showCompletedToday
-                ) {
+
+            toggle(
+                binding.completedTodayToggle,
+                binding.completedTodayRv,
+                uiState.showCompletedToday
+            ) {
+                binding.completedTodayToggleContainer.setOnClickListener {
                     viewModel.saveShowCompletedToday(!uiState.showCompletedToday)
                 }
             }
@@ -155,12 +159,6 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
         binding.todayRv.adapter = todayAdapter
         binding.futureRv.adapter = futureAdapter
         binding.completedTodayRv.adapter = completedToday
-    }
-
-    private fun navigateToDetailsActivity(todoId: String) {
-        viewModel.saveSelectedTodoId(todoId)
-        val intent = Intent(requireContext(), DetailsActivity::class.java)
-        startActivity(intent)
     }
 
     private fun pulseAnimation(
