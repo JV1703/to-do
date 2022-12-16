@@ -13,9 +13,7 @@ interface TaskFirestore {
 
     suspend fun deleteTasks(userId: String, todoRefId: String)
 
-    suspend fun updateTaskPosition(userId: String, taskId: String, position: Int)
-    suspend fun updateTaskTitle(userId: String, taskId: String, title: String)
-    suspend fun updateTaskCompletion(userId: String, taskId: String, isComplete: Boolean)
     suspend fun updateTask(userId: String, taskId: String, field: Map<String, Any>)
+
     suspend fun getTask(userId: String, taskId: String): TaskNetwork?
 }

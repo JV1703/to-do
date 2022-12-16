@@ -71,15 +71,9 @@ class TodoCategoryFirestoreTest {
     }
 
     @Test
-    fun isSignIn(){
-        assertNotNull(firebaseAuth.currentUser)
-        assertEquals("", firebaseAuth.currentUser?.email)
-    }
-
-    @Test
     fun insertTodoCategory() = runTest {
         val newTodoCategory = TodoCategoryNetwork("Banana")
-        todoCategoryFirestore.upsertTodoCategory(firebaseAuth.currentUser!!.uid, newTodoCategory)
+        todoCategoryFirestore.upsertTodoCategory(TEST_USER_ID_DOCUMENT, newTodoCategory)
         val networkData = todoCategoryFirestore.getTodoCategories(TEST_USER_ID_DOCUMENT)
         todoCategoryNetworkList.add(newTodoCategory)
         assertTrue(networkData.containsAll(todoCategoryNetworkList))
@@ -125,5 +119,30 @@ class TodoCategoryFirestoreTest {
         )
         val networkData = todoCategoryFirestore.getTodoCategories(TEST_USER_ID_DOCUMENT)
         assertTrue(!networkData.contains(todoCategoryToDelete))
+    }
+
+    @Test
+    fun updateTodoCategory_targeted() = runTest {
+        val todoCategoryToUpdated =
+            todoCategoryNetworkList[Random.nextInt(todoCategoryNetworkList.size - 1)]
+        val newTodoCategoryName = "Updated todo category"
+        todoCategoryFirestore.updateTodoCategory(
+            TEST_USER_ID_DOCUMENT,
+            newTodoCategoryName,
+            mapOf("todoCategoryName" to newTodoCategoryName)
+        )
+        val networkData = todoCategoryFirestore.getTodoCategory(
+            userId = TEST_USER_ID_DOCUMENT,
+            todoCategoryName = newTodoCategoryName
+        )
+
+        assertEquals(
+            todoCategoryToUpdated.copy(todoCategoryName = newTodoCategoryName),
+            networkData
+        )
+
+        assertEquals(newTodoCategoryName, networkData?.todoCategoryName)
+
+        todoCategoryFirestore.deleteTodoCategory(TEST_USER_ID_DOCUMENT, newTodoCategoryName)
     }
 }

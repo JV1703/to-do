@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.test
 
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.note.utils.MainCoroutineRule
@@ -10,6 +11,7 @@ import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_
 import com.example.to_dolistclone.core.data.remote.firebase.implementation.TaskFirestoreImpl
 import com.example.to_dolistclone.core.data.remote.model.TaskNetwork
 import com.example.to_dolistclone.utils.TestDataGenerator
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -44,6 +46,9 @@ class TaskFirestoreTest {
     @Inject
     lateinit var testDataGenerator: TestDataGenerator
 
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+
     private lateinit var taskFirestore: TaskFirestore
     private lateinit var taskNetworkList: MutableList<TaskNetwork>
     private lateinit var TEST_TASK_TODO_REF: String
@@ -54,6 +59,8 @@ class TaskFirestoreTest {
         taskFirestore = TaskFirestoreImpl(firebaseFirestore)
         insertTasks()
         TEST_TASK_TODO_REF = taskNetworkList[nextInt(taskNetworkList.size - 1)].todoRefId!!
+        firebaseAuth.signOut()
+        firebaseAuth.signInWithEmailAndPassword("abc@test.com", "123456")
     }
 
     private fun insertTasks() {
@@ -74,6 +81,7 @@ class TaskFirestoreTest {
 
     @Test
     fun upsertTask() = runTest {
+
         val todoId = UUID.randomUUID().toString()
         val newTask = generateSingleTaskNetwork(todoId, nextInt())
         taskFirestore.upsertTask(TEST_USER_ID_DOCUMENT, newTask)
@@ -96,6 +104,13 @@ class TaskFirestoreTest {
     }
 
     @Test
+    fun getTask() = runTest{
+        val randomTask = taskNetworkList[nextInt(taskNetworkList.size-1)]
+        val networkData = taskFirestore.getTask(TEST_USER_ID_DOCUMENT, randomTask.taskId)
+        assertEquals(randomTask, networkData)
+    }
+
+    @Test
     fun deleteTask() = runTest {
         val todoId = UUID.randomUUID().toString()
         val newTask = generateSingleTaskNetwork(todoId, nextInt())
@@ -115,39 +130,15 @@ class TaskFirestoreTest {
     }
 
     @Test
-    fun updateTaskPosition() = runTest {
+    fun updateTask() = runTest{
         val taskToUpdate = taskNetworkList[nextInt(taskNetworkList.size - 1)]
-        val newPosition = 10
-        taskFirestore.updateTaskPosition(TEST_USER_ID_DOCUMENT, taskToUpdate.taskId, newPosition)
-        val networkData = taskFirestore.getTasks(TEST_USER_ID_DOCUMENT)
+        val newTitle = "New task title"
 
-        assertNotNull(networkData.find { it.taskId == taskToUpdate.taskId && it.position == newPosition })
-        assertTrue(networkData.contains(taskToUpdate.copy(position = newPosition)))
+        taskFirestore.updateTask(TEST_USER_ID_DOCUMENT, taskToUpdate.taskId, mapOf("task" to newTitle))
+        val networkData = taskFirestore.getTask(TEST_USER_ID_DOCUMENT, taskToUpdate.taskId)
+
+        assertEquals(taskToUpdate.copy(task = newTitle), networkData)
+        assertTrue(networkData?.task == newTitle)
     }
-
-    @Test
-    fun updateTaskTitle() = runTest {
-        val taskToUpdate = taskNetworkList[nextInt(taskNetworkList.size - 1)]
-        val newTitle = "Banana"
-        taskFirestore.updateTaskTitle(TEST_USER_ID_DOCUMENT, taskToUpdate.taskId, newTitle)
-        val networkData = taskFirestore.getTasks(TEST_USER_ID_DOCUMENT)
-
-        assertNotNull(networkData.find { it.taskId == taskToUpdate.taskId && it.task == newTitle })
-        assertTrue(networkData.contains(taskToUpdate.copy(task = newTitle)))
-    }
-
-    @Test
-    fun updateTaskCompletion() = runTest {
-        val taskToUpdate = taskNetworkList[nextInt(taskNetworkList.size - 1)]
-        val newCompletion = !taskToUpdate.isComplete
-        taskFirestore.updateTaskCompletion(
-            TEST_USER_ID_DOCUMENT, taskToUpdate.taskId, newCompletion
-        )
-        val networkData = taskFirestore.getTasks(TEST_USER_ID_DOCUMENT)
-
-        assertNotNull(networkData.find { it.taskId == taskToUpdate.taskId && it.isComplete == newCompletion })
-        assertTrue(networkData.contains(taskToUpdate.copy(isComplete = newCompletion)))
-    }
-
 
 }

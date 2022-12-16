@@ -78,36 +78,6 @@ class TaskFirestoreImpl @Inject constructor(private val firestore: FirebaseFires
             .await()
     }
 
-    override suspend fun updateTaskPosition(userId: String, taskId: String, position: Int) {
-        firestore
-            .collection(ACTIVE_COLLECTION)
-            .document(userId)
-            .collection(TASK_COLLECTION)
-            .document(taskId)
-            .update("position", position)
-            .await()
-    }
-
-    override suspend fun updateTaskTitle(userId: String, taskId: String, title: String) {
-        firestore
-            .collection(ACTIVE_COLLECTION)
-            .document(userId)
-            .collection(TASK_COLLECTION)
-            .document(taskId)
-            .update("task", title)
-            .await()
-    }
-
-    override suspend fun updateTaskCompletion(userId: String, taskId: String, isComplete: Boolean) {
-        firestore
-            .collection(ACTIVE_COLLECTION)
-            .document(userId)
-            .collection(TASK_COLLECTION)
-            .document(taskId)
-            .update("isComplete", isComplete)
-            .await()
-    }
-
     override suspend fun updateTask(userId: String, taskId: String, field: Map<String, Any>) {
         firestore
             .collection(ACTIVE_COLLECTION)

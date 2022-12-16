@@ -80,7 +80,8 @@ class TodoDaoTest {
                 notes = i % 2 == 0,
                 attachments = i % 2 == 0,
                 alarmRef = if (i % 2 == 0) nextInt() else null,
-                todoCategoryRefName = if (i % 2 == 0) "Personal" else "Work"
+                todoCategoryRefName = if (i % 2 == 0) "Personal" else "Work",
+                updatedOn = dateUtil.getCurrentDateTimeLong()
             )
             todoEntities.add(todoEntity)
         }
@@ -100,7 +101,8 @@ class TodoDaoTest {
         notes = nextBoolean(),
         attachments = nextBoolean(),
         alarmRef = if (nextBoolean()) nextInt() else null,
-        todoCategoryRefName = if (nextBoolean()) "Personal" else "Work"
+        todoCategoryRefName = if (nextBoolean()) "Personal" else "Work",
+        updatedOn = dateUtil.getCurrentDateTimeLong()
     )
 
     private fun generateNoteEntityList(n: Int = 4, todoRefId: String): List<NoteEntity> {
@@ -155,10 +157,11 @@ class TodoDaoTest {
             val attachmentEntity = AttachmentEntity(
                 attachmentId = UUID.randomUUID().toString(),
                 name = "attachment $i",
-                localUri = "uri $1",
+                localUri = "uri $i",
                 type = "jpg",
                 size = 1024,
-                todoRefId = UUID.randomUUID().toString()
+                todoRefId = UUID.randomUUID().toString(),
+                networkUri = "networkUri $i"
             )
             attachmentEntityList.add(attachmentEntity)
         }
@@ -169,6 +172,7 @@ class TodoDaoTest {
         attachmentId = UUID.randomUUID().toString(),
         name = "attachment name",
         localUri = "uri $1",
+        networkUri = "networkUri $1",
         type = "jpg",
         size = 1024,
         todoRefId = todoRefId
@@ -195,11 +199,12 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newTitle = "Updated test title"
-        dao.updateTodoTitle(todoId = dataToBeUpdate.todoId, title = newTitle)
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
+        dao.updateTodoTitle(todoId = dataToBeUpdate.todoId, title = newTitle, updatedOn = updatedOn)
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.title == newTitle })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(title = newTitle)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(title = newTitle, updatedOn = updatedOn)))
     }
 
     @Test
@@ -213,11 +218,12 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newCategory = "New Category"
-        dao.updateTodoCategory(todoId = dataToBeUpdate.todoId, category = newCategory)
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
+        dao.updateTodoCategory(todoId = dataToBeUpdate.todoId, category = newCategory, updatedOn = updatedOn)
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.todoCategoryRefName == newCategory })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(todoCategoryRefName = newCategory)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(todoCategoryRefName = newCategory, updatedOn = updatedOn)))
     }
 
     @Test
@@ -301,11 +307,12 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newDeadline = dateUtil.toLong(dateUtil.getCurrentDateTime().plusDays(1))
-        dao.updateTodoDeadline(todoId = dataToBeUpdate.todoId, deadline = newDeadline)
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
+        dao.updateTodoDeadline(todoId = dataToBeUpdate.todoId, deadline = newDeadline, updatedOn = updatedOn)
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.deadline == newDeadline })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(deadline = newDeadline)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(deadline = newDeadline, updatedOn = updatedOn)))
     }
 
     @Test
@@ -319,11 +326,12 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newReminder = dateUtil.toLong(dateUtil.getCurrentDateTime().plusDays(1))
-        dao.updateTodoReminder(todoId = dataToBeUpdate.todoId, reminder = newReminder)
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
+        dao.updateTodoReminder(todoId = dataToBeUpdate.todoId, reminder = newReminder, updatedOn = updatedOn)
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.reminder == newReminder })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(reminder = newReminder)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(reminder = newReminder, updatedOn = updatedOn)))
     }
 
     @Test
@@ -338,8 +346,9 @@ class TodoDaoTest {
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newCompletion = !dataToBeUpdate.tasks
         val newCompletedOn = dateUtil.toLong(dateUtil.getCurrentDate().plusDays(1))
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
         dao.updateTodoCompletion(
-            todoId = dataToBeUpdate.todoId, isComplete = newCompletion, completedOn = newCompletedOn
+            todoId = dataToBeUpdate.todoId, isComplete = newCompletion, completedOn = newCompletedOn, updatedOn = updatedOn
         )
 
         val updatedDbData = dao.getTodos().first()
@@ -347,7 +356,7 @@ class TodoDaoTest {
         assertTrue(
             updatedDbData.contains(
                 dataToBeUpdate.copy(
-                    isComplete = newCompletion, completedOn = newCompletedOn
+                    isComplete = newCompletion, completedOn = newCompletedOn, updatedOn = updatedOn
                 )
             )
         )
@@ -364,13 +373,14 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newTaskAvailability = !dataToBeUpdate.tasks
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
         dao.updateTodoTasksAvailability(
-            todoId = dataToBeUpdate.todoId, tasksAvailability = newTaskAvailability
+            todoId = dataToBeUpdate.todoId, tasksAvailability = newTaskAvailability, updatedOn = updatedOn
         )
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.tasks == newTaskAvailability })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(tasks = newTaskAvailability)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(tasks = newTaskAvailability, updatedOn = updatedOn)))
     }
 
     @Test
@@ -384,13 +394,14 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newNotesAvailability = !dataToBeUpdate.notes
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
         dao.updateTodoNotesAvailability(
-            todoId = dataToBeUpdate.todoId, notesAvailability = newNotesAvailability
+            todoId = dataToBeUpdate.todoId, notesAvailability = newNotesAvailability, updatedOn = updatedOn
         )
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.notes == newNotesAvailability })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(notes = newNotesAvailability)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(notes = newNotesAvailability, updatedOn = updatedOn)))
     }
 
     @Test
@@ -404,13 +415,14 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newAttachmentAvailability = !dataToBeUpdate.attachments
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
         dao.updateTodoAttachmentsAvailability(
-            todoId = dataToBeUpdate.todoId, attachmentsAvailability = newAttachmentAvailability
+            todoId = dataToBeUpdate.todoId, attachmentsAvailability = newAttachmentAvailability, updatedOn = updatedOn
         )
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.attachments == newAttachmentAvailability })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(attachments = newAttachmentAvailability)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(attachments = newAttachmentAvailability, updatedOn = updatedOn)))
     }
 
     @Test
@@ -424,13 +436,14 @@ class TodoDaoTest {
 
         val dataToBeUpdate = dbData[nextInt(dbData.size - 1)]
         val newAlarmRef = nextInt()
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
         dao.updateTodoAlarmRef(
-            todoId = dataToBeUpdate.todoId, alarmRef = newAlarmRef
+            todoId = dataToBeUpdate.todoId, alarmRef = newAlarmRef, updatedOn = updatedOn
         )
 
         val updatedDbData = dao.getTodos().first()
         assertNotNull(updatedDbData.find { it.alarmRef == newAlarmRef })
-        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(alarmRef = newAlarmRef)))
+        assertTrue(updatedDbData.contains(dataToBeUpdate.copy(alarmRef = newAlarmRef, updatedOn = updatedOn)))
     }
 
     @Test
