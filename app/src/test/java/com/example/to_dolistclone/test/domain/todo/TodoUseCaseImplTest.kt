@@ -1,8 +1,10 @@
 package com.example.to_dolistclone.test.domain.todo
 
 import com.example.to_dolistclone.core.common.DateUtil
+import com.example.to_dolistclone.core.common.worker.WorkerManager
 import com.example.to_dolistclone.core.data.local.model.TodoEntity
 import com.example.to_dolistclone.core.data.local.model.toTodo
+import com.example.to_dolistclone.core.data.remote.firebase.implementation.TEST_USER_ID_DOCUMENT
 import com.example.to_dolistclone.core.repository.abstraction.TodoRepository
 import com.example.to_dolistclone.fake.FakeTodoRepository
 import com.example.to_dolistclone.feature.todo.domain.implementation.TodoUseCaseImpl
@@ -14,6 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import java.time.LocalDateTime
 import java.util.*
+import javax.inject.Inject
 import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -32,11 +35,14 @@ class TodoUseCaseImplTest {
     private lateinit var currentDateTime: LocalDateTime
     private lateinit var fakeTodoEntityList: List<TodoEntity>
 
+    @Inject
+    lateinit var workerManager: WorkerManager
+
     @Before
     fun setup() {
         fakeTodoRepository = FakeTodoRepository()
         dateUtil = DateUtil()
-        todoUseCase = TodoUseCaseImpl(fakeTodoRepository, dateUtil)
+        todoUseCase = TodoUseCaseImpl(fakeTodoRepository, dateUtil, workerManager)
 
         currentDateTime = dateUtil.getCurrentDateTime()
         val todoEntityListNotCompletedBeforeCurrentDateTime =
@@ -73,6 +79,7 @@ class TodoUseCaseImplTest {
                 repeat = null,
                 isComplete = isCompleted,
                 createdOn = dateUtil.toLong(date),
+                updatedOn = dateUtil.toLong(date),
                 completedOn = if (isCompleted) dateUtil.toLong(date.plusHours(2)) else null,
                 tasks = i % 2 == 0,
                 notes = i % 2 == 0,
@@ -88,7 +95,7 @@ class TodoUseCaseImplTest {
     @Test
     fun insertTodo() = runTest {
         fakeTodoEntityList.forEach { todo ->
-            todoUseCase.insertTodo(todo.toTodo())
+            todoUseCase.insertTodo(TEST_USER_ID_DOCUMENT, todo.toTodo())
         }
 
         // test to confirm the size is the same
@@ -103,14 +110,15 @@ class TodoUseCaseImplTest {
     @Test
     fun updateTodoCompletion() = runTest {
         fakeTodoEntityList.forEach { todo ->
-            todoUseCase.insertTodo(todo.toTodo())
+            todoUseCase.insertTodo(TEST_USER_ID_DOCUMENT, todo.toTodo())
         }
         val listSize = todoUseCase.todos.first().size
         val completedOn = dateUtil.toLocalDate("2022/12/31", "yyyy/MM/dd")
         val todoUpdateId = todoUseCase.todos.first()[Random.nextInt(listSize)].todoId
+        val updatedOn = dateUtil.getCurrentDateTimeLong()
 
         todoUseCase.updateTodoCompletion(
-            todoUpdateId, isComplete = false, completedOn = dateUtil.toLong(completedOn)
+            userId = TEST_USER_ID_DOCUMENT, todoId = todoUpdateId, isComplete = false, completedOn = dateUtil.toLong(completedOn), updatedOn = updatedOn
         )
 
         val actualUpdatedList = todoUseCase.todos.first()
@@ -125,7 +133,7 @@ class TodoUseCaseImplTest {
     @Test
     fun getMappedTodos() = runTest {
         fakeTodoEntityList.forEach { todo ->
-            todoUseCase.insertTodo(todo.toTodo())
+            todoUseCase.insertTodo(TEST_USER_ID_DOCUMENT, todo.toTodo())
         }
 
         val actualResult = todoUseCase.getMappedTodos(dateUtil.toLocalDate(currentDateTime)).first()
@@ -161,7 +169,7 @@ class TodoUseCaseImplTest {
     @Test
     fun getTodosGroupByDeadline() = runTest {
         fakeTodoEntityList.forEach {
-            todoUseCase.insertTodo(it.toTodo())
+            todoUseCase.insertTodo(TEST_USER_ID_DOCUMENT, it.toTodo())
         }
 
         val expected = fakeTodoEntityList

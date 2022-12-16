@@ -1,5 +1,6 @@
 package com.example.to_dolistclone.fake
 
+import com.example.to_dolistclone.core.data.local.CacheResult
 import com.example.to_dolistclone.core.data.local.model.*
 import com.example.to_dolistclone.core.domain.model.*
 import com.example.to_dolistclone.core.domain.model.relation.one_to_many.TodoCategoryWithTodos
@@ -61,7 +62,7 @@ class FakeTodoRepository : TodoRepository {
         return flow { emit(booleanDataStore[SHOW_COMPLETED_TODAY] ?: true) }
     }
 
-    override suspend fun insertTodo(todo: Todo): Long {
+    override suspend fun insertTodo(todo: Todo): CacheResult<Long?> {
         val todoEntity = todo.toTodoEntity()
         todoList.add(todoEntity)
         return if (todoList.contains(todoEntity)) {
@@ -75,25 +76,34 @@ class FakeTodoRepository : TodoRepository {
         return flow { emit(todoList.find { it.todoId == todoId }?.toTodo()!!) }
     }
 
-    override suspend fun updateTodoTitle(todoId: String, title: String): Int {
+    override suspend fun updateTodoTitle(
+        todoId: String,
+        title: String,
+        updatedOn: Long
+    ): CacheResult<Int?> {
         val todo = todoList.find { it.todoId == todoId }
         val index = todoList.indexOf(todo)
-        return if (todo != null) {
-            todoList[index] = todo.copy(title = title)
-            index
-        } else {
-            -1
+
+        return if (todo == null){
+            CacheResult.Error(errorMessage = "Data not found")
+        }else{
+            todoList[index] = todo.copy(title = title, updatedOn = updatedOn)
+            CacheResult.Success(index)
         }
     }
 
-    override suspend fun updateTodoCategory(todoId: String, category: String): Int {
+    override suspend fun updateTodoCategory(
+        todoId: String,
+        category: String,
+        updatedOn: Long
+    ): CacheResult<Int?> {
         val todo = todoList.find { it.todoId == todoId }
         val index = todoList.indexOf(todo)
-        return if (todo != null) {
-            todoList[index] = todo.copy(todoCategoryRefName = category)
-            index
+        return if (todo == null) {
+            CacheResult.Error(errorMessage = "Data not found")
         } else {
-            -1
+            todoList[index] = todo.copy(todoCategoryRefName = category)
+            CacheResult.Success(index)
         }
     }
 
