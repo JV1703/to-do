@@ -130,26 +130,6 @@ class TodoFragment : BaseFragment<FragmentTodoBinding>(FragmentTodoBinding::infl
     }
 
     private fun setupAdapter() {
-//        previousAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-//        }, onClickNavigation = {
-//            navigateToDetailsActivity(it.todoId)
-//        })
-//        todayAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-//        }, onClickNavigation = {
-//            navigateToDetailsActivity(it.todoId)
-//        })
-//        futureAdapter = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-//        }, onClickNavigation = {
-//            navigateToDetailsActivity(it.todoId)
-//        })
-//        completedToday = TodosAdapter(dateUtil = dateUtil, onClickCheckBox = {
-//            viewModel.updateTodoCompletion(it.todoId, it.isComplete)
-//        }, onClickNavigation = {
-//            navigateToDetailsActivity(it.todoId)
-//        })
 
         previousAdapter = TodosAdapter(dateUtil = dateUtil, this)
         todayAdapter = TodosAdapter(dateUtil = dateUtil, this)

@@ -8,7 +8,7 @@
 
     <string name="open">drawer open</string>
     <string name="close">drawer close</string>
-    <string name="check_completed_tasks"><u>Check all completed tasks</u></string>
+    <string name="check_completed_tasks"><u>Check all completed todos</u></string>
 
     <string-array name="reminder_array">
 

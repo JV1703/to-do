@@ -510,8 +510,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
     }
 
     override fun openFile(attachment: Attachment) {
-        val filePath = File(requireContext().filesDir, "attachments/${attachment.type}")
-        val newFile = File(filePath, attachment.name)
+        val newFile = File(attachment.uri)
         val contentUri = try {
             FileProvider.getUriForFile(
                 requireContext(), "com.example.to_dolistclone.fileprovider", newFile

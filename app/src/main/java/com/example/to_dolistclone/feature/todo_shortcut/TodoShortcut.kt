@@ -10,7 +10,9 @@ import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
 import androidx.core.view.children
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import com.example.to_dolistclone.R
 import com.example.to_dolistclone.core.common.*
 import com.example.to_dolistclone.core.utils.ui.collectLatestLifecycleFlow
 import com.example.to_dolistclone.core.utils.ui.makeToast
@@ -21,6 +23,8 @@ import com.example.to_dolistclone.feature.common.dialog.DialogsManager
 import com.example.to_dolistclone.feature.common.popup_menu.CategoryPopupMenu
 import com.example.to_dolistclone.feature.home.adapter.TaskAdapter
 import com.example.to_dolistclone.feature.home.adapter.TaskProxy
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,6 +65,11 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
         dialog?.window?.setBackgroundDrawable(null)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    }
+
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -71,6 +80,15 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        dialog?.setOnShowListener {
+            val dialog = it as BottomSheetDialog
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.let{ sheet ->
+                dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                sheet.parent.parent.requestLayout()
+            }
+        }
 
         alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -190,7 +208,6 @@ class TodoShortcut(private val date: LocalDate? = null) : BottomSheetDialogFragm
                     true
                 }
                 else -> {
-                    makeToast(menuItem.title.toString())
                     viewModel.updateSelectedCategory(menuItem.title.toString())
                     binding.category.text = setStringSpanColor(
                         requireContext(),
