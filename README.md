@@ -1,3 +1,7 @@
+## Description
+A simple Todo app that helps you manage your busy life with a touch of the finger.
+Currently updating app through the use of Firebase and Work Manager to transform the app into an offline first app.
+
 ## Screenshots
 <p float="left">
   <img src="https://github.com/JV1703/to-do/blob/master/Gifs/TodoApp%20Sample%20-%20Completing%20Todo.gif" width="250" />
@@ -22,4 +26,4 @@
 
 ## Libraries - in development
 * [Firebase](https://firebase.google.com/) Firebase is an app development platform that helps you build and grow apps and games users love. Backed by Google and trusted by millions of businesses around the world.
-* [Work Manager](https://developer.android.com/topic/libraries/architecture/workmanager) WorkManager is the recommended solution for persistent work
+* [Work Manager](https://developer.android.com/topic/libraries/architecture/workmanager) Work Manager is the recommended solution for persistent work
