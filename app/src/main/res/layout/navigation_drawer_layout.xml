@@ -11,9 +11,10 @@
         <ImageView
             android:id="@+id/header_iv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:scaleType="fitXY"
-            android:src="@drawable/kitten_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/placeholder_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

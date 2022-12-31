@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:textColor="@color/text_color"
-            android:text="Joevincent"
+            android:text="Username"
             app:layout_constraintBottom_toBottomOf="@id/profile_iv"
             app:layout_constraintStart_toEndOf="@id/profile_iv"
             app:layout_constraintTop_toTopOf="@id/profile_iv" />

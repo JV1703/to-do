@@ -33,15 +33,15 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/category_tv"
                     android:layout_width="wrap_content"
-                    android:textColor="@color/text_color"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/text_color"
                     tools:text="No Category" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:tint="@color/text_color"
-                    android:src="@drawable/ic_arrow_drop_down" />
+                    android:src="@drawable/ic_arrow_drop_down"
+                    android:tint="@color/text_color" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -58,9 +58,9 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
                 android:imeOptions="actionDone"
-                android:textColor="@color/text_color"
                 android:inputType="text"
                 android:maxLines="1"
+                android:textColor="@color/text_color"
                 app:layout_constraintBottom_toBottomOf="@id/checkbox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/checkbox"
@@ -83,12 +83,12 @@
                 android:drawableStart="@drawable/ic_add"
                 android:drawablePadding="12dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/text_color"
                 android:hint="Add Task"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:lines="1"
                 android:singleLine="true"
+                android:textColor="@color/text_color"
                 app:layout_constraintTop_toBottomOf="@id/task_rv" />
 
             <View
@@ -108,9 +108,9 @@
                 android:drawableStart="@drawable/ic_calendar"
                 android:drawablePadding="12dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/text_color"
                 android:paddingVertical="12dp"
                 android:text="Due Date"
+                android:textColor="@color/text_color"
                 app:layout_constraintEnd_toEndOf="@id/separator1"
                 app:layout_constraintStart_toStartOf="@id/separator1"
                 app:layout_constraintTop_toBottomOf="@id/separator1" />
@@ -119,9 +119,9 @@
                 android:id="@+id/due_date_tv_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tint="@color/text_color"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_close_delete"
+                android:tint="@color/text_color"
                 app:layout_constraintBottom_toBottomOf="@id/due_date_tv"
                 app:layout_constraintEnd_toEndOf="@id/due_date_tv"
                 app:layout_constraintTop_toTopOf="@id/due_date_tv" />
@@ -143,8 +143,8 @@
                 android:drawablePadding="12dp"
                 android:gravity="center_vertical"
                 android:paddingVertical="12dp"
-                android:textColor="@color/text_color"
                 android:text="Reminder"
+                android:textColor="@color/text_color"
                 app:layout_constraintEnd_toEndOf="@id/separator2"
                 app:layout_constraintStart_toStartOf="@id/separator2"
                 app:layout_constraintTop_toBottomOf="@id/separator2" />
@@ -153,9 +153,9 @@
                 android:id="@+id/reminder_tv_clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tint="@color/text_color"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_close_delete"
+                android:tint="@color/text_color"
                 app:layout_constraintBottom_toBottomOf="@id/reminder_tv"
                 app:layout_constraintEnd_toEndOf="@id/reminder_tv"
                 app:layout_constraintTop_toTopOf="@id/reminder_tv" />
@@ -176,9 +176,10 @@
                 android:drawableStart="@drawable/ic_repeat"
                 android:drawablePadding="12dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/text_color"
                 android:paddingVertical="12dp"
                 android:text="Repeat"
+                android:textColor="@color/text_color"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/separator3"
                 app:layout_constraintStart_toStartOf="@id/separator3"
                 app:layout_constraintTop_toBottomOf="@id/separator3" />
@@ -188,8 +189,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:tint="@color/text_color"
                 android:src="@drawable/ic_close_delete"
+                android:tint="@color/text_color"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/repeat_tv"
                 app:layout_constraintEnd_toEndOf="@id/repeat_tv"
                 app:layout_constraintTop_toTopOf="@id/repeat_tv" />
@@ -199,6 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/black"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/repeat_tv"
                 app:layout_constraintStart_toStartOf="@id/repeat_tv"
                 app:layout_constraintTop_toBottomOf="@id/repeat_tv" />
@@ -211,8 +214,8 @@
                 android:drawablePadding="12dp"
                 android:gravity="center_vertical"
                 android:paddingVertical="12dp"
-                android:textColor="@color/text_color"
                 android:text="Notes"
+                android:textColor="@color/text_color"
                 app:layout_constraintEnd_toEndOf="@id/separator4"
                 app:layout_constraintStart_toStartOf="@id/separator4"
                 app:layout_constraintTop_toBottomOf="@id/separator4" />
@@ -222,8 +225,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:tint="@color/text_color"
                 android:src="@drawable/ic_close_delete"
+                android:tint="@color/text_color"
                 app:layout_constraintBottom_toBottomOf="@id/notes_tv"
                 app:layout_constraintEnd_toEndOf="@id/notes_tv"
                 app:layout_constraintTop_toTopOf="@id/notes_tv" />
@@ -255,8 +258,8 @@
                 android:drawablePadding="12dp"
                 android:gravity="center_vertical"
                 android:paddingVertical="12dp"
-                android:textColor="@color/text_color"
                 android:text="Attachment"
+                android:textColor="@color/text_color"
                 app:layout_constraintEnd_toEndOf="@id/attachment_rv"
                 app:layout_constraintStart_toStartOf="@id/attachment_rv"
                 app:layout_constraintTop_toBottomOf="@id/attachment_rv" />
@@ -278,8 +281,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="6dp"
-        android:textColor="@color/text_color"
         android:paddingVertical="8dp"
+        android:textColor="@color/text_color"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView

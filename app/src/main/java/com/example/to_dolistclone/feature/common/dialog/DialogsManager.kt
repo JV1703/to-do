@@ -18,16 +18,6 @@ class DialogsManager @Inject constructor(private val fragmentManager: FragmentMa
         addCategoryDialogFragment.show(fragmentManager, AddCategoryDialogFragment.TAG)
     }
 
-    fun showDateTimePickerDialog() {
-        val dateTimePickerDialogFragment = DateTimePickerDialogFragment()
-        dateTimePickerDialogFragment.show(fragmentManager, DateTimePickerDialogFragment.TAG)
-    }
-
-    fun showReminderDialog() {
-        val reminderDialogFragment = ReminderDialogFragment()
-        reminderDialogFragment.show(fragmentManager, ReminderDialogFragment.TAG)
-    }
-
     fun showReminderDateTimePickerDialog(onClick: (LocalDateTime) -> Unit) {
         val reminderDateTimePickerDialog = ReminderDateTimePickerDialogFragment { onClick(it) }
         reminderDateTimePickerDialog.show(fragmentManager, ReminderDateTimePickerDialogFragment.TAG)

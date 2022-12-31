@@ -1,13 +1,18 @@
 package com.example.to_dolistclone.feature.common.dialog
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.Dialog
+import android.content.pm.PackageManager
 import android.content.res.Resources.NotFoundException
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.content.ContextCompat
 import com.example.to_dolistclone.core.common.DateUtil
 import com.example.to_dolistclone.databinding.ReminderDateTimePickerDialogFragmentBinding
 import com.example.to_dolistclone.feature.common.DatePickerFragment
@@ -41,7 +46,7 @@ class ReminderDateTimePickerDialogFragment(private val onClick: (LocalDateTime) 
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View {
         _binding = ReminderDateTimePickerDialogFragmentBinding.inflate(inflater, container, false)
         return binding.root
@@ -50,6 +55,13 @@ class ReminderDateTimePickerDialogFragment(private val onClick: (LocalDateTime) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupTabLayout()
+
+        if (!checkNotificationPermission()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+            }
+        }
+
         binding.cancelTv.setOnClickListener {
             dismiss()
         }
@@ -118,5 +130,17 @@ class ReminderDateTimePickerDialogFragment(private val onClick: (LocalDateTime) 
 
     companion object {
         const val TAG = "Reminder Date Time Picker Dialog Fragment"
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {}
+
+    private fun checkNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(requireContext(),
+                POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
     }
 }
