@@ -21,7 +21,7 @@ Currently updating app through the use of Firebase and Work Manager to transform
    * [ROOM](https://developer.android.com/jetpack/androidx/releases/room) The Room persistence library provides an abstraction layer over SQLite to allow for more robust database access while harnessing the full power of SQLite.
 * [Dagger - Hilt](https://dagger.dev/hilt/) Hilt provides a standard way to incorporate Dagger dependency injection into an Android application.
 * [Coroutines](https://developer.android.com/kotlin/coroutines) A coroutine is a concurrency design pattern that you can use on Android to simplify code that executes asynchronously.
-* [StateFlow](https://developer.android.com/kotlin/flow/stateflow-and-sharedflow) is a state-holder observable flow that emits the current and new state updates to its collectors.
+* [Flow](https://developer.android.com/kotlin/flow) a flow is a type that can emit multiple values sequentially, as opposed to suspend functions that return only a single value.
 * [Material Design](https://material.io/develop/android/) Build beautiful, usable products using Material Components for Android.
 
 ## Libraries - in development
